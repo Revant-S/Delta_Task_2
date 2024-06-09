@@ -1,3 +1,13 @@
+export let bullets = [];
+export function changeTheValue(add , object) {
+  if (add) {
+    bullets.push(object)
+    return
+  }
+  bullets.splice(object.index,1)
+}
+
+
 export class Bullet {
     constructor({ weapon, dimensions, velocity, direction }) {
       this.weapon = weapon;

@@ -1,6 +1,6 @@
-import { Survivor, Zombie } from "./playerAndZombies.mjs";
+import { Survivor, Zombie,manupulateZombieArray,zombies } from "./playerAndZombies.mjs";
 import { generateGround } from "./gameEvnironment.mjs";
-import { SurvivorNormalGun } from "./weapons.mjs";
+import { SurvivorNormalGun, bullets , changeTheValue } from "./weapons.mjs";
 
 const gameCanvas = document.getElementById("gameCanvas");
 const canvasHeight = window.innerHeight;
@@ -33,7 +33,7 @@ const survivor = new Survivor({
   },
 });
 
-let zombies = [];
+
 
 function populateWithZombies(numberOfZombies) {
   // loop to create regularzombie
@@ -49,13 +49,14 @@ function populateWithZombies(numberOfZombies) {
         y: 0,
       },
       zombieDimensions: {
-        height: 100,
+        height: 150,
         width: 50,
       },
       index: index,
       zombieName: "regularZombie",
+      zombieLife: 3,
     });
-    zombies.push(zombie);
+    manupulateZombieArray(true , zombie)
   }
 }
 
@@ -69,7 +70,7 @@ normalGun.draw(ctx);
 survivor.weapons.push(normalGun);
 populateWithZombies(5);
 
-let bullets = [];
+
 function startAnimation() {
   ctx.clearRect(0, 0, canvasWidth, canvasHeight);
   generateGround(ctx, canvasWidth);
@@ -88,7 +89,9 @@ function startAnimation() {
     }
   });
 
-  if (zombies.length <=2) {
+  console.log(zombies.length);
+  if (zombies.length <= 2) {
+    console.log("Fired");
     populateWithZombies(10);
   }
   requestAnimationFrame(startAnimation);
