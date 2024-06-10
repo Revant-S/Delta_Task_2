@@ -81,11 +81,11 @@ export class Survivor {
 
   move(keys) {
     this.velocity.x = 0;
-    if (keys["ArrowLeft"].pressed && keys.LastPressed == "ArrowLeft") {
+    if (keys["KeyA"].pressed && keys.LastPressed == "KeyA") {
       this.velocity.x -= 4;
       this.weapons[0].direction = "left";
     }
-    if (keys["ArrowRight"].pressed && keys.LastPressed == "ArrowRight") {
+    if (keys["KeyD"].pressed && keys.LastPressed == "KeyD") {
       this.velocity.x += 4;
       this.weapons[0].direction = "right";
     }
