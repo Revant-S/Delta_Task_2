@@ -24,11 +24,11 @@ export function createTheBase({groundLevel,ctx}){
 
     this.wallDimensions = {
         left : {
-            height : 250,
+            height : 150,
             width : 60
         },
         right : {
-            height : 250,
+            height : 150,
             width : 60
         }
     }

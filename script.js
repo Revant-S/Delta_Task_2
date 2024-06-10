@@ -8,6 +8,7 @@ import {
 import { generateGround, createTheBase } from "./gameEvnironment.mjs";
 import { SurvivorNormalGun, bullets, changeTheValue,Canon } from "./weapons.mjs";
 
+const header = document.querySelector("header");
 const gameCanvas = document.getElementById("gameCanvas");
 const canvasHeight = window.innerHeight;
 const canvasWidth = window.innerWidth;
@@ -92,7 +93,7 @@ function populateWithZombies(numberOfZombies) {
         y: 0,
       },
       zombieDimensions: {
-        height: 150,
+        height: 200,
         width: 25,
       },
       index: index,
@@ -128,7 +129,8 @@ function startAnimation() {
   survivor.draw(ctx);
   normalGun.moveWithPlayer(survivor.position);
   normalGun.draw(ctx);
-  canonGun.draw(ctx)
+  // canonGun.draw(ctx)
+  canonGun.followTheMouse({mouseCoordinates: mousePosition , ctx:ctx})
   zombies.forEach((zombie) => {
     zombie.run(ctx, base);
   });
@@ -152,7 +154,6 @@ function startAnimation() {
 startAnimation();
 
 window.addEventListener("keydown", (e) => {
-  console.log(e);
   if (keys[e.code] !== undefined) {
     keys[e.code].pressed = true;
     keys.LastPressed = e.code;
@@ -169,9 +170,12 @@ window.addEventListener("keyup", (e) => {
 });
 
 window.addEventListener("mousemove",(e)=>{
-  console.log(e);
   mousePosition.x = e.x;
-  mousePosition.y = e.y
-}
+  mousePosition.y = e.y-60.3
 
+}
 )
+
+window.addEventListener("click" , ()=>{
+  canonGun.shoot();
+})

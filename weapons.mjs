@@ -1,6 +1,6 @@
 export let bullets = [];
-
- import {groundLevel} from "./gameEvnironment.mjs"
+export let gravity = 1;
+import { groundLevel } from "./gameEvnironment.mjs";
 export function changeTheValue(add, object) {
   if (add) {
     bullets.push(object);
@@ -15,18 +15,25 @@ export class Bullet {
     this.dimensions = dimensions;
     this.direction = direction;
     this.fired = false;
-    this.position = {
-      x:
-        direction === "right"
-          ? weapon.position.x + weapon.dimension.width
-          : weapon.position.x,
-      y: weapon.position.y + weapon.dimension.height / 2,
-    };
+    console.log(this.weapon);
+    if (this.weapon.weaponName == "survivorNormalGun") {
+      this.position = {
+        x:
+          direction === "right"
+            ? weapon.position.x + weapon.dimension.width
+            : weapon.position.x,
+        y: weapon.position.y + weapon.dimension.height / 2,
+      };
 
-    this.velocity = {
-      x: direction === "right" ? velocity.x : -velocity.x,
-      y: velocity.y,
-    };
+      this.velocity = {
+        x: direction === "right" ? velocity.x : -velocity.x,
+        y: velocity.y,
+      };
+    } else {
+      this.velocity = velocity;
+      this.velocity.y+=gravity
+      this.position = direction;
+    }
   }
 
   draw(ctx) {
@@ -45,8 +52,13 @@ export class Bullet {
   }
 
   update() {
-    this.position.x += this.velocity.x;
-    this.position.y += this.velocity.y;
+    if (this.weapon.weaponName == "survivorNormalGun") {
+      this.position.x += this.velocity.x;
+      this.position.y += this.velocity.y;
+    } else {
+      this.position.x += this.velocity.x;
+      this.position.y += this.velocity.y;
+    }
   }
 }
 
@@ -61,6 +73,7 @@ export class SurvivorNormalGun {
       width: 100,
       height: 20,
     };
+    this.weaponName = "survivorNormalGun";
     this.survivor = survivor;
     this.direction = "right";
   }
@@ -102,25 +115,74 @@ export class SurvivorNormalGun {
 
 export class Canon {
   constructor({ canonTowerDetails, ctx }) {
-    (this.ctx = ctx), (this.canonTowerDetails = canonTowerDetails);
+    this.ctx = ctx;
+    this.angle = 0; // kept as default ... in refrence to the top canter of the tower
+    this.canonTowerDetails = canonTowerDetails;
     this.dimensions = {
       length: 150,
       width: 20,
     };
+    this.center = {
+      x: this.canonTowerDetails.location,
+      y: groundLevel - this.canonTowerDetails.height,
+    };
+    this.weaponNameame = "canon";
   }
 
-  draw(ctx) {
-    console.log("It is reaching here");
-    const x = this.canonTowerDetails.location - this.dimensions.width / 2;
-    const y = this.canonTowerDetails.height;
-    console.log(x + "   " + y);
+  draw(ctx, angle) {
+    ctx.save();
+    ctx.translate(this.center.x, this.center.y);
+    ctx.rotate(angle);
+    this.angle = angle;
     ctx.fillStyle = "black";
-    ctx.fillRect(x, groundLevel - y , this.dimensions.length, this.dimensions.width);
+    ctx.fillRect(
+      0,
+      -this.dimensions.width / 2,
+      this.dimensions.length,
+      this.dimensions.width
+    );
+    ctx.beginPath();
+    ctx.arc(0, 0, 20, 0, Math.PI * 2);
+    ctx.fillStyle = "black";
     ctx.fill();
-    ctx.closePath();
-    ctx.fillStyle = "black"
-    ctx.arc(x+this.dimensions.width/2,groundLevel - y + this.dimensions.width/2,this.dimensions.width , 0,Math.PI*2);
-    ctx.fill()
 
+    ctx.restore();
+  }
+
+  followTheMouse({ mouseCoordinates, ctx }) {
+    let mouseX = mouseCoordinates.x - this.center.x;
+    let mouseY = mouseCoordinates.y - this.center.y;
+
+    // Calculate the angle to rotate
+    const angle = Math.atan2(mouseY, mouseX);
+
+    // Draw the cannon with the calculated angle
+    this.draw(ctx, angle);
+  }
+
+  shoot() {
+    const bullet = new Bullet({
+      weapon: this,
+      dimensions: {
+        shape: "circle",
+        radius: 10,
+      },
+      velocity: {
+        x: 15 * Math.cos(this.angle),
+        y: 15 * Math.sin(this.angle),
+      },
+      direction: {
+        x:
+          this.canonTowerDetails.location +
+          this.dimensions.length * Math.cos(this.angle),
+        y:
+          groundLevel -
+          this.canonTowerDetails.height +
+          this.dimensions.length * Math.sin(this.angle),
+      },
+    });
+    console.log(this.angle);
+
+    bullets.push(bullet);
   }
 }

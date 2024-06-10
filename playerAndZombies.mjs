@@ -63,7 +63,7 @@ export class Survivor {
     this.life = 100;
     this.velocity = velocity;
     this.originalVelocity = velocity;
-    this.height = 150;
+    this.height = 200;
     this.width = 50;
     this.weapons = [];
   }
