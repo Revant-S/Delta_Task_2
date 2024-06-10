@@ -1,11 +1,16 @@
-import { Survivor, Zombie,manupulateZombieArray,zombies } from "./playerAndZombies.mjs";
-import { generateGround } from "./gameEvnironment.mjs";
-import { SurvivorNormalGun, bullets , changeTheValue } from "./weapons.mjs";
+import {
+  Survivor,
+  Zombie,
+  manupulateZombieArray,
+  zombies,
+  changeNormalZpoints
+} from "./playerAndZombies.mjs";
+import { generateGround, createTheBase } from "./gameEvnironment.mjs";
+import { SurvivorNormalGun, bullets, changeTheValue } from "./weapons.mjs";
 
 const gameCanvas = document.getElementById("gameCanvas");
 const canvasHeight = window.innerHeight;
 const canvasWidth = window.innerWidth;
-
 gameCanvas.height = canvasHeight;
 gameCanvas.width = canvasWidth;
 
@@ -33,14 +38,46 @@ const survivor = new Survivor({
   },
 });
 
+function randomInRange(min, max) {
+  return Math.random() * (max - min) + min;
+}
 
+const base = new createTheBase({ groundLevel, ctx });
 
 function populateWithZombies(numberOfZombies) {
-  // loop to create regularzombie
   for (let index = 0; index < numberOfZombies; index++) {
     const position = {};
-    position.x = Math.random() * canvasWidth;
-    position.y = groundLevel;
+    let isOverlapping = true;
+
+    while (isOverlapping) {
+      if (index % 2 === 0) {
+        position.x = randomInRange(0, base.wallCoordinates.left.x);
+      } else {
+        position.x = randomInRange(
+          base.wallCoordinates.right.x + base.wallDimensions.right.width,
+          canvasWidth
+        );
+      }
+
+      position.y = groundLevel;
+
+      isOverlapping = false;
+      for (let i = 0; i < zombies.length; i++) {
+        const existingZombie = zombies[i];
+        const existingX = existingZombie.position.x;
+        const existingWidth = existingZombie.zombieDimensions.width;
+
+        // Check if the new zombie's position.x falls within the bounds of an existing zombie
+        if (
+          position.x < existingX + existingWidth + 10 && 
+          position.x + 20 > existingX 
+        ) {
+          isOverlapping = true;
+          break;
+        }
+      }
+    }
+
     const zombie = new Zombie({
       position: position,
       survivor: survivor,
@@ -50,13 +87,14 @@ function populateWithZombies(numberOfZombies) {
       },
       zombieDimensions: {
         height: 150,
-        width: 50,
+        width: 25,
       },
       index: index,
       zombieName: "regularZombie",
       zombieLife: 3,
+      base: base,
     });
-    manupulateZombieArray(true , zombie)
+    manupulateZombieArray(true, zombie);
   }
 }
 
@@ -65,21 +103,22 @@ const normalGun = new SurvivorNormalGun({
   groundLevel: groundLevel,
 });
 
+base.draw();
 survivor.draw(ctx);
 normalGun.draw(ctx);
 survivor.weapons.push(normalGun);
-populateWithZombies(5);
-
+populateWithZombies(8);
 
 function startAnimation() {
   ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+  base.draw();
   generateGround(ctx, canvasWidth);
   survivor.move(keys);
   survivor.draw(ctx);
   normalGun.moveWithPlayer(survivor.position);
   normalGun.draw(ctx);
   zombies.forEach((zombie) => {
-    zombie.run(ctx);
+    zombie.run(ctx, base);
   });
   bullets.forEach((bullet, index) => {
     bullet.update();
@@ -88,11 +127,13 @@ function startAnimation() {
       bullets.splice(index, 1);
     }
   });
-
-  console.log(zombies.length);
-  if (zombies.length <= 2) {
-    console.log("Fired");
-    populateWithZombies(10);
+  console.log(zombies);
+  if (zombies.length <= 0) {
+    populateWithZombies(8);
+    changeNormalZpoints({
+      left : base.wallCoordinates.left,
+      right : base.wallCoordinates.right+base.wallDimensions.width 
+    })
   }
   requestAnimationFrame(startAnimation);
 }

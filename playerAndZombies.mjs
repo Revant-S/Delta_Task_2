@@ -1,12 +1,26 @@
 import { bullets, changeTheValue } from "./weapons.mjs";
 
 export let zombies = [];
+export let normalZStopPoint = {
+  left: undefined,
+  right: undefined,
+};
+export function changeNormalZpoints(obj) {
+  normalZStopPoint = obj
+}
+
+
+
 export function manupulateZombieArray(add, object) {
   if (add) {
     zombies.push(object);
-    return;
+  } else {
+    zombies.splice(object.index, 1);
+    // Update indices of remaining zombies
+    zombies.forEach((zombie, index) => {
+      zombie.index = index;
+    });
   }
-  zombies.splice(object.index, 1);
 }
 
 function hasTheBulletHit(movingObject) {
@@ -18,7 +32,7 @@ function hasTheBulletHit(movingObject) {
     const zombiePosition = movingObject.position;
     const zombieWidth = movingObject.zombieDimensions.width;
     const zombieHeight = movingObject.zombieDimensions.height;
-    
+
     const bulletLeft = bulletPosition.x - bulletRadius;
     const bulletRight = bulletPosition.x + bulletRadius;
     const bulletTop = bulletPosition.y - bulletRadius;
@@ -97,20 +111,25 @@ export class Zombie {
     this.survivorToFollow = survivor;
     this.zombieLife = zombieLife;
     this.isAlive = true;
+    this.zombieName = zombieName;
   }
 
-  run(ctx) {
+  kill() {
+    manupulateZombieArray(false, this);
+  }
+
+  run(ctx, base) {
     if (!this.isAlive) return;
 
     if (hasTheBulletHit(this)) {
       this.isAlive = false;
-      zombies.splice(this.index, 1);
+      this.kill();
       return;
     }
 
     this.position.x += this.velocity.x;
     this.position.y += this.velocity.y;
-    // Follow the surviors
+    // Follow the survivors
     if (this.survivorToFollow.position.x - this.position.x < 0) {
       this.velocity.x = -1 * Math.abs(this.velocity.x);
       this.velocity.y = -1 * Math.abs(this.velocity.y);
@@ -118,7 +137,45 @@ export class Zombie {
       this.velocity.x = Math.abs(this.velocity.x);
       this.velocity.y = Math.abs(this.velocity.y);
     }
+    if (this.zombieName === "regularZombie") {
+      const baseBoundariesleft = base.wallCoordinates.left.x;
+      const baseBoundariesRight =
+        base.wallCoordinates.right.x + base.wallDimensions.right.width;
 
+      if (this.velocity.x > 0) {
+        if (
+          this.position.x + this.zombieDimensions.width >=
+          normalZStopPoint.left
+        ) {
+          this.velocity.x = 0;
+          this.position.x = normalZStopPoint.left - this.zombieDimensions.width;
+          normalZStopPoint.left = this.position.x - 5;
+        }
+      } else if (this.velocity.x < 0) {
+        if (this.position.x <= normalZStopPoint.right) {
+          this.velocity.x = 0;
+          this.position.x = normalZStopPoint.right;
+          normalZStopPoint.right =
+            this.position.x + this.zombieDimensions.width + 5;
+        }
+      }
+
+      if (
+        this.position.x + this.zombieDimensions.width >= baseBoundariesleft &&
+        this.velocity.x > 0
+      ) {
+        this.velocity.x = -1 * Math.abs(this.velocity.x);
+        this.velocity.y = -1 * Math.abs(this.velocity.y);
+        normalZStopPoint.left = this.position.x;
+      } else if (
+        this.position.x <= baseBoundariesRight &&
+        this.velocity.x < 0
+      ) {
+        this.velocity.x = Math.abs(this.velocity.x);
+        this.velocity.y = Math.abs(this.velocity.y);
+        normalZStopPoint.right = this.position.x + this.zombieDimensions.width;
+      }
+    }
     ctx.fillStyle = "green";
     ctx.fillRect(
       this.position.x,
