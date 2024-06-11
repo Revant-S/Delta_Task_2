@@ -121,7 +121,7 @@ export class SurvivorNormalGun {
   constructor({ survivor, groundLevel }) {
     this.position = {
       x: survivor.position.x,
-      y: groundLevel - survivor.height + 20,
+      y: survivor.position.y - survivor.height ,
     };
     this.bulletRemaining = 50;
     this.dimension = {
@@ -149,6 +149,7 @@ export class SurvivorNormalGun {
       this.position.x =
         this.position.x - this.dimension.width + this.survivor.width;
     }
+    this.position.y = this.survivor.position.y-this.survivor.height+20
   }
 
   shootTheBullet(bullets) {
@@ -207,7 +208,6 @@ export class Canon {
   followTheMouse({ mouseCoordinates, ctx }) {
     let mouseX = mouseCoordinates.x - this.center.x;
     let mouseY = mouseCoordinates.y - this.center.y;
-
     const angle = Math.atan2(mouseY, mouseX);
     this.draw(ctx, angle);
   }

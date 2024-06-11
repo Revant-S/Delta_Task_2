@@ -1,15 +1,16 @@
-import { bullets, changeTheValue } from "./weapons.mjs";
+import { bullets, changeTheValue, gravity } from "./weapons.mjs";
+import { groundLevel } from "./gameEvnironment.mjs";
+import { base } from "./script.js";
 
+let groundLevelForSurvivor = groundLevel;
 export let zombies = [];
 export let normalZStopPoint = {
   left: undefined,
   right: undefined,
 };
 export function changeNormalZpoints(obj) {
-  normalZStopPoint = obj
+  normalZStopPoint = obj;
 }
-
-
 
 export function manupulateZombieArray(add, object) {
   if (add) {
@@ -65,7 +66,11 @@ export class Survivor {
     this.originalVelocity = velocity;
     this.height = 200;
     this.width = 50;
+    this.isJumping = false;
+    this.isOnGround = true;
+    this.isStandingOnTheWall = false;
     this.weapons = [];
+    this.originalPosition = position;
   }
 
   draw(ctx) {
@@ -73,7 +78,7 @@ export class Survivor {
     ctx.fillRect(
       this.position.x,
       this.position.y - this.height,
-      50,
+      this.width,
       this.height
     );
     ctx.fill();
@@ -81,16 +86,90 @@ export class Survivor {
 
   move(keys) {
     this.velocity.x = 0;
+    if (this.position.y >= groundLevel) {
+      this.position.y = groundLevelForSurvivor;
+      this.velocity.y = 0;
+      this.isJumping = false;
+      this.isOnGround = true;
+    } else {
+      this.isOnGround = false;
+      this.velocity.y += gravity;
+    }
+
     if (keys["KeyA"].pressed && keys.LastPressed == "KeyA") {
       this.velocity.x -= 4;
-      this.weapons[0].direction = "left";
+      if (this.weapons[0]) {
+        this.weapons[0].direction = "left";
+      }
     }
     if (keys["KeyD"].pressed && keys.LastPressed == "KeyD") {
       this.velocity.x += 4;
-      this.weapons[0].direction = "right";
+      if (this.weapons[0]) {
+        this.weapons[0].direction = "right";
+      }
     }
+    if (keys["KeyW"].pressed && keys.LastPressed == "KeyW") {
+      this.velocity.y = -8; // Jump velocity
+      this.isJumping = true;
+      this.isOnGround = false;
+    }
+
+    if (
+      this.position.x + this.width >= base.wallCoordinates.right.x &&
+      this.position.x + this.width <=
+        base.wallCoordinates.right.x + base.wallDimensions.right.width &&
+      keys.LastPressed == "KeyD" &&
+      this.position.y >= base.wallCoordinates.right.y
+    ) {
+      this.velocity.x = 0;
+    }
+    if (
+      this.position.x >= base.wallCoordinates.left.x &&
+      this.position.x <=
+        base.wallCoordinates.left.x + base.wallDimensions.left.width &&
+      keys.LastPressed == "KeyA" &&
+      this.position.y >= base.wallCoordinates.left.y
+    ) {
+      this.velocity.x = 0;
+    }
+    // for right wall
+    if (
+      ((this.position.x >= base.wallCoordinates.right.x &&
+        this.position.x <=
+          base.wallCoordinates.right.x + base.wallDimensions.right.width) ||
+        (this.position.x + this.width >= base.wallCoordinates.right.x &&
+          this.position.x + this.width <=
+            base.wallCoordinates.right.x + base.wallDimensions.right.width)) &&
+      this.position.y >
+        base.wallCoordinates.right.y - base.wallDimensions.right.height &&
+      this.position.y < groundLevel
+    ) {
+      this.velocity.y = 0;
+      this.position.y =
+        base.wallCoordinates.right.y - base.wallDimensions.right.height;
+        this.isStandingOnTheWall = true
+    }
+    if (
+      ((this.position.x >= base.wallCoordinates.left.x &&
+        this.position.x <=
+          base.wallCoordinates.left.x + base.wallDimensions.left.width) ||
+        (this.position.x + this.width >= base.wallCoordinates.left.x &&
+          this.position.x + this.width <=
+            base.wallCoordinates.left.x + base.wallDimensions.left.width)) &&
+      this.position.y >
+        base.wallCoordinates.left.y - base.wallDimensions.left.height &&
+      this.position.y < groundLevel
+    ) {
+      this.velocity.y = 0;
+      this.position.y =
+        base.wallCoordinates.right.y - base.wallDimensions.right.height;
+    }
+
     this.position.x += this.velocity.x;
+    this.position.y += this.velocity.y;
   }
+
+  // For the left wall
 }
 
 export class Zombie {

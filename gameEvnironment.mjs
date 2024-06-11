@@ -23,12 +23,12 @@ export function createTheBase({groundLevel,ctx}){
 
     this.wallDimensions = {
         left : {
-            height : 150,
-            width : 60
+            height : 120,
+            width : 120
         },
         right : {
-            height : 150,
-            width : 60
+            height : 120,
+            width : 120
         }
     }
     this.canonTowerDetails = {
@@ -37,7 +37,10 @@ export function createTheBase({groundLevel,ctx}){
         width : 80,
         bullets : 500
     }
-    
+    this.wallLife = {
+        left : 100,
+        right : 100
+    }
     this.draw = function (){                                                                                                      
         ctx.fillStyle = "black"
         ctx.fillRect(this.wallCoordinates.left.x,this.wallCoordinates.left.y - this.wallDimensions.left.height,this.wallDimensions.left.width , this.wallDimensions.left.height );

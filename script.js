@@ -3,10 +3,15 @@ import {
   Zombie,
   manupulateZombieArray,
   zombies,
-  changeNormalZpoints
+  changeNormalZpoints,
 } from "./playerAndZombies.mjs";
 import { generateGround, createTheBase } from "./gameEvnironment.mjs";
-import { SurvivorNormalGun, bullets, changeTheValue,Canon } from "./weapons.mjs";
+import {
+  SurvivorNormalGun,
+  bullets,
+  changeTheValue,
+  Canon,
+} from "./weapons.mjs";
 
 const header = document.querySelector("header");
 const gameCanvas = document.getElementById("gameCanvas");
@@ -17,11 +22,9 @@ gameCanvas.width = canvasWidth;
 
 const ctx = gameCanvas.getContext("2d");
 const mousePosition = {
-  x : undefined,
-  y : undefined
-
-}
-
+  x: undefined,
+  y: undefined,
+};
 
 const groundLevel = generateGround(ctx, canvasWidth);
 
@@ -76,8 +79,8 @@ function populateWithZombies(numberOfZombies) {
 
         // Check if the new zombie's position.x falls within the bounds of an existing zombie
         if (
-          position.x < existingX + existingWidth + 10 && 
-          position.x + 20 > existingX 
+          position.x < existingX + existingWidth + 10 &&
+          position.x + 20 > existingX
         ) {
           isOverlapping = true;
           break;
@@ -113,12 +116,13 @@ const normalGun = new SurvivorNormalGun({
 base.draw();
 survivor.draw(ctx);
 normalGun.draw(ctx);
-const canonGun = new Canon({ctx:ctx,
-  canonTowerDetails : base.canonTowerDetails
-})
+const canonGun = new Canon({
+  ctx: ctx,
+  canonTowerDetails: base.canonTowerDetails,
+});
 
 survivor.weapons.push(normalGun);
-survivor.weapons.push(canonGun)
+survivor.weapons.push(canonGun);
 populateWithZombies(8);
 
 function startAnimation() {
@@ -130,7 +134,7 @@ function startAnimation() {
   normalGun.moveWithPlayer(survivor.position);
   normalGun.draw(ctx);
   // canonGun.draw(ctx)
-  canonGun.followTheMouse({mouseCoordinates: mousePosition , ctx:ctx})
+  canonGun.followTheMouse({ mouseCoordinates: mousePosition, ctx: ctx });
   zombies.forEach((zombie) => {
     zombie.run(ctx, base);
   });
@@ -144,9 +148,9 @@ function startAnimation() {
   if (zombies.length <= 0) {
     populateWithZombies(8);
     changeNormalZpoints({
-      left : base.wallCoordinates.left,
-      right : base.wallCoordinates.right+base.wallDimensions.width 
-    })
+      left: base.wallCoordinates.left,
+      right: base.wallCoordinates.right + base.wallDimensions.width,
+    });
   }
   requestAnimationFrame(startAnimation);
 }
@@ -164,18 +168,16 @@ window.addEventListener("keydown", (e) => {
 });
 
 window.addEventListener("keyup", (e) => {
-  if (keys[e.code] !== undefined) {
+  if (keys[e.code] !== undefined ) {
     keys[e.code].pressed = false;
   }
 });
 
-window.addEventListener("mousemove",(e)=>{
+window.addEventListener("mousemove", (e) => {
   mousePosition.x = e.x;
-  mousePosition.y = e.y-60.3
+  mousePosition.y = e.y - 60.3;
+});
 
-}
-)
-
-window.addEventListener("click" , ()=>{
+window.addEventListener("click", () => {
   canonGun.shoot();
-})
+});
