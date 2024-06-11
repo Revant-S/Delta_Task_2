@@ -1,6 +1,7 @@
-export let bullets = [];
-export let gravity = 1;
 import { groundLevel } from "./gameEvnironment.mjs";
+import { base } from "./script.js";
+export let bullets = [];
+export let gravity = 0.5;
 export function changeTheValue(add, object) {
   if (add) {
     bullets.push(object);
@@ -31,8 +32,32 @@ export class Bullet {
       };
     } else {
       this.velocity = velocity;
-      this.velocity.y+=gravity
+     
+      console.log(this.velocity.y);
       this.position = direction;
+      if (this.position.y + this.dimensions.radius >= groundLevel) {
+        this.velocity.y *= -0.8; // Reduce velocity to simulate energy loss
+        this.position.y = groundLevel - this.dimensions.radius;
+      }
+
+      if (
+        this.position.x - this.dimensions.radius <=
+          base.wallCoordinates.left + base.wallDimensions.width &&
+        this.position.x - this.dimensions.radius >= base.wallCoordinates.left
+      ) {
+        this.velocity.x *= -1; // Reverse the x velocity to simulate bouncing
+        console.log("Collided With wall");
+      }
+
+      if (
+        this.position.x + this.dimensions.radius >=
+          base.wallCoordinates.right &&
+        this.position.x + this.dimensions.radius <=
+          base.wallCoordinates.right + base.wallDimensions.width
+      ) {
+        this.velocity.x *= -1; // Reverse the x velocity to simulate bouncing
+      }
+      console.log("Collided with wall");
     }
   }
 
@@ -52,13 +77,21 @@ export class Bullet {
   }
 
   update() {
+    if (this.position.y == groundLevel) {
+      this.velocity.y *= -1;
+    }
     if (this.weapon.weaponName == "survivorNormalGun") {
       this.position.x += this.velocity.x;
       this.position.y += this.velocity.y;
     } else {
+      this.velocity.y += gravity;
       this.position.x += this.velocity.x;
       this.position.y += this.velocity.y;
     }
+    if (this.position.y + this.dimensions.radius >= groundLevel) {
+      this.velocity.y = -this.velocity.y;
+    }
+
   }
 }
 
@@ -153,10 +186,7 @@ export class Canon {
     let mouseX = mouseCoordinates.x - this.center.x;
     let mouseY = mouseCoordinates.y - this.center.y;
 
-    // Calculate the angle to rotate
     const angle = Math.atan2(mouseY, mouseX);
-
-    // Draw the cannon with the calculated angle
     this.draw(ctx, angle);
   }
 
@@ -181,7 +211,6 @@ export class Canon {
           this.dimensions.length * Math.sin(this.angle),
       },
     });
-    console.log(this.angle);
 
     bullets.push(bullet);
   }

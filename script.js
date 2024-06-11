@@ -49,7 +49,7 @@ function randomInRange(min, max) {
   return Math.random() * (max - min) + min;
 }
 
-const base = new createTheBase({ groundLevel, ctx });
+export const base = new createTheBase({ groundLevel, ctx });
 
 function populateWithZombies(numberOfZombies) {
   for (let index = 0; index < numberOfZombies; index++) {

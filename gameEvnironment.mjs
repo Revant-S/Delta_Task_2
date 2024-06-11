@@ -1,5 +1,4 @@
 import {Canon, bullets} from "./weapons.mjs"
-
 export const groundLevel = 600;
 export function generateGround(ctx,canvasWidth) {
     ctx.beginPath();
@@ -17,7 +16,7 @@ export function createTheBase({groundLevel,ctx}){
             y : groundLevel
         },
         right : {
-            x : 1000,
+            x : 900,
             y: groundLevel
         }
     }
