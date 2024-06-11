@@ -1,7 +1,8 @@
 import { groundLevel } from "./gameEvnironment.mjs";
 import { base } from "./script.js";
 export let bullets = [];
-export let gravity = 0.5;
+export let gravity = 0.4;
+
 export function changeTheValue(add, object) {
   if (add) {
     bullets.push(object);
@@ -32,32 +33,13 @@ export class Bullet {
       };
     } else {
       this.velocity = velocity;
-     
+
       console.log(this.velocity.y);
       this.position = direction;
       if (this.position.y + this.dimensions.radius >= groundLevel) {
-        this.velocity.y *= -0.8; // Reduce velocity to simulate energy loss
+        this.velocity.y *= -0.9;
         this.position.y = groundLevel - this.dimensions.radius;
       }
-
-      if (
-        this.position.x - this.dimensions.radius <=
-          base.wallCoordinates.left + base.wallDimensions.width &&
-        this.position.x - this.dimensions.radius >= base.wallCoordinates.left
-      ) {
-        this.velocity.x *= -1; // Reverse the x velocity to simulate bouncing
-        console.log("Collided With wall");
-      }
-
-      if (
-        this.position.x + this.dimensions.radius >=
-          base.wallCoordinates.right &&
-        this.position.x + this.dimensions.radius <=
-          base.wallCoordinates.right + base.wallDimensions.width
-      ) {
-        this.velocity.x *= -1; // Reverse the x velocity to simulate bouncing
-      }
-      console.log("Collided with wall");
     }
   }
 
@@ -77,10 +59,10 @@ export class Bullet {
   }
 
   update() {
-    if (this.position.y == groundLevel) {
+    if (this.position.y === groundLevel) {
       this.velocity.y *= -1;
     }
-    if (this.weapon.weaponName == "survivorNormalGun") {
+    if (this.weapon.weaponName === "survivorNormalGun") {
       this.position.x += this.velocity.x;
       this.position.y += this.velocity.y;
     } else {
@@ -89,9 +71,49 @@ export class Bullet {
       this.position.y += this.velocity.y;
     }
     if (this.position.y + this.dimensions.radius >= groundLevel) {
-      this.velocity.y = -this.velocity.y;
+      this.velocity.y *= -0.9;
+      this.position.y = groundLevel - this.dimensions.radius;
     }
 
+    // Check for collision with left wall
+    if (
+      this.position.x - this.dimensions.radius <= base.wallCoordinates.left.x + base.wallDimensions.left.width &&
+      this.position.x + this.dimensions.radius >= base.wallCoordinates.left.x
+    ) {
+      // Check for collision with the top surface of the left wall
+      if (
+        this.position.y + this.dimensions.radius >= groundLevel - base.wallDimensions.left.height &&
+        this.position.y - this.dimensions.radius <= groundLevel - base.wallDimensions.left.height
+      ) {
+        this.velocity.y *= -1;
+        console.log("Collided With top surface of left wall");
+      } else if (
+        this.position.y + this.dimensions.radius >= groundLevel - base.wallDimensions.left.height
+      ) {
+        this.velocity.x *= -1;
+        console.log("Collided With left wall");
+      }
+    }
+
+    // Check for collision with right wall
+    if (
+      this.position.x + this.dimensions.radius >= base.wallCoordinates.right.x &&
+      this.position.x - this.dimensions.radius <= base.wallCoordinates.right.x + base.wallDimensions.right.width
+    ) {
+      // Check for collision with the top surface of the right wall
+      if (
+        this.position.y + this.dimensions.radius >= groundLevel - base.wallDimensions.right.height &&
+        this.position.y - this.dimensions.radius <= groundLevel - base.wallDimensions.right.height
+      ) {
+        this.velocity.y *= -1;
+        console.log("Collided With top surface of right wall");
+      } else if (
+        this.position.y + this.dimensions.radius >= groundLevel - base.wallDimensions.right.height
+      ) {
+        this.velocity.x *= -1;
+        console.log("Collided With right wall");
+      }
+    }
   }
 }
 
@@ -149,7 +171,7 @@ export class SurvivorNormalGun {
 export class Canon {
   constructor({ canonTowerDetails, ctx }) {
     this.ctx = ctx;
-    this.angle = 0; // kept as default ... in refrence to the top canter of the tower
+    this.angle = 0; // kept as default ... in reference to the top center of the tower
     this.canonTowerDetails = canonTowerDetails;
     this.dimensions = {
       length: 150,
@@ -159,7 +181,7 @@ export class Canon {
       x: this.canonTowerDetails.location,
       y: groundLevel - this.canonTowerDetails.height,
     };
-    this.weaponNameame = "canon";
+    this.weaponName = "canon";
   }
 
   draw(ctx, angle) {
