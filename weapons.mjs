@@ -33,8 +33,6 @@ export class Bullet {
       };
     } else {
       this.velocity = velocity;
-
-      console.log(this.velocity.y);
       this.position = direction;
       if (this.position.y + this.dimensions.radius >= groundLevel) {
         this.velocity.y *= -0.9;
@@ -77,41 +75,51 @@ export class Bullet {
 
     // Check for collision with left wall
     if (
-      this.position.x - this.dimensions.radius <= base.wallCoordinates.left.x + base.wallDimensions.left.width &&
+      this.position.x - this.dimensions.radius <=
+        base.wallCoordinates.left.x + base.wallDimensions.left.width &&
       this.position.x + this.dimensions.radius >= base.wallCoordinates.left.x
     ) {
       // Check for collision with the top surface of the left wall
       if (
-        this.position.y + this.dimensions.radius >= groundLevel - base.wallDimensions.left.height &&
-        this.position.y - this.dimensions.radius <= groundLevel - base.wallDimensions.left.height
+        this.position.y + this.dimensions.radius >=
+          groundLevel - base.wallDimensions.left.height &&
+        this.position.y - this.dimensions.radius <=
+          groundLevel - base.wallDimensions.left.height
       ) {
         this.velocity.y *= -1;
-        console.log("Collided With top surface of left wall");
+        base.wallLife.left -= 1;
       } else if (
-        this.position.y + this.dimensions.radius >= groundLevel - base.wallDimensions.left.height
+        this.position.y + this.dimensions.radius >=
+        groundLevel - base.wallDimensions.left.height
       ) {
         this.velocity.x *= -1;
-        console.log("Collided With left wall");
+        base.wallLife.left -= 1;
       }
     }
 
     // Check for collision with right wall
     if (
-      this.position.x + this.dimensions.radius >= base.wallCoordinates.right.x &&
-      this.position.x - this.dimensions.radius <= base.wallCoordinates.right.x + base.wallDimensions.right.width
+      this.position.x + this.dimensions.radius >=
+        base.wallCoordinates.right.x &&
+      this.position.x - this.dimensions.radius <=
+        base.wallCoordinates.right.x + base.wallDimensions.right.width
     ) {
       // Check for collision with the top surface of the right wall
       if (
-        this.position.y + this.dimensions.radius >= groundLevel - base.wallDimensions.right.height &&
-        this.position.y - this.dimensions.radius <= groundLevel - base.wallDimensions.right.height
+        this.position.y + this.dimensions.radius >=
+          groundLevel - base.wallDimensions.right.height &&
+        this.position.y - this.dimensions.radius <=
+          groundLevel - base.wallDimensions.right.height
       ) {
         this.velocity.y *= -1;
-        console.log("Collided With top surface of right wall");
+        base.wallLife.right -= 1;
       } else if (
-        this.position.y + this.dimensions.radius >= groundLevel - base.wallDimensions.right.height
+        this.position.y + this.dimensions.radius >=
+        groundLevel - base.wallDimensions.right.height
       ) {
         this.velocity.x *= -1;
-        console.log("Collided With right wall");
+        base.wallLife.right -= 1;
+
       }
     }
   }
@@ -121,7 +129,7 @@ export class SurvivorNormalGun {
   constructor({ survivor, groundLevel }) {
     this.position = {
       x: survivor.position.x,
-      y: survivor.position.y - survivor.height ,
+      y: survivor.position.y - survivor.height,
     };
     this.bulletRemaining = 50;
     this.dimension = {
@@ -149,7 +157,7 @@ export class SurvivorNormalGun {
       this.position.x =
         this.position.x - this.dimension.width + this.survivor.width;
     }
-    this.position.y = this.survivor.position.y-this.survivor.height+20
+    this.position.y = this.survivor.position.y - this.survivor.height + 20;
   }
 
   shootTheBullet(bullets) {

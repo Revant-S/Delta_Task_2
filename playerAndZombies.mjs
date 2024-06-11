@@ -1,6 +1,37 @@
 import { bullets, changeTheValue, gravity } from "./weapons.mjs";
 import { groundLevel } from "./gameEvnironment.mjs";
 import { base } from "./script.js";
+import { ctx } from "./script.js";
+
+export function drawHealthBar({ object }) {
+  // console.log("reaching here !!!!!!!!!!!!!!!!!!!!");
+
+  let healthBarPositionY = object.position.y - 25;
+  let healthBarPositionX = object.position.x;
+  let lifeRemaining = object.life;
+  let totalLife = object.totalLife;
+  let percentage = lifeRemaining / totalLife;
+  let totalLen = 30;
+
+  if (object.name == "survivor") {
+    healthBarPositionY -= object.height;
+    totalLen = 80;
+  }
+  if (object.name == "regularZombie") {
+    healthBarPositionY -= object.zombieDimensions.height;
+  }
+  let innerLen = totalLen * percentage;
+  ctx.save();
+  ctx.fillStyle = "white";
+  ctx.fillRect(healthBarPositionX, healthBarPositionY, totalLen, 15);
+  ctx.fillStyle = "rgb(86, 240, 86)";
+  ctx.fillRect(healthBarPositionX, healthBarPositionY, innerLen, 15);
+  ctx.strokeStyle = "black"; // Set stroke color
+  ctx.strokeRect(healthBarPositionX, healthBarPositionY, totalLen, 15); // Stroke the background rectangle
+  ctx.restore();
+
+  return;
+}
 
 let groundLevelForSurvivor = groundLevel;
 export let zombies = [];
@@ -60,8 +91,10 @@ function hasTheBulletHit(movingObject) {
 export class Survivor {
   constructor({ position, velocity }) {
     this.position = position;
+    this.name = "survivor";
     this.color = "red";
     this.life = 100;
+    this.totalLife = 100;
     this.velocity = velocity;
     this.originalVelocity = velocity;
     this.height = 200;
@@ -85,6 +118,7 @@ export class Survivor {
   }
 
   move(keys) {
+    drawHealthBar({ object: this });
     this.velocity.x = 0;
     if (this.position.y >= groundLevel) {
       this.position.y = groundLevelForSurvivor;
@@ -147,8 +181,10 @@ export class Survivor {
       this.velocity.y = 0;
       this.position.y =
         base.wallCoordinates.right.y - base.wallDimensions.right.height;
-        this.isStandingOnTheWall = true
+      this.isStandingOnTheWall = true;
     }
+
+    // For the left wall
     if (
       ((this.position.x >= base.wallCoordinates.left.x &&
         this.position.x <=
@@ -168,8 +204,6 @@ export class Survivor {
     this.position.x += this.velocity.x;
     this.position.y += this.velocity.y;
   }
-
-  // For the left wall
 }
 
 export class Zombie {
@@ -180,7 +214,7 @@ export class Zombie {
     zombieDimensions,
     index,
     zombieName,
-    zombieLife,
+    life,
   }) {
     this.index = index;
     this.name = zombieName;
@@ -188,9 +222,10 @@ export class Zombie {
     this.velocity = velocity;
     this.zombieDimensions = zombieDimensions;
     this.survivorToFollow = survivor;
-    this.zombieLife = zombieLife;
     this.isAlive = true;
     this.zombieName = zombieName;
+    this.life = life;
+    this.totalLife = 3;
   }
 
   kill() {
@@ -198,11 +233,16 @@ export class Zombie {
   }
 
   run(ctx, base) {
+    drawHealthBar({ object: this });
     if (!this.isAlive) return;
 
     if (hasTheBulletHit(this)) {
-      this.isAlive = false;
-      this.kill();
+      this.life -= 1;
+      console.log(this.totalLife);
+      if (!this.life) {
+        this.isAlive = false;
+        this.kill();
+      }
       return;
     }
 

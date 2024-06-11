@@ -20,7 +20,7 @@ const canvasWidth = window.innerWidth;
 gameCanvas.height = canvasHeight;
 gameCanvas.width = canvasWidth;
 
-const ctx = gameCanvas.getContext("2d");
+export const ctx = gameCanvas.getContext("2d");
 const mousePosition = {
   x: undefined,
   y: undefined,
@@ -101,7 +101,7 @@ function populateWithZombies(numberOfZombies) {
       },
       index: index,
       zombieName: "regularZombie",
-      zombieLife: 3,
+      life: 3,
       base: base,
     });
     manupulateZombieArray(true, zombie);
