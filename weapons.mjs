@@ -233,7 +233,7 @@ export class Canon {
 
   shoot() {
     this.remainingBullets--;
-    if (this.remainingBullets <= 0) return;
+    if (this.remainingBullets < 0) return;
     updateNumberOfBullets({object:this , domElement : canonBullets})
     const bullet = new Bullet({
       weapon: this,

@@ -3,6 +3,7 @@ import { groundLevel } from "./gameEvnironment.mjs";
 import { base } from "./script.js";
 import { ctx } from "./script.js";
 import {updateTheScoreBoard  } from "./gameInfo.mjs"
+import { zombieTouchSurvivor } from "./contactlogic.mjs";
 export function drawHealthBar({ object }) {
   // console.log("reaching here !!!!!!!!!!!!!!!!!!!!");
 
@@ -93,8 +94,8 @@ export class Survivor {
     this.position = position;
     this.name = "survivor";
     this.color = "red";
-    this.life = 100;
-    this.totalLife = 100;
+    this.life = 1000;
+    this.totalLife = 1000;
     this.velocity = velocity;
     this.originalVelocity = velocity;
     this.height = 200;
@@ -119,6 +120,10 @@ export class Survivor {
   }
 
   move(keys) {
+    if (this.life < 0) {
+      alert("GAME OVER !!!!")
+      return
+    }
     drawHealthBar({ object: this });
     this.velocity.x = 0;
     if (this.position.y >= groundLevel) {
@@ -247,6 +252,9 @@ export class Zombie {
         this.kill();
       }
       return;
+    }
+    if (zombieTouchSurvivor({zombie : this})) {
+      this.survivorToFollow.life--;
     }
 
     this.position.x += this.velocity.x;

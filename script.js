@@ -12,7 +12,7 @@ import {
   changeTheValue,
   Canon,
 } from "./weapons.mjs";
-
+const numberOfZombiesArray = [5,10,15,20,25,30,35,40,45];
 const header = document.querySelector("header");
 const gameCanvas = document.getElementById("gameCanvas");
 const canvasHeight = window.innerHeight;
@@ -37,7 +37,7 @@ const keys = {
   LastPressed: "",
 };
 
-const survivor = new Survivor({
+export const survivor = new Survivor({
   position: {
     x: 700,
     y: groundLevel,
@@ -97,7 +97,7 @@ function populateWithZombies(numberOfZombies) {
       },
       zombieDimensions: {
         height: 200,
-        width: 25,
+        width: 15,
       },
       index: index,
       zombieName: "regularZombie",
@@ -146,7 +146,8 @@ function startAnimation() {
     }
   });
   if (zombies.length <= 0) {
-    populateWithZombies(8);
+    numberOfZombiesArray.shift();
+    populateWithZombies(numberOfZombiesArray[0]);
     changeNormalZpoints({
       left: base.wallCoordinates.left,
       right: base.wallCoordinates.right + base.wallDimensions.width,
