@@ -5,11 +5,33 @@ html {
     height: 100%;
     overflow: hidden;
 }
-header{
+
+header {
     text-align: center;
     box-shadow: 20ex;
-    border: 1px solid black ;
+    border: 1px solid black;
 }
+
+.gameInfo {
+    height: 60.3px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 2%;
+}
+
+.gameInfo > div {
+    display: flex;
+    height: 100%;
+    width: fit-content;
+    padding-left: 2%;
+    padding-right: 2%;
+    font-size: large;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid black;
+}
+
 .container {
     position: relative;
     height: 100%;
@@ -25,9 +47,9 @@ header{
     height: 100%;
     z-index: -1;
     background-position: center;
-    filter:  opacity(0.7);
+    filter: opacity(0.7);
     background-size: cover;
-    object-fit: cover; 
+    object-fit: cover;
 }
 
 #gameCanvas {

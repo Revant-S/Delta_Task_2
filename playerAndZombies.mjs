@@ -2,7 +2,7 @@ import { bullets, changeTheValue, gravity } from "./weapons.mjs";
 import { groundLevel } from "./gameEvnironment.mjs";
 import { base } from "./script.js";
 import { ctx } from "./script.js";
-
+import {updateTheScoreBoard  } from "./gameInfo.mjs"
 export function drawHealthBar({ object }) {
   // console.log("reaching here !!!!!!!!!!!!!!!!!!!!");
 
@@ -104,6 +104,7 @@ export class Survivor {
     this.isStandingOnTheWall = false;
     this.weapons = [];
     this.originalPosition = position;
+    this.score = 0;
   }
 
   draw(ctx) {
@@ -230,6 +231,8 @@ export class Zombie {
 
   kill() {
     manupulateZombieArray(false, this);
+    this.survivorToFollow.score += 5;
+    updateTheScoreBoard({survivor: this.survivorToFollow})
   }
 
   run(ctx, base) {

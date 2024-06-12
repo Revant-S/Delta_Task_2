@@ -10,37 +10,36 @@ export function generateGround(ctx, canvasWidth) {
 }
 
 function baseHealthBar({ object }) {
-    let leftLifeRemaining = object.wallLife.left;
-    let rightLifeRemaining = object.wallLife.right
+  let leftLifeRemaining = object.wallLife.left;
+  let rightLifeRemaining = object.wallLife.right;
 
-  let leftBarCoordinateX = object.wallCoordinates.left.x+ 8;
+  let leftBarCoordinateX = object.wallCoordinates.left.x + 8;
   let leftBarCoordinateY = groundLevel;
-  let rightBarCoordinateX = object.wallCoordinates.right.x+8;
+  let rightBarCoordinateX = object.wallCoordinates.right.x + 8;
   let rightBarCoordinateY = groundLevel;
-  let length = object.wallDimensions.left.width-15;
+  let length = object.wallDimensions.left.width - 15;
   let totalLife = object.totalLife;
   let percentage = leftLifeRemaining / totalLife;
   let innerLen = length * percentage;
   ctx.save();
 
   ctx.fillStyle = "white";
-  ctx.fillRect(leftBarCoordinateX, leftBarCoordinateY-25, length, 15);
+  ctx.fillRect(leftBarCoordinateX, leftBarCoordinateY - 25, length, 15);
   ctx.fillStyle = "rgb(86, 240, 86)";
-  ctx.fillRect(leftBarCoordinateX, leftBarCoordinateY-25, innerLen, 15);
-  ctx.strokeStyle = "black"; // Set stroke color
-  ctx.strokeRect(leftBarCoordinateX, leftBarCoordinateY-25, length, 15); // Stroke the background rectangle
+  ctx.fillRect(leftBarCoordinateX, leftBarCoordinateY - 25, innerLen, 15);
+  ctx.strokeStyle = "black"; 
+  ctx.strokeRect(leftBarCoordinateX, leftBarCoordinateY - 25, length, 15); 
   ctx.restore();
-  percentage = rightLifeRemaining/totalLife;
+  percentage = rightLifeRemaining / totalLife;
   innerLen = length * percentage;
   ctx.fillStyle = "white";
-  ctx.fillRect(rightBarCoordinateX, rightBarCoordinateY-25, length, 15);
+  ctx.fillRect(rightBarCoordinateX, rightBarCoordinateY - 25, length, 15);
   ctx.fillStyle = "rgb(86, 240, 86)";
-  ctx.fillRect(rightBarCoordinateX, rightBarCoordinateY-25, innerLen, 15);
-  ctx.strokeStyle = "black"; // Set stroke color
-  ctx.strokeRect(rightBarCoordinateX, rightBarCoordinateY-25, length, 15); // Stroke the background rectangle
+  ctx.fillRect(rightBarCoordinateX, rightBarCoordinateY - 25, innerLen, 15);
+  ctx.strokeStyle = "black"; 
+  ctx.strokeRect(rightBarCoordinateX, rightBarCoordinateY - 25, length, 15);
   ctx.restore();
 }
-
 
 export function createTheBase({ groundLevel, ctx }) {
   this.weaponsAvailabe = [];
@@ -82,7 +81,6 @@ export function createTheBase({ groundLevel, ctx }) {
     right: 400,
   };
   this.draw = function () {
-  
     ctx.fillStyle = "black";
     ctx.fillRect(
       this.wallCoordinates.left.x,
@@ -106,6 +104,6 @@ export function createTheBase({ groundLevel, ctx }) {
       this.canonTowerDetails.height
     );
     ctx.fill();
-    baseHealthBar({object : this})
+    baseHealthBar({ object: this });
   };
 }

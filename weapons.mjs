@@ -1,5 +1,8 @@
 import { groundLevel } from "./gameEvnironment.mjs";
 import { base } from "./script.js";
+import { updateNumberOfBullets , canonBullets,normalGunBullets } from "./gameInfo.mjs";  
+
+
 export let bullets = [];
 export let gravity = 0.4;
 
@@ -119,7 +122,6 @@ export class Bullet {
       ) {
         this.velocity.x *= -1;
         base.wallLife.right -= 1;
-
       }
     }
   }
@@ -136,7 +138,10 @@ export class SurvivorNormalGun {
       width: 100,
       height: 20,
     };
+    this.totalBullets = 100;
+    this.remainingBullets = 100;
     this.weaponName = "survivorNormalGun";
+    this.displayName = "Gun Bullets"
     this.survivor = survivor;
     this.direction = "right";
   }
@@ -161,6 +166,9 @@ export class SurvivorNormalGun {
   }
 
   shootTheBullet(bullets) {
+    this.remainingBullets -= 1;
+    if (this.remainingBullets < 0) return;
+    updateNumberOfBullets({object : this , domElement : normalGunBullets})
     const bullet = new Bullet({
       weapon: this,
       dimensions: {
@@ -182,9 +190,12 @@ export class Canon {
     this.ctx = ctx;
     this.angle = 0; // kept as default ... in reference to the top center of the tower
     this.canonTowerDetails = canonTowerDetails;
+    this.totalBullets = 100;
+    this.remainingBullets = 100;
+    this.displayName = "Canon Bullets"
     this.dimensions = {
       length: 150,
-      width: 20,
+      width: 20
     };
     this.center = {
       x: this.canonTowerDetails.location,
@@ -221,6 +232,9 @@ export class Canon {
   }
 
   shoot() {
+    this.remainingBullets--;
+    if (this.remainingBullets <= 0) return;
+    updateNumberOfBullets({object:this , domElement : canonBullets})
     const bullet = new Bullet({
       weapon: this,
       dimensions: {
