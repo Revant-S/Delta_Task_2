@@ -27,8 +27,8 @@ export function drawHealthBar({ object }) {
   ctx.fillRect(healthBarPositionX, healthBarPositionY, totalLen, 15);
   ctx.fillStyle = "rgb(86, 240, 86)";
   ctx.fillRect(healthBarPositionX, healthBarPositionY, innerLen, 15);
-  ctx.strokeStyle = "black"; // Set stroke color
-  ctx.strokeRect(healthBarPositionX, healthBarPositionY, totalLen, 15); // Stroke the background rectangle
+  ctx.strokeStyle = "black"; 
+  ctx.strokeRect(healthBarPositionX, healthBarPositionY, totalLen, 15); 
   ctx.restore();
 
   return;
@@ -255,6 +255,13 @@ export class Zombie {
     }
     if (zombieTouchSurvivor({zombie : this})) {
       this.survivorToFollow.life--;
+      if (this.totalLife>this.life) {
+        this.life+=0.25;
+      }
+      else{
+        this.totalLife+=0.25;
+        this.life+=0.25;
+      }
     }
 
     this.position.x += this.velocity.x;
