@@ -10,6 +10,7 @@ export function generateGround(ctx, canvasWidth) {
 }
 
 function baseHealthBar({ object }) {
+  
   let leftLifeRemaining = object.wallLife.left;
   let rightLifeRemaining = object.wallLife.right;
 

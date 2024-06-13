@@ -12,7 +12,7 @@ import {
   changeTheValue,
   Canon,
 } from "./weapons.mjs";
-const numberOfZombiesArray = [5,10,15,20,25,30,35,40,45];
+const numberOfZombiesArray = [5, 10, 15, 20, 25, 30, 35, 40, 45];
 const header = document.querySelector("header");
 const gameCanvas = document.getElementById("gameCanvas");
 const canvasHeight = window.innerHeight;
@@ -169,7 +169,7 @@ window.addEventListener("keydown", (e) => {
 });
 
 window.addEventListener("keyup", (e) => {
-  if (keys[e.code] !== undefined ) {
+  if (keys[e.code] !== undefined) {
     keys[e.code].pressed = false;
   }
 });

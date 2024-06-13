@@ -1,6 +1,6 @@
 import { survivor } from "./script.js";
 
-function isInBetween(compare, coordinate1, coordinate2) {
+export function isInBetween(compare, coordinate1, coordinate2) {
   if (compare <= coordinate2 && compare >= coordinate1) {
     return true;
   }
