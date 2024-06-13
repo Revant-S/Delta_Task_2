@@ -12,7 +12,7 @@ import {
   changeTheValue,
   Canon,
 } from "./weapons.mjs";
-const numberOfZombiesArray = [5, 10, 15, 20, 25, 30, 35, 40, 45];
+const numberOfZombiesArray = [5, 2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,];
 const header = document.querySelector("header");
 const gameCanvas = document.getElementById("gameCanvas");
 const canvasHeight = window.innerHeight;
@@ -61,10 +61,10 @@ function populateWithZombies(numberOfZombies) {
 
     while (isOverlapping) {
       if (index % 2 === 0) {
-        position.x = randomInRange(0, base.wallCoordinates.left.x);
+        position.x = randomInRange(0, base.leftEnd);
       } else {
         position.x = randomInRange(
-          base.wallCoordinates.right.x + base.wallDimensions.right.width,
+          base.rigntEnd,
           canvasWidth
         );
       }
@@ -123,7 +123,7 @@ const canonGun = new Canon({
 
 survivor.weapons.push(normalGun);
 survivor.weapons.push(canonGun);
-populateWithZombies(8);
+populateWithZombies(3);
 
 function startAnimation() {
   ctx.clearRect(0, 0, canvasWidth, canvasHeight);
@@ -147,7 +147,8 @@ function startAnimation() {
   });
   if (zombies.length <= 0) {
     numberOfZombiesArray.shift();
-    populateWithZombies(numberOfZombiesArray[0]);
+    // populateWithZombies(numberOfZombiesArray[0]);
+    populateWithZombies(3);
     changeNormalZpoints({
       left: base.wallCoordinates.left,
       right: base.wallCoordinates.right + base.wallDimensions.width,

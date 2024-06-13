@@ -3,7 +3,7 @@ import { groundLevel } from "./gameEvnironment.mjs";
 import { base } from "./script.js";
 import { ctx } from "./script.js";
 import { updateTheScoreBoard } from "./gameInfo.mjs";
-import { zombieTouchSurvivor } from "./contactlogic.mjs";
+import { zombieTouchSurvivor , zombieTouchOtherZombie} from "./contactlogic.mjs";
 import { isInBetween } from "./contactlogic.mjs";
 
 export function drawHealthBar({ object }) {
@@ -226,7 +226,8 @@ export class Zombie {
     this.index = index;
     this.name = zombieName;
     this.position = position; // position.y is the position of the base
-    this.velocity = velocity;
+    this.velocity = { ...velocity };
+    this.originalVelocity = { ...velocity }; // Keep original velocity for resetting
     this.zombieDimensions = zombieDimensions;
     this.survivorToFollow = survivor;
     this.isAlive = true;
@@ -296,9 +297,9 @@ export class Zombie {
     // Check if the zombie should jump onto the wall
     if (
       (isInBetween(rightSide, leftSideLeftWall, rightSideLeftWall) ||
-        isInBetween(leftSide, leftSideLeftWall , rightSideLeftWall) ||
-        isInBetween(rightSide, leftSideRightWall, rightSideRightWall ) ||
-        isInBetween(leftSide, leftSideRightWall, rightSideRightWall ))
+        isInBetween(leftSide, leftSideLeftWall, rightSideLeftWall) ||
+        isInBetween(rightSide, leftSideRightWall, rightSideRightWall) ||
+        isInBetween(leftSide, leftSideRightWall, rightSideRightWall))
     ) {
       if (
         (isInBetween(bottom, topsideLeftWall, bottomLeftWall) ||
@@ -308,35 +309,42 @@ export class Zombie {
         this.velocity.y = 0;
         this.position.y = topsideLeftWall;
         this.isOnTheWall = true;
-        this.isOnGround = false
+        this.isOnGround = false;
       } else if (!this.isOnTheWall) {
         this.jump();
       }
+    } else {
+      this.isOnTheWall = false;
     }
-    else{
-      this.isOnTheWall = false
-    }
+
     // Apply gravity if the zombie is not on the ground or on the wall
     if (bottom < groundLevel && !this.isOnTheWall && !this.isOnGround) {
       this.velocity.y += gravity;
     }
     if (bottom > groundLevel && !this.isOnGround) {
-      this.velocity.y = 0
+      this.velocity.y = 0;
       this.position.y = groundLevel;
       this.isOnGround = true;
-      this.isOnTheWall = false
+      this.isOnTheWall = false;
+    }
+
+    // Check for zombie collisions
+    const inContact = zombieTouchOtherZombie({ zombie: this });
+
+    if (!inContact) {
+      this.velocity.x = this.originalVelocity.x;
+    }
+
+    // Follow the survivor
+    if (this.survivorToFollow.position.x - this.position.x < 0) {
+      this.velocity.x = -1 * Math.abs(this.originalVelocity.x);
+    } else {
+      this.velocity.x = Math.abs(this.originalVelocity.x);
     }
 
     // Move the zombie
     this.position.x += this.velocity.x;
     this.position.y += this.velocity.y;
-
-    // Follow the survivor
-    if (this.survivorToFollow.position.x - this.position.x < 0) {
-      this.velocity.x = -1 * Math.abs(this.velocity.x);
-    } else {
-      this.velocity.x = Math.abs(this.velocity.x);
-    }
 
     // Check if the zombie has reached the end of the wall
     if (this.isOnTheWall) {
@@ -360,3 +368,4 @@ export class Zombie {
     );
   }
 }
+                                                                                                

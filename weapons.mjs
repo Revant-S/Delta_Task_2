@@ -190,8 +190,8 @@ export class Canon {
     this.ctx = ctx;
     this.angle = 0; // kept as default ... in reference to the top center of the tower
     this.canonTowerDetails = canonTowerDetails;
-    this.totalBullets = 100;
-    this.remainingBullets = 100;
+    this.totalBullets = 1000;
+    this.remainingBullets = 1000;
     this.displayName = "Canon Bullets"
     this.dimensions = {
       length: 150,
