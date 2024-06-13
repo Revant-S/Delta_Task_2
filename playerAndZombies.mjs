@@ -261,17 +261,11 @@ export class Zombie {
       if (!this.life) {
         this.isAlive = false;
         this.kill();
-      }
       return;
+      }
     }
     if (zombieTouchSurvivor({ zombie: this })) {
-      this.survivorToFollow.life--;
-      if (this.totalLife > this.life) {
-        this.life += 0.25;
-      } else {
-        this.totalLife += 0.25;
-        this.life += 0.25;
-      }
+      this.survivorToFollow.life-=0.25;
     }
 
     // zombie sides
@@ -368,4 +362,3 @@ export class Zombie {
     );
   }
 }
-                                                                                                
