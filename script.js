@@ -9,14 +9,18 @@ import { generateGround, createTheBase } from "./gameEvnironment.mjs";
 import {
   SurvivorNormalGun,
   bullets,
-  changeTheValue,
   Canon,
 } from "./weapons.mjs";
+import{
+  showPauseMenu , gameIsPaused
+} from "./gameInfo.mjs"
+
+let  animationId;
 const numberOfZombiesArray = [5, 2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,];
-const header = document.querySelector("header");
 const gameCanvas = document.getElementById("gameCanvas");
 const canvasHeight = window.innerHeight;
 const canvasWidth = window.innerWidth;
+const pauseBtn = document.getElementById("pauseBtn")
 gameCanvas.height = canvasHeight;
 gameCanvas.width = canvasWidth;
 
@@ -36,7 +40,9 @@ const keys = {
   Space: { pressed: false },
   LastPressed: "",
 };
-
+export function clearAnimationId() {
+  cancelAnimationFrame(animationId)
+}
 export const survivor = new Survivor({
   position: {
     x: 700,
@@ -96,7 +102,7 @@ function populateWithZombies(numberOfZombies) {
         y: 0,
       },
       zombieDimensions: {
-        height: 200,
+        height: 100,
         width: 15,
       },
       index: index,
@@ -125,7 +131,11 @@ survivor.weapons.push(normalGun);
 survivor.weapons.push(canonGun);
 populateWithZombies(3);
 
-function startAnimation() {
+export function startAnimation() {
+  console.log(gameIsPaused);
+   if (gameIsPaused) {
+    return
+   }
   ctx.clearRect(0, 0, canvasWidth, canvasHeight);
   base.draw();
   generateGround(ctx, canvasWidth);
@@ -154,7 +164,8 @@ function startAnimation() {
       right: base.wallCoordinates.right + base.wallDimensions.width,
     });
   }
-  requestAnimationFrame(startAnimation);
+  clearAnimationId()
+  animationId = requestAnimationFrame(startAnimation);
 }
 
 startAnimation();
@@ -183,3 +194,9 @@ window.addEventListener("mousemove", (e) => {
 window.addEventListener("click", () => {
   canonGun.shoot();
 });
+
+window.addEventListener("load" , ()=>{
+  pauseBtn.addEventListener("click" ,()=>{
+    showPauseMenu();
+  })
+})

@@ -97,9 +97,9 @@ export class Survivor {
     this.life = 1000;
     this.totalLife = 1000;
     this.velocity = velocity;
-    this.originalVelocity = velocity;
-    this.height = 200;
-    this.width = 50;
+    this.originalVelocity = {...velocity};
+    this.height = 120;
+    this.width = 30;
     this.isJumping = false;
     this.isOnGround = true;
     this.isStandingOnTheWall = false;
@@ -226,8 +226,8 @@ export class Zombie {
     this.index = index;
     this.name = zombieName;
     this.position = position; // position.y is the position of the base
-    this.velocity = { ...velocity };
-    this.originalVelocity = { ...velocity }; // Keep original velocity for resetting
+    this.velocity = velocity;
+    this.originalVelocity = { ...velocity }; 
     this.zombieDimensions = zombieDimensions;
     this.survivorToFollow = survivor;
     this.isAlive = true;

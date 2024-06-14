@@ -9,11 +9,11 @@ html {
 header {
     text-align: center;
     box-shadow: 20ex;
-    border: 1px solid black;
+    /* border: 1px solid black; */
 }
 
 .gameInfo {
-    height: 60.3px;
+    height: 100px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -29,7 +29,7 @@ header {
     font-size: large;
     justify-content: center;
     align-items: center;
-    border: 2px solid black;
+    /* border: 2px solid black; */
 }
 
 .container {
@@ -50,6 +50,7 @@ header {
     filter: opacity(0.7);
     background-size: cover;
     object-fit: cover;
+    background: linear-gradient(to bottom , #3c0240a0,rgb(234, 167, 234));
 }
 
 #gameCanvas {
@@ -60,4 +61,64 @@ header {
     height: 100%;
     z-index: 2;
     background-color: rgb(90, 90, 132);
+}
+
+.playerInfo {
+    padding: 2%;
+    border: 2px solid black;
+    width: 100%;
+}
+
+#pauseBtn {
+    height: 60%;
+    aspect-ratio: 1/1;
+    object-fit: contain;
+    background-position: center;
+    cursor: pointer;
+    /* z-index: 2; */
+}
+
+#pauseBtnimg {
+    height: 90%;
+    aspect-ratio: 1/1;
+    object-fit: contain;
+    position: relative;
+}
+
+#info {
+    padding-top: 2%;
+    padding-bottom: 2%;
+    /* margin-top: 2%; */
+    /* margin-bottom: 2%; */
+}
+
+#pauseMenuDiaglog [open]{
+    position: absolute;
+    top: 50%;
+    left: 10%;
+    width: 200px;
+    height: 150px;
+    transform: translate(-50%, -50%);
+    border: none;
+    padding: 20px;
+    background: white;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+    z-index: 3;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-direction: column;
+}
+
+.svgs {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+}
+
+.pauseMenuBtn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
 }

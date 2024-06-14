@@ -7,10 +7,19 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <dialog id="pauseMenuDiaglog">
+        <button class="pauseMenuBtn" id="playBtn"><img class="svgs" src="assets/resumeBtnSvg.svg" alt="" id="resumeBtnSvg"></button>
+        <button class="pauseMenuBtn" id="resetBtn"><img class = "svgs" src="assets/reset-svgrepo-com.svg" alt="" id="resetImg"> </button>
+    </dialog>
     <div class="gameInfo">
-        <div id="scoreBoard">Survivor Score : 00 </div>
-        <div id="canonBullets"> Canon Bullets : 100/100</div>
-        <div id="normalGunBullets"> Gun Bullets :  100/100</div>
+       <div id="info">
+        <div id="scoreBoard" class="playerInfo">Survivor Score : 00 </div>
+        <div id="canonBullets" class="playerInfo"> Canon Bullets : 100/100</div>
+        <div id="normalGunBullets" class="playerInfo"> Gun Bullets :  100/100</div>
+       </div>
+       <div id="pauseMenu">
+        <button id="pauseBtn"><img id="pauseBtnimg" src="assets/pauseButton.svg" alt=""></button>
+       </div>
     </div>
     <div class="container">
         <canvas id="gameCanvas"></canvas>

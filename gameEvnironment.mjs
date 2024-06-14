@@ -1,6 +1,6 @@
 import { Canon, bullets } from "./weapons.mjs";
 import { ctx } from "./script.js";
-export const groundLevel = 600;
+export const groundLevel = 500;
 export function generateGround(ctx, canvasWidth) {
   ctx.beginPath();
   ctx.moveTo(0, groundLevel);
@@ -75,8 +75,8 @@ export function createTheBase({ groundLevel, ctx }) {
         this.wallDimensions.left.width +
         this.wallCoordinates.right.x) /
       2,
-    height: 400,
-    width: 80,
+    height: 200,
+    width: 40,
     bullets: 500,
   };
   this.wallLife = {

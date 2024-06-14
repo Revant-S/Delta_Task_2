@@ -135,8 +135,8 @@ export class SurvivorNormalGun {
     };
     this.bulletRemaining = 50;
     this.dimension = {
-      width: 100,
-      height: 20,
+      width: 60,
+      height: 10,
     };
     this.totalBullets = 100;
     this.remainingBullets = 100;
@@ -194,7 +194,7 @@ export class Canon {
     this.remainingBullets = 1000;
     this.displayName = "Canon Bullets"
     this.dimensions = {
-      length: 150,
+      length: 50,
       width: 20
     };
     this.center = {
@@ -217,7 +217,7 @@ export class Canon {
       this.dimensions.width
     );
     ctx.beginPath();
-    ctx.arc(0, 0, 20, 0, Math.PI * 2);
+    ctx.arc(0, 0, 15, 0, Math.PI * 2);
     ctx.fillStyle = "black";
     ctx.fill();
 
