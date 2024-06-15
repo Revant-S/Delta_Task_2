@@ -5,6 +5,7 @@ import { ctx } from "./script.js";
 import { updateTheScoreBoard } from "./gameInfo.mjs";
 import { zombieTouchSurvivor , zombieTouchOtherZombie} from "./contactlogic.mjs";
 import { isInBetween } from "./contactlogic.mjs";
+import { anyPowerUpTaken } from "./powerUpControls.mjs";
 
 export function drawHealthBar({ object }) {
   let healthBarPositionY = object.position.y - 25;
@@ -94,6 +95,8 @@ export class Survivor {
     this.position = position;
     this.name = "survivor";
     this.color = "red";
+    this.isImmune = false;
+    this.noOfZAfterImmunity = 0;
     this.life = 1000;
     this.totalLife = 1000;
     this.velocity = velocity;
@@ -124,6 +127,7 @@ export class Survivor {
       alert("GAME OVER !!!!");
       return;
     }
+    anyPowerUpTaken();
     drawHealthBar({ object: this });
     this.velocity.x = 0;
     if (this.position.y >= groundLevel) {
@@ -265,7 +269,16 @@ export class Zombie {
       }
     }
     if (zombieTouchSurvivor({ zombie: this })) {
-      this.survivorToFollow.life-=0.25;
+    
+        if (!this.survivorToFollow.isImmune) {
+          this.survivorToFollow.life-=0.25;
+           // Doubt about the return statement
+        }
+  
+  
+      if (this.survivorToFollow.noOfZAfterImmunity > 4) {
+        this.survivorToFollow.isImmune = false;
+      }
     }
 
     // zombie sides

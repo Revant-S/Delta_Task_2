@@ -14,12 +14,13 @@ import {
 import{
   showPauseMenu , gameIsPaused
 } from "./gameInfo.mjs"
+import { renderPowerUps } from "./powerUpControls.mjs";
 
 let  animationId;
-const numberOfZombiesArray = [5, 2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,];
+const numberOfZombiesArray = [5, 2,2,2,2,2,2,2,2,2,2,2,2,2,];
 const gameCanvas = document.getElementById("gameCanvas");
 const canvasHeight = window.innerHeight;
-const canvasWidth = window.innerWidth;
+export const canvasWidth = window.innerWidth;
 const pauseBtn = document.getElementById("pauseBtn")
 gameCanvas.height = canvasHeight;
 gameCanvas.width = canvasWidth;
@@ -54,7 +55,7 @@ export const survivor = new Survivor({
   },
 });
 
-function randomInRange(min, max) {
+export function randomInRange(min, max) {
   return Math.random() * (max - min) + min;
 }
 
@@ -114,7 +115,7 @@ function populateWithZombies(numberOfZombies) {
   }
 }
 
-const normalGun = new SurvivorNormalGun({
+export const normalGun = new SurvivorNormalGun({
   survivor: survivor,
   groundLevel: groundLevel,
 });
@@ -122,7 +123,7 @@ const normalGun = new SurvivorNormalGun({
 base.draw();
 survivor.draw(ctx);
 normalGun.draw(ctx);
-const canonGun = new Canon({
+export const canonGun = new Canon({
   ctx: ctx,
   canonTowerDetails: base.canonTowerDetails,
 });
@@ -164,6 +165,7 @@ export function startAnimation() {
       right: base.wallCoordinates.right + base.wallDimensions.width,
     });
   }
+  renderPowerUps();
   clearAnimationId()
   animationId = requestAnimationFrame(startAnimation);
 }

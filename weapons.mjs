@@ -133,7 +133,6 @@ export class SurvivorNormalGun {
       x: survivor.position.x,
       y: survivor.position.y - survivor.height,
     };
-    this.bulletRemaining = 50;
     this.dimension = {
       width: 60,
       height: 10,
