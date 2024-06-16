@@ -165,7 +165,7 @@ export class SurvivorNormalGun {
     this.position.y = this.survivor.position.y - this.survivor.height + 20;
   }
 
-  shootTheBullet(bullets) {
+  shootTheBullet() {
     this.remainingBullets -= 1;
     if (this.remainingBullets < 0) return;
     updateNumberOfBullets({object : this , domElement : normalGunBullets})

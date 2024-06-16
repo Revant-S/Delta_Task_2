@@ -1,14 +1,20 @@
 import { groundLevel } from "./gameEvnironment.mjs";
 import { ctx, survivor, mousePosition } from "./script.js";
 import { SurvivorNormalGun } from "./weapons.mjs";
+import {MachineGun} from "./additionalWeapons.mjs"
 
-export function shoot() {}
+let selectedWeapon;
+export function shoot() {
+    selectedWeapon.shootTheBullet()
+}
+
+// Called only once
 export function equipSurvivor() {
   const normalGun = new SurvivorNormalGun({
     survivor: survivor,
     groundLevel: groundLevel,
   });
-
+  selectedWeapon = normalGun;
   survivor.weapons.push(normalGun);
 }
 

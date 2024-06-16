@@ -166,7 +166,7 @@ window.addEventListener("keydown", (e) => {
     keys[e.code].pressed = true;
     keys.LastPressed = e.code;
     if (e.code === "Space") {
-      normalGun.shootTheBullet(bullets);
+     
       shoot();
     }
   }
