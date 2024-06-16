@@ -16,7 +16,14 @@ import{
 } from "./gameInfo.mjs"
 import { renderPowerUps } from "./powerUpControls.mjs";
 
+import { shoot } from "./weaponControl.mjs";
 let  animationId;
+
+
+const weaponOptions = document.getElementById("weaponOptions");
+let currentlySelectedWeapon = 1;
+let currentlyShowingWeapon = 1;
+const weaponDivList = document.querySelectorAll(".weaponOptionElement")
 const numberOfZombiesArray = [5, 2,2,2,2,2,2,2,2,2,2,2,2,2,];
 const gameCanvas = document.getElementById("gameCanvas");
 const canvasHeight = window.innerHeight;
@@ -178,6 +185,7 @@ window.addEventListener("keydown", (e) => {
     keys.LastPressed = e.code;
     if (e.code === "Space") {
       normalGun.shootTheBullet(bullets);
+      shoot();
     }
   }
 });
@@ -201,4 +209,32 @@ window.addEventListener("load" , ()=>{
   pauseBtn.addEventListener("click" ,()=>{
     showPauseMenu();
   })
+})
+
+window.addEventListener("keydown" , (e)=>{
+  weaponDivList[currentlyShowingWeapon].classList.remove("show")
+  if (e.code == "ArrowLeft") {
+    if (currentlyShowingWeapon == 0) {
+      currentlyShowingWeapon = 3;
+      
+    }
+    else{
+      currentlyShowingWeapon= (currentlyShowingWeapon-1)%4;
+    }
+    
+  }
+  if (e.code == "ArrowRight") {
+    currentlyShowingWeapon=(currentlyShowingWeapon+1)%4
+  }
+  weaponDivList[currentlyShowingWeapon].classList.add("show")
+ 
+})
+window.addEventListener("keydown" , (e)=>{
+  if (e.code == "Enter") {
+    weaponDivList[currentlySelectedWeapon].classList.remove("selectedWeapon")
+    weaponDivList[currentlyShowingWeapon].classList.remove("show")
+    weaponDivList[currentlyShowingWeapon].classList.add("selectedWeapon")
+    currentlySelectedWeapon = currentlyShowingWeapon;
+
+  }
 })

@@ -20,7 +20,6 @@ export class Bullet {
     this.dimensions = dimensions;
     this.direction = direction;
     this.fired = false;
-    console.log(this.weapon);
     if (this.weapon.weaponName == "survivorNormalGun") {
       this.position = {
         x:
@@ -63,7 +62,7 @@ export class Bullet {
     if (this.position.y === groundLevel) {
       this.velocity.y *= -1;
     }
-    if (this.weapon.weaponName === "survivorNormalGun") {
+    if (this.weapon.type === "gun") {
       this.position.x += this.velocity.x;
       this.position.y += this.velocity.y;
     } else {
@@ -128,7 +127,7 @@ export class Bullet {
 }
 
 export class SurvivorNormalGun {
-  constructor({ survivor, groundLevel }) {
+  constructor({ survivor }) {
     this.position = {
       x: survivor.position.x,
       y: survivor.position.y - survivor.height,
@@ -143,6 +142,8 @@ export class SurvivorNormalGun {
     this.displayName = "Gun Bullets"
     this.survivor = survivor;
     this.direction = "right";
+    this.type = "gun"
+    this.selected = true
   }
 
   draw(ctx) {

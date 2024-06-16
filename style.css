@@ -20,7 +20,7 @@ header {
     padding: 0 2%;
 }
 
-.gameInfo > div {
+.gameInfo>div {
     display: flex;
     height: 100%;
     width: fit-content;
@@ -50,7 +50,7 @@ header {
     filter: opacity(0.7);
     background-size: cover;
     object-fit: cover;
-    background: linear-gradient(to bottom , #3c0240a0,rgb(234, 167, 234));
+    background: linear-gradient(to bottom, #3c0240a0, rgb(234, 167, 234));
 }
 
 #gameCanvas {
@@ -92,7 +92,7 @@ header {
     /* margin-bottom: 2%; */
 }
 
-#pauseMenuDiaglog [open]{
+#pauseMenuDiaglog [open] {
     position: absolute;
     top: 50%;
     left: 10%;
@@ -121,4 +121,40 @@ header {
     border: none;
     cursor: pointer;
     padding: 0;
+}
+
+#weaponOptions {
+    display: flex;
+    justify-content: space-evenly;
+    height: 90%;
+    border-radius: 4%;
+    aspect-ratio: 6/1;
+    margin-left: 5%;
+    align-items: center;
+    /* border : 2px solid red, */
+}
+
+.weaponOptionElement {
+    height: 80%;
+    aspect-ratio: 1/1;
+    border-radius: 10%;
+    object-fit: contain;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border 0.3s ease;
+    perspective: 1000px; /* Perspective for 3D effect */
+}
+
+.weaponOptionElement img {
+    object-fit: contain;
+    height: 100%;
+}
+
+.selectedWeapon {
+    z-index: 3;
+    transform: scale(1.1) translateZ(10px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+    border: 2px solid black; 
+}
+
+.show {
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
 }

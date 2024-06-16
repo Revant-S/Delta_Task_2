@@ -1,11 +1,22 @@
 import { bullets, changeTheValue, gravity } from "./weapons.mjs";
 import { groundLevel } from "./gameEvnironment.mjs";
-import { base } from "./script.js";
+import { base, survivor } from "./script.js";
 import { ctx } from "./script.js";
 import { updateTheScoreBoard } from "./gameInfo.mjs";
-import { zombieTouchSurvivor , zombieTouchOtherZombie} from "./contactlogic.mjs";
+import {
+  zombieTouchSurvivor,
+  zombieTouchOtherZombie,
+} from "./contactlogic.mjs";
 import { isInBetween } from "./contactlogic.mjs";
 import { anyPowerUpTaken } from "./powerUpControls.mjs";
+
+export function updateWeaponDirection(direction) {
+  survivor.weapons.forEach((weapon) => {
+    if (weapon.type == "gun") {
+      weapon.direction = direction;
+    }
+  });
+}
 
 export function drawHealthBar({ object }) {
   let healthBarPositionY = object.position.y - 25;
@@ -100,7 +111,7 @@ export class Survivor {
     this.life = 1000;
     this.totalLife = 1000;
     this.velocity = velocity;
-    this.originalVelocity = {...velocity};
+    this.originalVelocity = { ...velocity };
     this.height = 120;
     this.width = 30;
     this.isJumping = false;
@@ -142,15 +153,13 @@ export class Survivor {
 
     if (keys["KeyA"].pressed && keys.LastPressed == "KeyA") {
       this.velocity.x -= 4;
-      if (this.weapons[0]) {
-        this.weapons[0].direction = "left";
-      }
+
+      updateWeaponDirection("left");
     }
     if (keys["KeyD"].pressed && keys.LastPressed == "KeyD") {
       this.velocity.x += 4;
-      if (this.weapons[0]) {
-        this.weapons[0].direction = "right";
-      }
+
+      updateWeaponDirection("right");
     }
     if (keys["KeyW"].pressed && keys.LastPressed == "KeyW") {
       this.velocity.y = -8; // Jump velocity
@@ -231,7 +240,7 @@ export class Zombie {
     this.name = zombieName;
     this.position = position; // position.y is the position of the base
     this.velocity = velocity;
-    this.originalVelocity = { ...velocity }; 
+    this.originalVelocity = { ...velocity };
     this.zombieDimensions = zombieDimensions;
     this.survivorToFollow = survivor;
     this.isAlive = true;
@@ -265,17 +274,15 @@ export class Zombie {
       if (!this.life) {
         this.isAlive = false;
         this.kill();
-      return;
+        return;
       }
     }
     if (zombieTouchSurvivor({ zombie: this })) {
-    
-        if (!this.survivorToFollow.isImmune) {
-          this.survivorToFollow.life-=0.25;
-           // Doubt about the return statement
-        }
-  
-  
+      if (!this.survivorToFollow.isImmune) {
+        this.survivorToFollow.life -= 0.25;
+        // Doubt about the return statement
+      }
+
       if (this.survivorToFollow.noOfZAfterImmunity > 4) {
         this.survivorToFollow.isImmune = false;
       }
@@ -290,23 +297,25 @@ export class Zombie {
     // wallSides
     //left
     const leftSideLeftWall = base.wallCoordinates.left.x;
-    const rightSideLeftWall = base.wallCoordinates.left.x + base.wallDimensions.left.width;
+    const rightSideLeftWall =
+      base.wallCoordinates.left.x + base.wallDimensions.left.width;
     const topsideLeftWall = groundLevel - base.wallDimensions.left.height;
     const bottomLeftWall = base.wallCoordinates.left.y;
 
     // wallSide
     //Right
     const leftSideRightWall = base.wallCoordinates.right.x;
-    const rightSideRightWall = base.wallCoordinates.right.x + base.wallDimensions.right.width;
+    const rightSideRightWall =
+      base.wallCoordinates.right.x + base.wallDimensions.right.width;
     const topsideRightWall = groundLevel - base.wallDimensions.right.height;
     const bottomRightWall = base.wallCoordinates.right.y;
 
     // Check if the zombie should jump onto the wall
     if (
-      (isInBetween(rightSide, leftSideLeftWall, rightSideLeftWall) ||
-        isInBetween(leftSide, leftSideLeftWall, rightSideLeftWall) ||
-        isInBetween(rightSide, leftSideRightWall, rightSideRightWall) ||
-        isInBetween(leftSide, leftSideRightWall, rightSideRightWall))
+      isInBetween(rightSide, leftSideLeftWall, rightSideLeftWall) ||
+      isInBetween(leftSide, leftSideLeftWall, rightSideLeftWall) ||
+      isInBetween(rightSide, leftSideRightWall, rightSideRightWall) ||
+      isInBetween(leftSide, leftSideRightWall, rightSideRightWall)
     ) {
       if (
         (isInBetween(bottom, topsideLeftWall, bottomLeftWall) ||
