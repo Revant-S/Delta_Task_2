@@ -193,6 +193,7 @@ export class Canon {
     this.totalBullets = 1000;
     this.remainingBullets = 1000;
     this.displayName = "Canon Bullets"
+    this.selected = true;
     this.dimensions = {
       length: 50,
       width: 20
@@ -202,6 +203,7 @@ export class Canon {
       y: groundLevel - this.canonTowerDetails.height,
     };
     this.weaponName = "canon";
+    this.type = "canon"
   }
 
   draw(ctx, angle) {

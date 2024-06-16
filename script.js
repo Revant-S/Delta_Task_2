@@ -6,34 +6,27 @@ import {
   changeNormalZpoints,
 } from "./playerAndZombies.mjs";
 import { generateGround, createTheBase } from "./gameEvnironment.mjs";
-import {
-  SurvivorNormalGun,
-  bullets,
-  Canon,
-} from "./weapons.mjs";
-import{
-  showPauseMenu , gameIsPaused
-} from "./gameInfo.mjs"
+import { bullets, Canon } from "./weapons.mjs";
+import { showPauseMenu, gameIsPaused } from "./gameInfo.mjs";
 import { renderPowerUps } from "./powerUpControls.mjs";
 
-import { shoot } from "./weaponControl.mjs";
-let  animationId;
-
+import { equipSurvivor, shoot, drawTheWeapon } from "./weaponControl.mjs";
+let animationId;
 
 const weaponOptions = document.getElementById("weaponOptions");
 let currentlySelectedWeapon = 1;
 let currentlyShowingWeapon = 1;
-const weaponDivList = document.querySelectorAll(".weaponOptionElement")
-const numberOfZombiesArray = [5, 2,2,2,2,2,2,2,2,2,2,2,2,2,];
+const weaponDivList = document.querySelectorAll(".weaponOptionElement");
+const numberOfZombiesArray = [5, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2];
 const gameCanvas = document.getElementById("gameCanvas");
 const canvasHeight = window.innerHeight;
 export const canvasWidth = window.innerWidth;
-const pauseBtn = document.getElementById("pauseBtn")
+const pauseBtn = document.getElementById("pauseBtn");
 gameCanvas.height = canvasHeight;
 gameCanvas.width = canvasWidth;
 
 export const ctx = gameCanvas.getContext("2d");
-const mousePosition = {
+export const mousePosition = {
   x: undefined,
   y: undefined,
 };
@@ -49,7 +42,7 @@ const keys = {
   LastPressed: "",
 };
 export function clearAnimationId() {
-  cancelAnimationFrame(animationId)
+  cancelAnimationFrame(animationId);
 }
 export const survivor = new Survivor({
   position: {
@@ -77,10 +70,7 @@ function populateWithZombies(numberOfZombies) {
       if (index % 2 === 0) {
         position.x = randomInRange(0, base.leftEnd);
       } else {
-        position.x = randomInRange(
-          base.rigntEnd,
-          canvasWidth
-        );
+        position.x = randomInRange(base.rigntEnd, canvasWidth);
       }
 
       position.y = groundLevel;
@@ -122,37 +112,29 @@ function populateWithZombies(numberOfZombies) {
   }
 }
 
-export const normalGun = new SurvivorNormalGun({
-  survivor: survivor,
-  groundLevel: groundLevel,
-});
-
+//  call equip
+equipSurvivor();
 base.draw();
-survivor.draw(ctx);
-normalGun.draw(ctx);
 export const canonGun = new Canon({
   ctx: ctx,
   canonTowerDetails: base.canonTowerDetails,
 });
-
-survivor.weapons.push(normalGun);
+export const normalGun = survivor.weapons[0];
 survivor.weapons.push(canonGun);
 populateWithZombies(3);
 
 export function startAnimation() {
   console.log(gameIsPaused);
-   if (gameIsPaused) {
-    return
-   }
+  if (gameIsPaused) {
+    return;
+  }
   ctx.clearRect(0, 0, canvasWidth, canvasHeight);
   base.draw();
   generateGround(ctx, canvasWidth);
   survivor.move(keys);
   survivor.draw(ctx);
-  normalGun.moveWithPlayer(survivor.position);
-  normalGun.draw(ctx);
-  // canonGun.draw(ctx)
-  canonGun.followTheMouse({ mouseCoordinates: mousePosition, ctx: ctx });
+  drawTheWeapon();
+
   zombies.forEach((zombie) => {
     zombie.run(ctx, base);
   });
@@ -173,7 +155,7 @@ export function startAnimation() {
     });
   }
   renderPowerUps();
-  clearAnimationId()
+  clearAnimationId();
   animationId = requestAnimationFrame(startAnimation);
 }
 
@@ -205,36 +187,31 @@ window.addEventListener("click", () => {
   canonGun.shoot();
 });
 
-window.addEventListener("load" , ()=>{
-  pauseBtn.addEventListener("click" ,()=>{
+window.addEventListener("load", () => {
+  pauseBtn.addEventListener("click", () => {
     showPauseMenu();
-  })
-})
+  });
+});
 
-window.addEventListener("keydown" , (e)=>{
-  weaponDivList[currentlyShowingWeapon].classList.remove("show")
+window.addEventListener("keydown", (e) => {
+  weaponDivList[currentlyShowingWeapon].classList.remove("show");
   if (e.code == "ArrowLeft") {
     if (currentlyShowingWeapon == 0) {
       currentlyShowingWeapon = 3;
-      
+    } else {
+      currentlyShowingWeapon = (currentlyShowingWeapon - 1) % 4;
     }
-    else{
-      currentlyShowingWeapon= (currentlyShowingWeapon-1)%4;
-    }
-    
   }
   if (e.code == "ArrowRight") {
-    currentlyShowingWeapon=(currentlyShowingWeapon+1)%4
+    currentlyShowingWeapon = (currentlyShowingWeapon + 1) % 4;
   }
-  weaponDivList[currentlyShowingWeapon].classList.add("show")
- 
-})
-window.addEventListener("keydown" , (e)=>{
+  weaponDivList[currentlyShowingWeapon].classList.add("show");
+});
+window.addEventListener("keydown", (e) => {
   if (e.code == "Enter") {
-    weaponDivList[currentlySelectedWeapon].classList.remove("selectedWeapon")
-    weaponDivList[currentlyShowingWeapon].classList.remove("show")
-    weaponDivList[currentlyShowingWeapon].classList.add("selectedWeapon")
+    weaponDivList[currentlySelectedWeapon].classList.remove("selectedWeapon");
+    weaponDivList[currentlyShowingWeapon].classList.remove("show");
+    weaponDivList[currentlyShowingWeapon].classList.add("selectedWeapon");
     currentlySelectedWeapon = currentlyShowingWeapon;
-
   }
-})
+});
