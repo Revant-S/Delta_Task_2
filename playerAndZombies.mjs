@@ -14,6 +14,9 @@ export function updateWeaponDirection(direction) {
   survivor.weapons.forEach((weapon) => {
     if (weapon.type == "gun") {
       weapon.direction = direction;
+      if (weapon.bulletInfo) {
+        weapon.bulletInfo.direction = direction
+      }
     }
   });
 }

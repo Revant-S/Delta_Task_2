@@ -112,7 +112,6 @@ function populateWithZombies(numberOfZombies) {
   }
 }
 
-//  call equip
 equipSurvivor();
 base.draw();
 export const canonGun = new Canon({
@@ -197,13 +196,13 @@ window.addEventListener("keydown", (e) => {
   weaponDivList[currentlyShowingWeapon].classList.remove("show");
   if (e.code == "ArrowLeft") {
     if (currentlyShowingWeapon == 0) {
-      currentlyShowingWeapon = 3;
+      currentlyShowingWeapon = 2;
     } else {
-      currentlyShowingWeapon = (currentlyShowingWeapon - 1) % 4;
+      currentlyShowingWeapon = (currentlyShowingWeapon - 1) % 3;
     }
   }
   if (e.code == "ArrowRight") {
-    currentlyShowingWeapon = (currentlyShowingWeapon + 1) % 4;
+    currentlyShowingWeapon = (currentlyShowingWeapon + 1) % 3;
   }
   weaponDivList[currentlyShowingWeapon].classList.add("show");
 });

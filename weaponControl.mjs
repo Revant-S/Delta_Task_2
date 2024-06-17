@@ -1,11 +1,16 @@
 import { groundLevel } from "./gameEvnironment.mjs";
 import { ctx, survivor, mousePosition } from "./script.js";
 import { SurvivorNormalGun } from "./weapons.mjs";
-import {MachineGun} from "./additionalWeapons.mjs"
+import { MachineGun } from "./additionalWeapons.mjs";
 
 let selectedWeapon;
 export function shoot() {
-    selectedWeapon.shootTheBullet()
+  if (selectedWeapon instanceof MachineGun) {
+    setInterval(selectedWeapon.shootTheBullet(),10)
+  }else{
+
+    selectedWeapon.shootTheBullet();
+  }
 }
 
 // Called only once
@@ -14,8 +19,10 @@ export function equipSurvivor() {
     survivor: survivor,
     groundLevel: groundLevel,
   });
-  selectedWeapon = normalGun;
+  const machineGun = new MachineGun();
+  selectedWeapon = machineGun;
   survivor.weapons.push(normalGun);
+  survivor.weapons.push(machineGun);
 }
 
 export function switchTheWeapon() {}
@@ -25,7 +32,7 @@ export function drawTheWeapon() {
     if (weapon.selected && weapon.type != "canon") {
       weapon.draw(ctx);
     }
-    if (weapon.type == "gun") {
+    if (weapon.type == "gun" && weapon.selected) {
       weapon.moveWithPlayer(survivor.position);
     }
     if (weapon.type == "canon") {

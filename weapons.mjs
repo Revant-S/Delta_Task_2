@@ -20,7 +20,7 @@ export class Bullet {
     this.dimensions = dimensions;
     this.direction = direction;
     this.fired = false;
-    if (this.weapon.weaponName == "survivorNormalGun") {
+    if (this.weapon.type == "gun") {
       this.position = {
         x:
           direction === "right"
@@ -28,11 +28,12 @@ export class Bullet {
             : weapon.position.x,
         y: weapon.position.y + weapon.dimension.height / 2,
       };
-
       this.velocity = {
         x: direction === "right" ? velocity.x : -velocity.x,
         y: velocity.y,
-      };
+        };
+      console.log(this.velocity
+      );
     } else {
       this.velocity = velocity;
       this.position = direction;
@@ -55,6 +56,7 @@ export class Bullet {
       );
       ctx.fillStyle = "green";
       ctx.fill();
+      ctx.stroke()
     }
   }
 
@@ -143,7 +145,7 @@ export class SurvivorNormalGun {
     this.survivor = survivor;
     this.direction = "right";
     this.type = "gun"
-    this.selected = true
+    this.selected = false
   }
 
   draw(ctx) {
