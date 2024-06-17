@@ -9,10 +9,11 @@ import {
 } from "./contactlogic.mjs";
 import { isInBetween } from "./contactlogic.mjs";
 import { anyPowerUpTaken } from "./powerUpControls.mjs";
+import { Granite } from "./additionalWeapons.mjs";
 
 export function updateWeaponDirection(direction) {
   survivor.weapons.forEach((weapon) => {
-    if (weapon.type == "gun") {
+    if (weapon.type == "gun" || weapon.type == "throw") {
       weapon.direction = direction;
       if (weapon.bulletInfo) {
         weapon.bulletInfo.direction = direction
@@ -75,6 +76,10 @@ function hasTheBulletHit(movingObject) {
   if (!bullets || !bullets.length) return false;
 
   for (const bullet of bullets) {
+    console.log(bullet.weapon instanceof Granite);
+    if ((bullet.weapon instanceof Granite)) {
+      continue
+    }
     const bulletPosition = bullet.position;
     const bulletRadius = bullet.dimensions.radius;
     const zombiePosition = movingObject.position;
@@ -241,7 +246,7 @@ export class Zombie {
   }) {
     this.index = index;
     this.name = zombieName;
-    this.position = position; // position.y is the position of the base
+    this.position = position;
     this.velocity = velocity;
     this.originalVelocity = { ...velocity };
     this.zombieDimensions = zombieDimensions;
@@ -256,6 +261,7 @@ export class Zombie {
   }
 
   kill() {
+    this.isAlive = false;
     manupulateZombieArray(false, this);
     this.survivorToFollow.score += 5;
     updateTheScoreBoard({ survivor: this.survivorToFollow });

@@ -138,7 +138,7 @@ export function startAnimation() {
     zombie.run(ctx, base);
   });
   bullets.forEach((bullet, index) => {
-    bullet.update();
+    bullet.update(index);
     bullet.draw(ctx);
     if (bullet.position.x > canvasWidth || bullet.position.x < 0) {
       bullets.splice(index, 1);

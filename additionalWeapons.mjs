@@ -1,11 +1,10 @@
 import { survivor, ctx } from "./script.js";
 import { Bullet, bullets } from "./weapons.mjs";
-
+import { StopWatch } from "./timer.mjs";
 export class AdditionalWezapons {
-  constructor({ type, dimensions, fireRate }) {
+  constructor({ type, dimensions }) {
     this.type = type;
     this.dimension = dimensions;
-    this.fireRate = fireRate;
     this.position = { x: 0, y: 0 };
   }
 
@@ -45,9 +44,8 @@ export class MachineGun extends AdditionalWezapons {
         width: 60,
         height: 10,
       },
-      fireRate: 30,
     });
-    this.selected = true;
+    this.selected = false;
     this.totalBullets = 30000;
     this.remainingBullets = 30000;
     this.direction = "right";
@@ -73,7 +71,8 @@ export class MachineGun extends AdditionalWezapons {
   moveWithPlayer() {
     this.position.x = survivor.position.x;
     if (this.direction === "left") {
-      this.position.x = survivor.position.x - this.dimension.width + survivor.width;
+      this.position.x =
+        survivor.position.x - this.dimension.width + survivor.width;
     }
     this.position.y = survivor.position.y - survivor.height + 20;
   }
@@ -81,11 +80,11 @@ export class MachineGun extends AdditionalWezapons {
   shootTheBullet() {
     if (this.remainingBullets < 10) return;
 
-    this.remainingBullets -= 10; 
+    this.remainingBullets -= 10;
 
     for (let index = 0; index < 10; index++) {
       const bullet = new Bullet(this.bulletInfo);
-      bullet.position = { 
+      bullet.position = {
         x: this.position.x + index * 40 * (this.direction === "right" ? 1 : -1),
         y: this.position.y + this.dimension.height / 2,
       };
@@ -94,7 +93,52 @@ export class MachineGun extends AdditionalWezapons {
   }
 }
 
+export class Granite extends AdditionalWezapons {
+  constructor() {
+    super({
+      type: "throw",
+      dimensions: {
+        width: 60,
+        height: 10,
+      },
+    });
+    this.selected = true;
+    this.totalBullets = 20;
+    this.remainingBullets = 20;
+    this.direction = "right";
+    this.position = {
+      x: survivor.position.x,
+      y: survivor.position.y - survivor.height,
+    };
+    this.bulletInfo = {
+      dimensions: {
+        shape: "circle",
+        radius: 10,
+      },
+      weapon: this,
+      velocity: {
+        x: 5,
+        y: 0,
+      },
+    };
+  }
+  moveWithPlayer() {
+    this.position.x = survivor.position.x;
+    if (this.direction === "left") {
+      this.position.x =
+        survivor.position.x - this.dimension.width + survivor.width;
+    }
+    this.position.y = survivor.position.y - survivor.height + 20;
+  }
+  shootTheBullet() {
+    if (this.remainingBullets < 0) return;
 
-export class granite extends AdditionalWezapons{
+    this.remainingBullets -= 1;
 
+    const bullet = new Bullet(this.bulletInfo);
+    const timer = new StopWatch();
+    timer.start();
+    bullet.timer = timer;
+    bullets.push(bullet);
+  }
 }

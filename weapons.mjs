@@ -1,7 +1,8 @@
 import { groundLevel } from "./gameEvnironment.mjs";
 import { base } from "./script.js";
 import { updateNumberOfBullets , canonBullets,normalGunBullets } from "./gameInfo.mjs";  
-
+import { Granite } from "./additionalWeapons.mjs";                                        
+import { checkGraniteTime } from "./weaponControl.mjs";
 
 export let bullets = [];
 export let gravity = 0.4;
@@ -20,7 +21,7 @@ export class Bullet {
     this.dimensions = dimensions;
     this.direction = direction;
     this.fired = false;
-    if (this.weapon.type == "gun") {
+    if (this.weapon.type == "gun" || this.weapon.type == "throw") {
       this.position = {
         x:
           direction === "right"
@@ -34,7 +35,7 @@ export class Bullet {
         };
       console.log(this.velocity
       );
-    } else {
+    }else {
       this.velocity = velocity;
       this.position = direction;
       if (this.position.y + this.dimensions.radius >= groundLevel) {
@@ -46,6 +47,8 @@ export class Bullet {
 
   draw(ctx) {
     if (this.dimensions.shape === "circle") {
+      console.log("HERE IS THE CONTROL");
+      console.log(this.position);
       ctx.beginPath();
       ctx.arc(
         this.position.x,
@@ -60,7 +63,7 @@ export class Bullet {
     }
   }
 
-  update() {
+  update(indexOfBullet) {
     if (this.position.y === groundLevel) {
       this.velocity.y *= -1;
     }
@@ -71,6 +74,12 @@ export class Bullet {
       this.velocity.y += gravity;
       this.position.x += this.velocity.x;
       this.position.y += this.velocity.y;
+    }
+    if (this.weapon instanceof Granite) {
+      let goFurther = checkGraniteTime(this , indexOfBullet);
+      if (goFurther) {
+        return
+      }
     }
     if (this.position.y + this.dimensions.radius >= groundLevel) {
       this.velocity.y *= -0.9;
