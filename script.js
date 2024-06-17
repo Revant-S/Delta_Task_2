@@ -10,11 +10,11 @@ import { bullets, Canon } from "./weapons.mjs";
 import { showPauseMenu, gameIsPaused } from "./gameInfo.mjs";
 import { renderPowerUps } from "./powerUpControls.mjs";
 
-import { equipSurvivor, shoot, drawTheWeapon } from "./weaponControl.mjs";
+import { equipSurvivor, shoot, drawTheWeapon, switchTheWeapon } from "./weaponControl.mjs";
 let animationId;
 
 const weaponOptions = document.getElementById("weaponOptions");
-let currentlySelectedWeapon = 1;
+let currentlySelectedWeapon = 0;
 let currentlyShowingWeapon = 1;
 const weaponDivList = document.querySelectorAll(".weaponOptionElement");
 const numberOfZombiesArray = [5, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2];
@@ -208,9 +208,10 @@ window.addEventListener("keydown", (e) => {
 });
 window.addEventListener("keydown", (e) => {
   if (e.code == "Enter") {
+    switchTheWeapon(currentlySelectedWeapon , currentlyShowingWeapon)
     weaponDivList[currentlySelectedWeapon].classList.remove("selectedWeapon");
     weaponDivList[currentlyShowingWeapon].classList.remove("show");
+    currentlySelectedWeapon = currentlyShowingWeapon
     weaponDivList[currentlyShowingWeapon].classList.add("selectedWeapon");
-    currentlySelectedWeapon = currentlyShowingWeapon;
   }
 });

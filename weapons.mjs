@@ -154,7 +154,7 @@ export class SurvivorNormalGun {
     this.survivor = survivor;
     this.direction = "right";
     this.type = "gun"
-    this.selected = false
+    this.selected = true
   }
 
   draw(ctx) {

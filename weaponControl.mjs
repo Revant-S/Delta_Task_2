@@ -18,13 +18,21 @@ export function equipSurvivor() {
   });
   const graniteGun = new Granite()
   const machineGun = new MachineGun();
-  selectedWeapon = graniteGun;
+  selectedWeapon = normalGun;
   survivor.weapons.push(normalGun);
   survivor.weapons.push(machineGun);
   survivor.weapons.push(graniteGun);
 }
 
-export function switchTheWeapon() {}
+export function switchTheWeapon(from , to) {
+  const prevWeapon = survivor.weapons[from];
+  const selectedWeaponNow = survivor.weapons[to];
+  prevWeapon.selected = false;
+  selectedWeaponNow.selected = true;
+  selectedWeapon = selectedWeaponNow
+  console.log(prevWeapon);
+  console.log(selectedWeaponNow);
+}
 
 export function drawTheWeapon() {
   survivor.weapons.forEach((weapon) => {

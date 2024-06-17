@@ -9,7 +9,7 @@ export class AdditionalWezapons {
   }
 
   draw() {
-    if (this.type === "gun") {
+    if (this.type === "gun" || this.type === "throw") {
       ctx.save();
       ctx.fillStyle = "yellow";
       ctx.fillRect(
@@ -20,9 +20,7 @@ export class AdditionalWezapons {
       );
       ctx.restore();
     }
-    if (this.type === "throw") {
-      // Add logic for throw weapons if needed
-    }
+    
   }
 
   shootTheBullet() {
@@ -102,7 +100,7 @@ export class Granite extends AdditionalWezapons {
         height: 10,
       },
     });
-    this.selected = true;
+    this.selected = false;
     this.totalBullets = 20;
     this.remainingBullets = 20;
     this.direction = "right";
