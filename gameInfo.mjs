@@ -1,5 +1,6 @@
-import { zombies } from "./playerAndZombies.mjs";
 import { clearAnimationId, startAnimation } from "./script.js";
+
+
 export const scoreDomElement = document.getElementById("scoreBoard");
 export const canonBullets = document.getElementById("canonBullets");
 export const normalGunBullets = document.getElementById("normalGunBullets");
@@ -13,6 +14,7 @@ export function updateTheScoreBoard({ survivor }) {
 }
 
 export function updateNumberOfBullets({ object, domElement }) {
+  domElement.innerText = 0;
   domElement.innerText = `${object.displayName} : ${object.remainingBullets}/${object.totalBullets}`;
 }
 function pauseTheGame() {
@@ -42,4 +44,3 @@ export function showPauseMenu() {
   });
   pauseTheGame();
 }
-

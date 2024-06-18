@@ -2,12 +2,13 @@ import { groundLevel } from "./gameEvnironment.mjs";
 import { ctx, survivor, mousePosition } from "./script.js";
 import { SurvivorNormalGun, bullets } from "./weapons.mjs";
 import { MachineGun,Granite } from "./additionalWeapons.mjs";
-import { StopWatch } from "./timer.mjs";
 import { zombies } from "./playerAndZombies.mjs";
+import { updateNumberOfBullets,normalGunBullets } from "./gameInfo.mjs";
 
 let selectedWeapon;
 export function shoot() {
   selectedWeapon.shootTheBullet();
+  updateNumberOfBullets({object : selectedWeapon , domElement : normalGunBullets});
 }
 
 // Called only once
@@ -30,8 +31,7 @@ export function switchTheWeapon(from , to) {
   prevWeapon.selected = false;
   selectedWeaponNow.selected = true;
   selectedWeapon = selectedWeaponNow
-  console.log(prevWeapon);
-  console.log(selectedWeaponNow);
+  updateNumberOfBullets({object : selectedWeapon , domElement : normalGunBullets })
 }
 
 export function drawTheWeapon() {
@@ -53,8 +53,6 @@ function distanceBetween({ x1, x2, y1, y2 }) {
 
 function zombiesInRange(granite) {
   const graniteCenter = granite.position;
-  console.log("Position Of Granite");
-  console.log(granite.position);
   let zombiesToKill = [];
   zombies.forEach((zombie) => {
     let midPointX = zombie.position.x + zombie.zombieDimensions.width / 2; // x midpont of the zombie
@@ -67,7 +65,7 @@ function zombiesInRange(granite) {
     });
     console.log("Distances");
     console.log(distance);
-    if (distance < 90) {
+    if (distance < 170) {
       zombiesToKill.push(zombie);
     }
     });

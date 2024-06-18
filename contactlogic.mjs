@@ -10,6 +10,9 @@ export function isInBetween(compare, coordinate1, coordinate2) {
 }
 
 export function zombieTouchSurvivor({ zombie }) {
+  if (zombie.type === "flying") {
+    return
+  }
   const zombieLeftEnd = zombie.position.x;
   const zombieRightEnd = zombie.position.x + zombie.zombieDimensions.width;
   const survivorLeftEnd = survivor.position.x;

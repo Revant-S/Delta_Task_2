@@ -44,10 +44,11 @@ export class MachineGun extends AdditionalWezapons {
       },
     });
     this.selected = false;
-    this.totalBullets = 30000;
-    this.remainingBullets = 30000;
+    this.totalBullets = 3000;
+    this.remainingBullets = 3000;
     this.direction = "right";
     this.weaponName = "machineGun";
+    this.displayName = "Machine Gun";
     this.position = {
       x: survivor.position.x,
       y: survivor.position.y,
@@ -103,6 +104,7 @@ export class Granite extends AdditionalWezapons {
     this.selected = false;
     this.totalBullets = 20;
     this.remainingBullets = 20;
+    this.displayName = "Granite Gun";
     this.direction = "right";
     this.position = {
       x: survivor.position.x,

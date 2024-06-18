@@ -2,7 +2,7 @@ import { groundLevel } from "./gameEvnironment.mjs";
 import { base } from "./script.js";
 import { updateNumberOfBullets , canonBullets,normalGunBullets } from "./gameInfo.mjs";  
 import { Granite } from "./additionalWeapons.mjs";                                        
-import { checkGraniteTime } from "./weaponControl.mjs";
+import { checkGraniteTime } from "./weaponControl.mjs";   
 
 export let bullets = [];
 export let gravity = 0.4;
@@ -18,6 +18,7 @@ export function changeTheValue(add, object) {
 export class Bullet {
   constructor({ weapon, dimensions, velocity, direction }) {
     this.weapon = weapon;
+   
     this.dimensions = dimensions;
     this.direction = direction;
     this.fired = false;
@@ -33,8 +34,6 @@ export class Bullet {
         x: direction === "right" ? velocity.x : -velocity.x,
         y: velocity.y,
         };
-      console.log(this.velocity
-      );
     }else {
       this.velocity = velocity;
       this.position = direction;
@@ -46,9 +45,8 @@ export class Bullet {
   }
 
   draw(ctx) {
-    if (this.dimensions.shape === "circle") {
-      console.log("HERE IS THE CONTROL");
-      console.log(this.position);
+
+    if (this.dimensions.shape === "circle") { 
       ctx.beginPath();
       ctx.arc(
         this.position.x,
@@ -57,7 +55,12 @@ export class Bullet {
         0,
         Math.PI * 2
       );
-      ctx.fillStyle = "green";
+      if (this.owner ==  "zombie") {
+        ctx.fillStyle = "black";
+      }
+      else{
+        ctx.fillStyle = "green"
+      }
       ctx.fill();
       ctx.stroke()
     }
@@ -67,10 +70,14 @@ export class Bullet {
     if (this.position.y === groundLevel) {
       this.velocity.y *= -1;
     }
-    if (this.weapon.type === "gun") {
+   
+    if (this.weapon.type === "gun" && this.owner !== "zombie") {
       this.position.x += this.velocity.x;
       this.position.y += this.velocity.y;
     } else {
+      console.log(this.owner);
+      console.log(this.position);
+      console.log(this.velocity);
       this.velocity.y += gravity;
       this.position.x += this.velocity.x;
       this.position.y += this.velocity.y;

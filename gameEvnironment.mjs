@@ -1,4 +1,4 @@
-import { Canon, bullets } from "./weapons.mjs";
+
 import { ctx } from "./script.js";
 export const groundLevel = 500;
 export function generateGround(ctx, canvasWidth) {

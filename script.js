@@ -4,18 +4,24 @@ import {
   manupulateZombieArray,
   zombies,
   changeNormalZpoints,
+  PowerZombie,
+  FlyingZombie,
+  preventZombieOverlap
 } from "./playerAndZombies.mjs";
+import { populateWithZombies , populateTheSky} from "./levelControl.mjs";
 import { generateGround, createTheBase } from "./gameEvnironment.mjs";
 import { bullets, Canon } from "./weapons.mjs";
 import { showPauseMenu, gameIsPaused } from "./gameInfo.mjs";
 import { renderPowerUps } from "./powerUpControls.mjs";
 
 import { equipSurvivor, shoot, drawTheWeapon, switchTheWeapon } from "./weaponControl.mjs";
+import { ZombieWeapon } from "./zombieWeapon.mjs";
+import { StopWatch } from "./timer.mjs";
 let animationId;
-
+let numberOfFrames = 0;
 const weaponOptions = document.getElementById("weaponOptions");
 let currentlySelectedWeapon = 0;
-let currentlyShowingWeapon = 1;
+let currentlyShowingWeapon = 0;
 const weaponDivList = document.querySelectorAll(".weaponOptionElement");
 const numberOfZombiesArray = [5, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2];
 const gameCanvas = document.getElementById("gameCanvas");
@@ -61,56 +67,6 @@ export function randomInRange(min, max) {
 
 export const base = new createTheBase({ groundLevel, ctx });
 
-function populateWithZombies(numberOfZombies) {
-  for (let index = 0; index < numberOfZombies; index++) {
-    const position = {};
-    let isOverlapping = true;
-
-    while (isOverlapping) {
-      if (index % 2 === 0) {
-        position.x = randomInRange(0, base.leftEnd);
-      } else {
-        position.x = randomInRange(base.rigntEnd, canvasWidth);
-      }
-
-      position.y = groundLevel;
-
-      isOverlapping = false;
-      for (let i = 0; i < zombies.length; i++) {
-        const existingZombie = zombies[i];
-        const existingX = existingZombie.position.x;
-        const existingWidth = existingZombie.zombieDimensions.width;
-
-        // Check if the new zombie's position.x falls within the bounds of an existing zombie
-        if (
-          position.x < existingX + existingWidth + 10 &&
-          position.x + 20 > existingX
-        ) {
-          isOverlapping = true;
-          break;
-        }
-      }
-    }
-
-    const zombie = new Zombie({
-      position: position,
-      survivor: survivor,
-      velocity: {
-        x: 1,
-        y: 0,
-      },
-      zombieDimensions: {
-        height: 100,
-        width: 15,
-      },
-      index: index,
-      zombieName: "regularZombie",
-      life: 3,
-      base: base,
-    });
-    manupulateZombieArray(true, zombie);
-  }
-}
 
 equipSurvivor();
 base.draw();
@@ -120,7 +76,8 @@ export const canonGun = new Canon({
 });
 export const normalGun = survivor.weapons[0];
 survivor.weapons.push(canonGun);
-populateWithZombies(3);
+populateWithZombies();
+populateTheSky();
 
 export function startAnimation() {
   console.log(gameIsPaused);
@@ -136,7 +93,13 @@ export function startAnimation() {
 
   zombies.forEach((zombie) => {
     zombie.run(ctx, base);
+    if (zombie instanceof FlyingZombie && !zombie.weapon.shot) {
+      zombie.weapon.startShootingInterval();
+      zombie.weapon.shot = true
+    }
   });
+  preventZombieOverlap()
+
   bullets.forEach((bullet, index) => {
     bullet.update(index);
     bullet.draw(ctx);
@@ -147,12 +110,13 @@ export function startAnimation() {
   if (zombies.length <= 0) {
     numberOfZombiesArray.shift();
     // populateWithZombies(numberOfZombiesArray[0]);
-    populateWithZombies(3);
+
     changeNormalZpoints({
       left: base.wallCoordinates.left,
       right: base.wallCoordinates.right + base.wallDimensions.width,
     });
   }
+  numberOfFrames++;
   renderPowerUps();
   clearAnimationId();
   animationId = requestAnimationFrame(startAnimation);
