@@ -55,7 +55,7 @@ export class ZombieWeapon {
     if (this.zombie.type == "flying") {
       if (this.zombie.velocity.x > 0) {
         this.position.x =
-          this.zombie.position.x + this.zombie.zombieDimensions.width - 20;
+          this.zombie.position.x + this.zombie.dimensions.width - 20;
         this.position.y = this.zombie.position.y;
       } else {
         this.position.x = this.zombie.position.x + 10;

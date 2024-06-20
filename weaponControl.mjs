@@ -1,8 +1,8 @@
 import { ctx, survivor, mousePosition, groundLevel } from "./script.js";
 import { Canon, bullets, MachineGun, Granite } from "./weapons.mjs";
 
-import { zombies } from "./playerAndZombies.mjs";
-import { updateNumberOfBullets, canonBullets } from "./gameInfo.mjs";
+import { zombies } from "./zombies.mjs";
+import { updateNumberOfBullets, canonBullets } from "./scoreDomElement.mjs";
 
 let selectedWeapon;
 export function shoot() {

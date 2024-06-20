@@ -1,4 +1,4 @@
-import { zombies } from "./playerAndZombies.mjs";
+import { zombies } from "./zombies.mjs";
 import { ctx,groundLevel } from "./script.js";
 import { walls } from "./walls.mjs";
 import { objectsCollideAlongX , objectsCollideAlongY } from "./walls.mjs";

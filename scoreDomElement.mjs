@@ -1,6 +1,4 @@
 import { clearAnimationId, startAnimation } from "./script.js";
-
-
 export const scoreDomElement = document.getElementById("scoreBoard");
 export const canonBullets = document.getElementById("canonBullets");
 export const normalGunBullets = document.getElementById("normalGunBullets");
@@ -23,12 +21,10 @@ function pauseTheGame() {
 
   pauseMenuDialog.showModal();
 }
-
 function resetTheGame() {
-    gameIsPaused = false
-    window.location.reload()
+  gameIsPaused = false;
+  window.location.reload();
 }
-
 function playTheGame() {
   pauseMenuDialog.close();
   gameIsPaused = false;

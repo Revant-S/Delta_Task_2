@@ -1,5 +1,5 @@
 import { survivor, groundLevel } from "./script.js";
-import { zombies } from "./playerAndZombies.mjs";
+import { PowerZombie, zombies } from "./zombies.mjs";
 import { objectsCollideAlongX, objectsCollideAlongY, walls } from "./walls.mjs";
 
 export function isInBetween(compare, coordinate1, coordinate2) {
@@ -14,7 +14,7 @@ export function zombieTouchSurvivor({ zombie }) {
     return;
   }
   const zombieLeftEnd = zombie.position.x - 20;
-  const zombieRightEnd = zombie.position.x + zombie.zombieDimensions.width + 20;
+  const zombieRightEnd = zombie.position.x + zombie.dimensions.width + 20;
   const survivorLeftEnd = survivor.position.x - 2;
   const survivorRightEnd = survivor.position.x + survivor.width + 2;
 
@@ -29,69 +29,54 @@ export function zombieTouchSurvivor({ zombie }) {
 
 export function distanceWithSurvivor({ zombie }) {
   if (zombie.velocity.x > 0) {
-    return (
-      survivor.position.x - (zombie.position.x + zombie.zombieDimensions.width)
-    );
+    return survivor.position.x - (zombie.position.x + zombie.dimensions.width);
   } else {
     return zombie.position.x - survivor.position.x;
   }
 }
 
-export function zombieTouchOtherZombie({ zombie }) {
-  for (const zombieToCheck of zombies) {
-    if (zombie.index === zombieToCheck.index) continue;
-
-    const leftSide = zombie.position.x;
-    const rightSide = zombie.position.x + zombie.zombieDimensions.width;
-
-    const leftSidezombieToCheck = zombieToCheck.position.x;
-    const rightSidezombieToCheck =
-      zombieToCheck.position.x + zombieToCheck.zombieDimensions.width;
-
-    const distanceBetweenZombies = 15;
-
-    const disZombie = distanceWithSurvivor({ zombie: zombie });
-    const disZombieToCheck = distanceWithSurvivor({ zombie: zombieToCheck });
-
-    if (
-      (leftSide < rightSidezombieToCheck + distanceBetweenZombies &&
-        rightSide > leftSidezombieToCheck) ||
-      (rightSide > leftSidezombieToCheck - distanceBetweenZombies &&
-        leftSide < rightSidezombieToCheck)
-    ) {
-      if (disZombie < disZombieToCheck) {
-        zombieToCheck.velocity.x = 0;
-        zombie.velocity.x = zombie.originalVelocity.x;
-      } else {
-        zombie.velocity.x = 0;
-        zombieToCheck.velocity.x = zombieToCheck.originalVelocity.x;
-      }
-    } else {
-      // Reset velocity if no collision is detected
-      zombie.velocity.x = zombie.originalVelocity.x;
-      zombieToCheck.velocity.x = zombieToCheck.originalVelocity.x;
-    }
-  }
-}
-export function checkSurvivorCollision() {
+export function checkCollisionWithWall(obj) {
   walls.forEach((wall) => {
     if (
-      objectsCollideAlongX({ obj1: survivor, obj2: wall }) &&
-      survivor.position.y > wall.position.y
+      objectsCollideAlongX({ obj1: obj, obj2: wall }) &&
+      obj.position.y > wall.position.y
     ) {
-      survivor.velocity.x = 0;
+      obj.velocity.x = 0;
     }
   });
 }
 
-export function ckeckIfLandOnWAll() {
+export function ckeckIfLandOnWAll(object) {
   walls.forEach((wall) => {
     if (
-      objectsCollideAlongY({ obj1: survivor, obj2: wall }) &&
-      (survivor.position.x + survivor.dimensions.width > wall.position.x &&
-        survivor.position.x < wall.position.x + wall.dimensions.width)
-    ) { 
-      survivor.velocity.y = 0
+      objectsCollideAlongY({ obj1: object, obj2: wall }) &&
+      object.position.x + object.dimensions.width > wall.position.x &&
+      object.position.x < wall.position.x + wall.dimensions.width
+    ) {
+      object.velocity.y = 0;
+    }
+  });
+}
+
+export function checkCollisionWithZombie(zombieToCheck) {
+  if (zombies.length <=1) {
+    return
+  }
+  zombies.forEach((zombie) => {
+    if (zombie.index == zombieToCheck.index) {
+      return
+    }
+    if (
+      objectsCollideAlongX({ obj1: zombieToCheck, obj2: zombie }) &&
+      zombieToCheck.position.y > zombie.position.y - zombie.dimensions.height
+    ) {
+      if (zombieToCheck instanceof PowerZombie && !zombieToCheck.inAir) {
+        zombieToCheck.velocity.y-=10
+        zombieToCheck.inAir = true
+      }else{
+        zombieToCheck.velocity.x = 0;
+      }
+      
     }
   });
 }

@@ -2,8 +2,8 @@ import { ctx, groundLevel, survivor } from "./script.js";
 import {
   updateNumberOfBullets,
   canonBullets,
-  normalGunBullets,
-} from "./gameInfo.mjs";
+  normalGunBullets
+} from "./scoreDomElement.mjs";
 import { checkGraniteTime } from "./weaponControl.mjs";
 import { StopWatch } from "./timer.mjs";
 export let bullets = [];

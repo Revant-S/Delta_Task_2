@@ -2,7 +2,7 @@
 import { canonGun, ctx,groundLevel } from "./script.js";
 import { survivor } from "./script.js";
 import { isInBetween } from "./contactlogic.mjs";
-import { normalGunBullets, updateNumberOfBullets } from "./gameInfo.mjs";
+import { normalGunBullets, updateNumberOfBullets } from "./scoreDomElement.mjs";
 export let powerUps = [];
 
 function removePowerUp({ powerUp }) {

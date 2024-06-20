@@ -1,19 +1,19 @@
 import {
-  Survivor,
   zombies,
   FlyingZombie,
   preventZombieOverlap,
-} from "./playerAndZombies.mjs";
+} from "./zombies.mjs";
+import { Survivor } from "./Survivor.mjs";
 import {  populateWithZombies } from "./levelControl.mjs";
 import { generateGround, createTheBase } from "./gameEvnironment.mjs";
 import { bullets, Canon } from "./weapons.mjs";
-import { showPauseMenu, gameIsPaused } from "./gameInfo.mjs";
+import { showPauseMenu, gameIsPaused } from "./scoreDomElement.mjs";
 import { renderPowerUps } from "./powerUpControls.mjs";
 import { background } from "./sprit.mjs";
 
 import { equipSurvivor, shoot, drawTheWeapon, switchTheWeapon } from "./weaponControl.mjs";
 import { generateWalls, walls } from "./walls.mjs";
-import { checkSurvivorCollision } from "./contactlogic.mjs";
+
 export const groundLevel = 550;
 let animationId;
 let numberOfFrames = 0;
@@ -105,10 +105,9 @@ export function startAnimation() {
   })
   console.log(numberOfFrames);
   console.log(holdFrames);
-  // if (numberOfFrames % holdFrames == 0) {
-  //   populateWithZombies()
-  // }
-  checkSurvivorCollision();
+  if (numberOfFrames % holdFrames == 0) {
+    populateWithZombies()
+  }
   renderPowerUps();
   clearAnimationId();
   animationId = requestAnimationFrame(startAnimation);
