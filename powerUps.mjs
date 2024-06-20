@@ -112,6 +112,7 @@ export class ExtraCanonBullets extends PowerUp {
 
 export class TemporaryImmunity extends PowerUp {
   static instanceExists = false;
+  static framesPassed = 0;
   constructor(position) {
     super(position);
     this.color = "purple";

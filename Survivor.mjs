@@ -2,6 +2,7 @@ import { gravity } from "./weapons.mjs";
 import { groundLevel } from "./script.js";
 import {
   checkCollisionWithWall,
+  checkCollisionWithZombie,
   ckeckIfLandOnWAll
 } from "./contactlogic.mjs";
 import { anyPowerUpTaken } from "./powerUpControls.mjs";
@@ -111,8 +112,10 @@ export class Survivor {
       this.isJumping = true;
       this.isOnGround = false;
     }
+    checkCollisionWithZombie(this)
     checkCollisionWithWall(this);
     ckeckIfLandOnWAll(this);
+
     this.position.x += this.velocity.x;
     this.position.y += this.velocity.y;
 

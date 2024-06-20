@@ -1,7 +1,7 @@
 import { bullets, changeTheValue, gravity, Granite } from "./weapons.mjs";
 import { canvasWidth, survivor, groundLevel } from "./script.js";
 import { ctx } from "./script.js";
-import { updateNumberOfBullets, updateTheScoreBoard } from "./scoreDomElement.mjs";
+import {  updateTheScoreBoard } from "./scoreDomElement.mjs";
 import {
   zombieTouchSurvivor,
   checkCollisionWithZombie,
@@ -271,7 +271,7 @@ export class Zombie {
         survivor.life -= 0.25;
       }
 
-      if (survivor.noOfZAfterImmunity > 4) {
+      if (survivor.noinAirOfZAfterImmunity > 4) {
         survivor.isImmune = false;
       }
       this.sprite.update();
@@ -303,10 +303,29 @@ export class Zombie {
     if (this.position.y >= groundLevel) {
       this.velocity.y = 0;
     }
+    const s = checkCollisionWithZombie(this)
+    if (s && (this instanceof PowerZombie)) {
+      console.log("LJGFLUEIGLUEIGFYUKG");
+      this.velocity.y -= 4;
+      // this.inAir = true
+    }
+
+
+
     const p = checkCollisionWithWall(this)
-    checkCollisionWithZombie(this)
-    if (this instanceof PowerZombie) {
-      ckeckIfLandOnWAll(this)
+    console.log(s && (this instanceof PowerZombie));
+    if ( p && (this instanceof PowerZombie)) {
+      this.velocity.y -= 4
+      console.log("hello");
+      // this.inAir = true
+    }
+
+    // if (this.inAir) {
+    //   this.velocity.y+= gravity
+    // }
+    if (this.position.y > groundLevel) {
+      this.velocity.y = 0
+      this.inAir = false
     }
     // Move the zombie
     this.position.x += this.velocity.x;

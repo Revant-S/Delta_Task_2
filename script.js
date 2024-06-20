@@ -88,7 +88,7 @@ export function startAnimation() {
       zombie.weapon.shot = true
     }
   });
-  preventZombieOverlap()
+
 
   bullets.forEach((bullet, index) => {
     bullet.update(index);
@@ -99,12 +99,10 @@ export function startAnimation() {
   });
   canonGun.moveWithPlayer()
   numberOfFrames++;
-
+  
   walls.forEach(wall=>{
     wall.draw();
   })
-  console.log(numberOfFrames);
-  console.log(holdFrames);
   if (numberOfFrames % holdFrames == 0) {
     populateWithZombies()
   }

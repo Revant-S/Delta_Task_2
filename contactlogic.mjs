@@ -1,6 +1,8 @@
 import { survivor, groundLevel } from "./script.js";
-import { PowerZombie, zombies } from "./zombies.mjs";
+import { FlyingZombie, PowerZombie, zombies } from "./zombies.mjs";
 import { objectsCollideAlongX, objectsCollideAlongY, walls } from "./walls.mjs";
+import { bullets } from "./weapons.mjs";
+import { Survivor } from "./Survivor.mjs";
 
 export function isInBetween(compare, coordinate1, coordinate2) {
   if (compare <= coordinate2 && compare >= coordinate1) {
@@ -36,17 +38,21 @@ export function distanceWithSurvivor({ zombie }) {
 }
 
 export function checkCollisionWithWall(obj) {
+  let toReturn = false
   walls.forEach((wall) => {
     if (
       objectsCollideAlongX({ obj1: obj, obj2: wall }) &&
       obj.position.y > wall.position.y
     ) {
       obj.velocity.x = 0;
+      toReturn = true
     }
   });
+  return toReturn
 }
 
 export function ckeckIfLandOnWAll(object) {
+  let returnValue= false
   walls.forEach((wall) => {
     if (
       objectsCollideAlongY({ obj1: object, obj2: wall }) &&
@@ -54,29 +60,53 @@ export function ckeckIfLandOnWAll(object) {
       object.position.x < wall.position.x + wall.dimensions.width
     ) {
       object.velocity.y = 0;
+      returnValue = true
     }
   });
+  return returnValue
 }
 
 export function checkCollisionWithZombie(zombieToCheck) {
-  if (zombies.length <=1) {
-    return
+  if (zombies.length <= 1) {
+    return;
   }
+  let toReturn = false
   zombies.forEach((zombie) => {
-    if (zombie.index == zombieToCheck.index) {
-      return
+    if (zombie.index == zombieToCheck.index || zombie instanceof FlyingZombie) {
+      return;
     }
     if (
       objectsCollideAlongX({ obj1: zombieToCheck, obj2: zombie }) &&
       zombieToCheck.position.y > zombie.position.y - zombie.dimensions.height
     ) {
-      if (zombieToCheck instanceof PowerZombie && !zombieToCheck.inAir) {
-        zombieToCheck.velocity.y-=10
-        zombieToCheck.inAir = true
-      }else{
-        zombieToCheck.velocity.x = 0;
+      if (zombieToCheck instanceof PowerZombie ) {
+        zombieToCheck.velocity.y -= 6
+        zombieToCheck.velocity.x = 0
+        // zombie.velocity.x = 0
+        toReturn = true
+      }else if(zombieToCheck instanceof Survivor){
+        survivor.life --;
       }
-      
+       else {
+        zombieToCheck.velocity.x = 0;
+        zombie.velocity.x = 0
+      }
     }
   });
+  return toReturn
+}
+
+export function checkBulletWallContact(bullet) {
+  for (let index = 0; index < walls.length; index++) {
+    const wall = walls[index];
+    if (
+      bullet.position.x >= wall.position.x &&
+      bullet.position.x <= wall.position.x + wall.dimensions.width &&
+      bullet.position.y >= wall.position.y
+    ) {
+      return true
+    }
+
+  }
+  return false
 }

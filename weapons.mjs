@@ -4,6 +4,7 @@ import {
   canonBullets,
   normalGunBullets
 } from "./scoreDomElement.mjs";
+import { checkBulletWallContact } from "./contactlogic.mjs";
 import { checkGraniteTime } from "./weaponControl.mjs";
 import { StopWatch } from "./timer.mjs";
 export let bullets = [];
@@ -70,7 +71,6 @@ export class Bullet {
     if (this.position.y === groundLevel) {
       this.velocity.y *= -1;
     }
-    console.log("DINE FKNFPIUHEIUFUIIUIUGIUGDFIUGPPPP");
 
     this.position.x += this.velocity.x;
     this.position.y += this.velocity.y;
@@ -78,7 +78,15 @@ export class Bullet {
     this.velocity.y += gravity;
     this.position.x += this.velocity.x;
     this.position.y += this.velocity.y;
-
+   const isBulletHit =  checkBulletWallContact(this);
+   if (isBulletHit && !(this.weapon instanceof Granite)) {
+    const j = bullets.indexOf(this)
+    bullets.splice(j,1
+    )
+   }
+   if (isBulletHit && this.weapon instanceof Granite) {
+    this.velocity.x*=-1
+   }
     if (this.weapon instanceof Granite) {
       let goFurther = checkGraniteTime(this, indexOfBullet);
       if (goFurther) {

@@ -5,21 +5,18 @@ import {
   ExtraCanonBullets,
   TemporaryImmunity,
 } from "./powerUps.mjs";
-import { base, canonGun, canvasWidth, survivor } from "./script.js";
+import { canonGun, canvasWidth, survivor } from "./script.js";
 import { randomInRange,groundLevel } from "./script.js";
+import { walls } from "./walls.mjs";
 
 function getALocation() {
-  let location = randomInRange(0, base.leftEnd);
-  let location2 = randomInRange(
-    base.rigntEnd,
-    canvasWidth
-  );
-  let p = Math.floor(Math.random()*2);
-  console.log(p);
-  if (!p) {
-    return location
-  }
-  return location2
+
+  let possibleLocations = []
+  walls.forEach(wall =>{
+    possibleLocations.push(wall.position.x - 60)
+    possibleLocations.push(wall.position.x + wall.dimensions.width +60)
+  })
+  return possibleLocations[Math.floor(Math.random()*(possibleLocations.length))]
 }
 
 function placeThePowerUps() {
@@ -50,13 +47,14 @@ function placeThePowerUps() {
     ExtraCanonBullets.instanceExists = true;
     powerUps.push(bulletBoosterCanon);
   }
-  if (survivor.life < 600 && !TemporaryImmunity.instanceExists) {
+  if (survivor.life < 600 && !TemporaryImmunity.instanceExists && TemporaryImmunity.framesPassed % 200== 0) {
     const location = getALocation()
     const immuity = new TemporaryImmunity({
       x: location,
       y: groundLevel,
     });
     TemporaryImmunity.instanceExists = true;
+    TemporaryImmunity.framesPassed =0;
     powerUps.push(immuity);
   }
 }
