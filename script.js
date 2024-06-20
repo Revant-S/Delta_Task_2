@@ -13,6 +13,7 @@ import { background } from "./sprit.mjs";
 
 import { equipSurvivor, shoot, drawTheWeapon, switchTheWeapon } from "./weaponControl.mjs";
 import { generateWalls, walls } from "./walls.mjs";
+import { checkSurvivorCollision } from "./contactlogic.mjs";
 export const groundLevel = 550;
 let animationId;
 let numberOfFrames = 0;
@@ -26,7 +27,7 @@ export const canvasWidth = window.innerWidth;
 const pauseBtn = document.getElementById("pauseBtn");
 gameCanvas.height = canvasHeight;
 gameCanvas.width = canvasWidth;
-
+generateWalls([400, 800])
 export const ctx = gameCanvas.getContext("2d");
 export const mousePosition = {
   x: undefined,
@@ -98,15 +99,16 @@ export function startAnimation() {
   });
   canonGun.moveWithPlayer()
   numberOfFrames++;
-  // generateWalls([100, 400])
-  // walls.forEach(wall=>{
-  //   wall.draw();
-  // })
+
+  walls.forEach(wall=>{
+    wall.draw();
+  })
   console.log(numberOfFrames);
   console.log(holdFrames);
-  if (numberOfFrames % holdFrames == 0) {
-    populateWithZombies()
-  }
+  // if (numberOfFrames % holdFrames == 0) {
+  //   populateWithZombies()
+  // }
+  checkSurvivorCollision();
   renderPowerUps();
   clearAnimationId();
   animationId = requestAnimationFrame(startAnimation);

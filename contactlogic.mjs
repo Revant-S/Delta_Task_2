@@ -1,6 +1,6 @@
-import { survivor,groundLevel } from "./script.js";
+import { survivor, groundLevel } from "./script.js";
 import { zombies } from "./playerAndZombies.mjs";
-
+import { objectsCollideAlongX, objectsCollideAlongY, walls } from "./walls.mjs";
 
 export function isInBetween(compare, coordinate1, coordinate2) {
   if (compare <= coordinate2 && compare >= coordinate1) {
@@ -11,12 +11,12 @@ export function isInBetween(compare, coordinate1, coordinate2) {
 
 export function zombieTouchSurvivor({ zombie }) {
   if (zombie.type === "flying") {
-    return
+    return;
   }
-  const zombieLeftEnd = zombie.position.x-20;
-  const zombieRightEnd = zombie.position.x + zombie.zombieDimensions.width+20;
-  const survivorLeftEnd = survivor.position.x-2;
-  const survivorRightEnd = survivor.position.x + survivor.width+2;
+  const zombieLeftEnd = zombie.position.x - 20;
+  const zombieRightEnd = zombie.position.x + zombie.zombieDimensions.width + 20;
+  const survivorLeftEnd = survivor.position.x - 2;
+  const survivorRightEnd = survivor.position.x + survivor.width + 2;
 
   if (
     isInBetween(survivorLeftEnd, zombieLeftEnd, zombieRightEnd) ||
@@ -27,15 +27,15 @@ export function zombieTouchSurvivor({ zombie }) {
   return false;
 }
 
-export function distanceWithSurvivor({zombie}) {
-  if (zombie.velocity.x >0) {
-    return survivor.position.x-(zombie.position.x+ zombie.zombieDimensions.width)
-  }
-  else{
-    return zombie.position.x - survivor.position.x
+export function distanceWithSurvivor({ zombie }) {
+  if (zombie.velocity.x > 0) {
+    return (
+      survivor.position.x - (zombie.position.x + zombie.zombieDimensions.width)
+    );
+  } else {
+    return zombie.position.x - survivor.position.x;
   }
 }
-
 
 export function zombieTouchOtherZombie({ zombie }) {
   for (const zombieToCheck of zombies) {
@@ -45,7 +45,8 @@ export function zombieTouchOtherZombie({ zombie }) {
     const rightSide = zombie.position.x + zombie.zombieDimensions.width;
 
     const leftSidezombieToCheck = zombieToCheck.position.x;
-    const rightSidezombieToCheck = zombieToCheck.position.x + zombieToCheck.zombieDimensions.width;
+    const rightSidezombieToCheck =
+      zombieToCheck.position.x + zombieToCheck.zombieDimensions.width;
 
     const distanceBetweenZombies = 15;
 
@@ -53,8 +54,10 @@ export function zombieTouchOtherZombie({ zombie }) {
     const disZombieToCheck = distanceWithSurvivor({ zombie: zombieToCheck });
 
     if (
-      (leftSide < rightSidezombieToCheck + distanceBetweenZombies && rightSide > leftSidezombieToCheck) ||
-      (rightSide > leftSidezombieToCheck - distanceBetweenZombies && leftSide < rightSidezombieToCheck)
+      (leftSide < rightSidezombieToCheck + distanceBetweenZombies &&
+        rightSide > leftSidezombieToCheck) ||
+      (rightSide > leftSidezombieToCheck - distanceBetweenZombies &&
+        leftSide < rightSidezombieToCheck)
     ) {
       if (disZombie < disZombieToCheck) {
         zombieToCheck.velocity.x = 0;
@@ -69,4 +72,26 @@ export function zombieTouchOtherZombie({ zombie }) {
       zombieToCheck.velocity.x = zombieToCheck.originalVelocity.x;
     }
   }
+}
+export function checkSurvivorCollision() {
+  walls.forEach((wall) => {
+    if (
+      objectsCollideAlongX({ obj1: survivor, obj2: wall }) &&
+      survivor.position.y > wall.position.y
+    ) {
+      survivor.velocity.x = 0;
+    }
+  });
+}
+
+export function ckeckIfLandOnWAll() {
+  walls.forEach((wall) => {
+    if (
+      objectsCollideAlongY({ obj1: survivor, obj2: wall }) &&
+      (survivor.position.x + survivor.dimensions.width > wall.position.x &&
+        survivor.position.x < wall.position.x + wall.dimensions.width)
+    ) { 
+      survivor.velocity.y = 0
+    }
+  });
 }

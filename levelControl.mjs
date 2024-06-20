@@ -1,11 +1,11 @@
 import { Zombie, FlyingZombie, PowerZombie } from "./playerAndZombies.mjs";
 import { zombies } from "./playerAndZombies.mjs";
-import {  groundLevel} from "./script.js";
+import { groundLevel } from "./script.js";
 import { manupulateZombieArray } from "./playerAndZombies.mjs";
 import { ZombieWeapon } from "./zombieWeapon.mjs";
 import { StopWatch } from "./timer.mjs";
 let zombieIndex = 0;
-let count = 0
+let count = 0;
 let skyZombies = [];
 const zombieTimer = new StopWatch();
 const zombiesInfo = {
@@ -54,7 +54,7 @@ const zombiesInfo = {
 };
 
 export function populateWithZombies() {
-  console.log("Index blbglreul;iuealulyewrkluyvwrkuyewkuyvkluyv   "+ count);
+  console.log("Index blbglreul;iuealulyewrkluyvwrkuyewkuyvkluyv   " + count);
   console.log("zombie created");
   console.log(zombies);
   if (count % 2 == 0) {
@@ -68,12 +68,12 @@ export function populateWithZombies() {
     zombieIndex++;
     count++;
   } else if (count % 3 == 0) {
-    if (skyZombies.length >2) {
-      return
+    if (skyZombies.length > 2) {
+      return;
     }
     zombiesInfo["flyingZombie"].index = zombieIndex;
     const zombie = new FlyingZombie(zombiesInfo["flyingZombie"]);
-    const zombieWeapon = new ZombieWeapon({zombie});
+    const zombieWeapon = new ZombieWeapon({ zombie });
     zombie.weapon = zombieWeapon;
     manupulateZombieArray(true, zombie);
     count++;
@@ -85,7 +85,7 @@ export function populateWithZombies() {
     count++;
     manupulateZombieArray(true, zombie);
     zombieIndex++;
-  }else{
-    count ++;
+  } else {
+    count++;
   }
 }

@@ -4,9 +4,10 @@ export let walls = [];
 
 export function objectsCollideAlongX({ obj1, obj2 }) {
   if (
-    obj1.position.x + obj1.dimensions.width > obj2.position.x &&
-    obj1.position.x < obj2.position.x + obj2.dimensions.width
+    obj1.position.x + obj1.dimensions.width+obj1.velocity.x > obj2.position.x &&
+    obj1.position.x + obj1.velocity.x < obj2.position.x + obj2.dimensions.width
   ) {
+    console.log("Collision ");
     return true;
   }
   return false;
@@ -14,8 +15,8 @@ export function objectsCollideAlongX({ obj1, obj2 }) {
 
 export function objectsCollideAlongY({ obj1, obj2 }) {
   if (
-    obj1.position.y > obj2.position.y - obj2.dimensions.height &&
-    obj1.position.y - obj1.dimensions.height < obj2.position.y
+    obj1.position.y + obj1.velocity.y> obj2.position.y  &&
+    obj1.position.y - obj1.dimensions.height + obj1.velocity.y < obj2.position.y
   ) {
     return true;
   }
@@ -27,17 +28,19 @@ export class Wall {
     (this.position = position), (this.dimensions = dimensions);
     this.totalLife = 100;
     this.life = 100;
+    this.velocity = {x : 0 , y : 0 }
     walls.push(this);
   }
   draw() {
-    console.log("HERE");
+    ctx.save();
+    ctx.fillStyle = "black"
     ctx.fillRect(
       this.position.x,
       this.position.y,
       this.dimensions.width,
       this.dimensions.height
     );
-    this.survivorCollide()
+    ctx.restore()
   }
   survivorCollide() {
     if (objectsCollideAlongX({ obj1: survivor, obj2: this })) {
