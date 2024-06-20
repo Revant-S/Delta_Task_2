@@ -1,6 +1,6 @@
-import { survivor } from "./script.js";
+import { survivor,groundLevel } from "./script.js";
 import { zombies } from "./playerAndZombies.mjs";
-import { groundLevel } from "./gameEvnironment.mjs";
+
 
 export function isInBetween(compare, coordinate1, coordinate2) {
   if (compare <= coordinate2 && compare >= coordinate1) {
@@ -13,10 +13,10 @@ export function zombieTouchSurvivor({ zombie }) {
   if (zombie.type === "flying") {
     return
   }
-  const zombieLeftEnd = zombie.position.x;
-  const zombieRightEnd = zombie.position.x + zombie.zombieDimensions.width;
-  const survivorLeftEnd = survivor.position.x;
-  const survivorRightEnd = survivor.position.x + survivor.width;
+  const zombieLeftEnd = zombie.position.x-20;
+  const zombieRightEnd = zombie.position.x + zombie.zombieDimensions.width+20;
+  const survivorLeftEnd = survivor.position.x-2;
+  const survivorRightEnd = survivor.position.x + survivor.width+2;
 
   if (
     isInBetween(survivorLeftEnd, zombieLeftEnd, zombieRightEnd) ||

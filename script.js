@@ -1,31 +1,27 @@
 import {
   Survivor,
-  Zombie,
-  manupulateZombieArray,
   zombies,
-  changeNormalZpoints,
-  PowerZombie,
   FlyingZombie,
-  preventZombieOverlap
+  preventZombieOverlap,
 } from "./playerAndZombies.mjs";
-import { populateWithZombies , populateTheSky} from "./levelControl.mjs";
+import {  populateWithZombies } from "./levelControl.mjs";
 import { generateGround, createTheBase } from "./gameEvnironment.mjs";
 import { bullets, Canon } from "./weapons.mjs";
 import { showPauseMenu, gameIsPaused } from "./gameInfo.mjs";
 import { renderPowerUps } from "./powerUpControls.mjs";
+import { background } from "./sprit.mjs";
 
 import { equipSurvivor, shoot, drawTheWeapon, switchTheWeapon } from "./weaponControl.mjs";
-import { ZombieWeapon } from "./zombieWeapon.mjs";
-import { StopWatch } from "./timer.mjs";
+import { generateWalls, walls } from "./walls.mjs";
+export const groundLevel = 550;
 let animationId;
 let numberOfFrames = 0;
-const weaponOptions = document.getElementById("weaponOptions");
+let holdFrames = 120;
 let currentlySelectedWeapon = 0;
 let currentlyShowingWeapon = 0;
 const weaponDivList = document.querySelectorAll(".weaponOptionElement");
-const numberOfZombiesArray = [5, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2];
 const gameCanvas = document.getElementById("gameCanvas");
-const canvasHeight = window.innerHeight;
+export const canvasHeight = window.innerHeight;
 export const canvasWidth = window.innerWidth;
 const pauseBtn = document.getElementById("pauseBtn");
 gameCanvas.height = canvasHeight;
@@ -37,7 +33,7 @@ export const mousePosition = {
   y: undefined,
 };
 
-const groundLevel = generateGround(ctx, canvasWidth);
+ generateGround(ctx, canvasWidth);
 
 const keys = {
   KeyA: { pressed: false },
@@ -70,23 +66,16 @@ export const base = new createTheBase({ groundLevel, ctx });
 
 equipSurvivor();
 base.draw();
-export const canonGun = new Canon({
-  ctx: ctx,
-  canonTowerDetails: base.canonTowerDetails,
-});
-export const normalGun = survivor.weapons[0];
+export const canonGun = survivor.weapons[0];
 survivor.weapons.push(canonGun);
-populateWithZombies();
-populateTheSky();
 
 export function startAnimation() {
-  console.log(gameIsPaused);
   if (gameIsPaused) {
     return;
   }
   ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+  background.draw();
   base.draw();
-  generateGround(ctx, canvasWidth);
   survivor.move(keys);
   survivor.draw(ctx);
   drawTheWeapon();
@@ -107,16 +96,17 @@ export function startAnimation() {
       bullets.splice(index, 1);
     }
   });
-  if (zombies.length <= 0) {
-    numberOfZombiesArray.shift();
-    // populateWithZombies(numberOfZombiesArray[0]);
-
-    changeNormalZpoints({
-      left: base.wallCoordinates.left,
-      right: base.wallCoordinates.right + base.wallDimensions.width,
-    });
-  }
+  canonGun.moveWithPlayer()
   numberOfFrames++;
+  // generateWalls([100, 400])
+  // walls.forEach(wall=>{
+  //   wall.draw();
+  // })
+  console.log(numberOfFrames);
+  console.log(holdFrames);
+  if (numberOfFrames % holdFrames == 0) {
+    populateWithZombies()
+  }
   renderPowerUps();
   clearAnimationId();
   animationId = requestAnimationFrame(startAnimation);
@@ -147,7 +137,8 @@ window.addEventListener("mousemove", (e) => {
 });
 
 window.addEventListener("click", () => {
-  canonGun.shoot();
+  shoot()
+  console.log(bullets);
 });
 
 window.addEventListener("load", () => {

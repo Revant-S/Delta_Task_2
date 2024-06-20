@@ -1,48 +1,39 @@
-import { groundLevel } from "./gameEvnironment.mjs";
-import { ctx, survivor, mousePosition } from "./script.js";
-import { SurvivorNormalGun, bullets } from "./weapons.mjs";
-import { MachineGun,Granite } from "./additionalWeapons.mjs";
+import { ctx, survivor, mousePosition, groundLevel } from "./script.js";
+import { Canon, bullets, MachineGun, Granite } from "./weapons.mjs";
+
 import { zombies } from "./playerAndZombies.mjs";
-import { updateNumberOfBullets,normalGunBullets } from "./gameInfo.mjs";
+import { updateNumberOfBullets, canonBullets } from "./gameInfo.mjs";
 
 let selectedWeapon;
 export function shoot() {
   selectedWeapon.shootTheBullet();
-  updateNumberOfBullets({object : selectedWeapon , domElement : normalGunBullets});
+  updateNumberOfBullets({ object: selectedWeapon, domElement: canonBullets });
 }
 
 // Called only once
 export function equipSurvivor() {
-  const normalGun = new SurvivorNormalGun({
-    survivor: survivor,
-    groundLevel: groundLevel,
-  });
-  const graniteGun = new Granite()
+  const canonGun = new Canon();
+  const graniteGun = new Granite();
   const machineGun = new MachineGun();
-  selectedWeapon = normalGun;
-  survivor.weapons.push(normalGun);
+  selectedWeapon = canonGun;
+  survivor.weapons.push(canonGun);
   survivor.weapons.push(machineGun);
   survivor.weapons.push(graniteGun);
 }
 
-export function switchTheWeapon(from , to) {
+export function switchTheWeapon(from, to) {
   const prevWeapon = survivor.weapons[from];
   const selectedWeaponNow = survivor.weapons[to];
   prevWeapon.selected = false;
   selectedWeaponNow.selected = true;
-  selectedWeapon = selectedWeaponNow
-  updateNumberOfBullets({object : selectedWeapon , domElement : normalGunBullets })
+  selectedWeapon = selectedWeaponNow;
+  updateNumberOfBullets({ object: selectedWeapon, domElement: canonBullets });
 }
 
 export function drawTheWeapon() {
   survivor.weapons.forEach((weapon) => {
-    if (weapon.selected && weapon.type != "canon") {
-      weapon.draw(ctx);
-    }
-    if ((weapon.type == "gun" || weapon.type == "throw") && weapon.selected) {
+    if (weapon.selected) {
       weapon.moveWithPlayer(survivor.position);
-    }
-    if (weapon.type == "canon") {
       weapon.followTheMouse({ mouseCoordinates: mousePosition, ctx: ctx });
     }
   });
@@ -55,25 +46,23 @@ function zombiesInRange(granite) {
   const graniteCenter = granite.position;
   let zombiesToKill = [];
   zombies.forEach((zombie) => {
-    let midPointX = zombie.position.x + zombie.zombieDimensions.width / 2; // x midpont of the zombie
-    let midPointY = zombie.position.y - zombie.zombieDimensions.height / 2; // y midpoint
+    let midPointX = zombie.position.x + zombie.zombieDimensions.width / 2;
+    let midPointY = zombie.position.y - zombie.zombieDimensions.height / 2;
     let distance = distanceBetween({
       x1: graniteCenter.x,
       x2: midPointX,
       y1: graniteCenter.y,
       y2: midPointY,
     });
-    console.log("Distances");
-    console.log(distance);
-    if (distance < 170) {
+
+    if (distance < 200) {
       zombiesToKill.push(zombie);
     }
-    });
-  console.log(zombiesToKill);
+  });
   return zombiesToKill;
 }
 export function checkGraniteTime(granite, index) {
-  if (granite.timer.secondsSpend <= 10) {
+  if (granite.timer.secondsSpend <= 3) {
     return false;
   }
   let zombiesInRangeArray = zombiesInRange(granite);

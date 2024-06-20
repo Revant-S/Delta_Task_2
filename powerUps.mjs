@@ -1,6 +1,5 @@
 //  powerUps == Health , temporary Immunity, Extra Gunbullets , Extra Canon Bullets
-import { groundLevel } from "./gameEvnironment.mjs";
-import { canonGun, ctx, normalGun } from "./script.js";
+import { canonGun, ctx,groundLevel } from "./script.js";
 import { survivor } from "./script.js";
 import { isInBetween } from "./contactlogic.mjs";
 import { normalGunBullets, updateNumberOfBullets } from "./gameInfo.mjs";
@@ -82,11 +81,11 @@ export class ExtraGunBullets extends PowerUp {
   }
 
   onTake() {
-    normalGun.remainingBullets += 50;
-    if (normalGun.remainingBullets > normalGun.totalBullets) {
-      normalGun.totalBullets = normalGun.remainingBullets;
+    canonGun.remainingBullets += 50;
+    if (canonGun.remainingBullets > canonGun.totalBullets) {
+      canonGun.totalBullets = canonGun.remainingBullets;
     }
-    updateNumberOfBullets({ object: normalGun, domElement: normalGunBullets });
+    updateNumberOfBullets({ object: canonGun, domElement: normalGunBullets });
     ExtraGunBullets.instanceExists = false;
     removePowerUp({ powerUp: this });
   }

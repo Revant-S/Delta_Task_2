@@ -1,4 +1,3 @@
-import { groundLevel } from "./gameEvnironment.mjs";
 import {
   ExtraGunBullets,
   HealthBoost,
@@ -6,8 +5,8 @@ import {
   ExtraCanonBullets,
   TemporaryImmunity,
 } from "./powerUps.mjs";
-import { base, canonGun, canvasWidth, normalGun, survivor } from "./script.js";
-import { randomInRange } from "./script.js";
+import { base, canonGun, canvasWidth, survivor } from "./script.js";
+import { randomInRange,groundLevel } from "./script.js";
 
 function getALocation() {
   let location = randomInRange(0, base.leftEnd);
@@ -33,7 +32,7 @@ function placeThePowerUps() {
     HealthBoost.instanceExists = true;
     powerUps.push(lifeBooster);
   }
-  if (normalGun.remainingBullets < 80 && !ExtraGunBullets.instanceExists) {
+  if (canonGun.remainingBullets < 80 && !ExtraGunBullets.instanceExists) {
     const location = getALocation()
     const bulletBooster = new ExtraGunBullets({
       x: location,

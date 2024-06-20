@@ -1,7 +1,9 @@
 
-import { ctx } from "./script.js";
-export const groundLevel = 500;
+import { ctx,groundLevel } from "./script.js";
+import { walls } from "./walls.mjs";
+
 export function generateGround(ctx, canvasWidth) {
+  // return
   ctx.beginPath();
   ctx.moveTo(0, groundLevel);
   ctx.lineTo(canvasWidth, groundLevel);
@@ -48,77 +50,20 @@ export function createTheBase({ groundLevel, ctx }) {
   this.totalLife = 400;
   this.leftEnd = 400;
   this.rigntEnd = 900;
-  this.wallCoordinates = {
-    left: {
-      x: 400,
-      y: groundLevel,
-    },
-    right: {
-      x: 900,
-      y: groundLevel,
-    },
-  };
-
-  this.wallDimensions = {
-    left: {
-      height: 120,
-      width: 120,
-    },
-    right: {
-      height: 120,
-      width: 120,
-    },
-  };
   this.canonTowerDetails = {
-    location:
-      (this.wallCoordinates.left.x +
-        this.wallDimensions.left.width +
-        this.wallCoordinates.right.x) /
-      2,
+    location:700,
     height: 200,
     width: 40,
     bullets: 500,
   };
-  this.wallLife = {
-    left: this.totalLife,
-    right: this.totalLife,
-  };
+
   this.draw = function () {
-    ctx.fillStyle = "black";
-   if (this.wallLife.left>0) {
-    ctx.fillRect(
-      this.wallCoordinates.left.x,
-      this.wallCoordinates.left.y - this.wallDimensions.left.height,
-      this.wallDimensions.left.width,
-      this.wallDimensions.left.height
-    );
-  ctx.fill();
-   }
-   else{
-    this.wallCoordinates.left.x = undefined;
-    this.wallCoordinates.left.y = undefined
-   }
-    if (this.wallLife.right>0) {
-      ctx.fillRect(
-        this.wallCoordinates.right.x,
-        this.wallCoordinates.right.y - this.wallDimensions.right.height,
-        this.wallDimensions.right.width,
-        this.wallDimensions.right.height
-      );
-      ctx.fill();
-    }
-    else{
-      this.wallCoordinates.left.x = undefined;
-      this.wallCoordinates.left.y = undefined
-     }
-    ctx.fillStyle = "grey";
-    ctx.fillRect(
-      this.canonTowerDetails.location - this.canonTowerDetails.width / 2,
-      groundLevel - this.canonTowerDetails.height,
-      this.canonTowerDetails.width,
-      this.canonTowerDetails.height
-    );
-    ctx.fill();
-    baseHealthBar({ object: this });
+    walls.forEach(wall =>{
+      wall.draw(groundLevel)
+    })
   };
+}
+
+export class Platform {
+  
 }

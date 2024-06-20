@@ -1,6 +1,5 @@
-import { bullets, changeTheValue, gravity } from "./weapons.mjs";
-import { groundLevel } from "./gameEvnironment.mjs";
-import { base, canvasWidth, survivor } from "./script.js";
+import { bullets, changeTheValue, gravity,Granite } from "./weapons.mjs";
+import { base, canvasWidth, survivor,groundLevel } from "./script.js";
 import { ctx } from "./script.js";
 import { updateNumberOfBullets, updateTheScoreBoard } from "./gameInfo.mjs";
 import {
@@ -9,8 +8,7 @@ import {
 } from "./contactlogic.mjs";
 import { isInBetween } from "./contactlogic.mjs";
 import { anyPowerUpTaken } from "./powerUpControls.mjs";
-import { Granite } from "./additionalWeapons.mjs";
-
+import { Sprite } from "./sprit.mjs";
 export function updateWeaponDirection(direction) {
   survivor.weapons.forEach((weapon) => {
     if (weapon.type == "gun" || weapon.type == "throw") {
@@ -24,7 +22,7 @@ export function updateWeaponDirection(direction) {
 
 export function drawHealthBar({ object }) {
   if (object.life == 0 || !object.isAlive) {
-    return
+    return;
   }
   let healthBarPositionY = object.position.y - 25;
   let healthBarPositionX = object.position.x;
@@ -53,7 +51,7 @@ export function drawHealthBar({ object }) {
   return;
 }
 
-let groundLevelForSurvivor = groundLevel;
+
 export let zombies = [];
 export let normalZStopPoint = {
   left: undefined,
@@ -68,7 +66,6 @@ export function manupulateZombieArray(add, object) {
     zombies.push(object);
   } else {
     zombies.splice(object.index, 1);
-    // Update indices of remaining zombies
     zombies.forEach((zombie, index) => {
       zombie.index = index;
     });
@@ -139,7 +136,6 @@ function hasTheBulletHit(movingObject) {
   return false;
 }
 
-
 export function preventZombieOverlap() {
   for (let i = 0; i < zombies.length; i++) {
     for (let j = i + 1; j < zombies.length; j++) {
@@ -157,28 +153,31 @@ export function preventZombieOverlap() {
       const by2 = zombieB.position.y;
 
       if (ax1 < bx2 && ax2 > bx1 && ay1 < by2 && ay2 > by1) {
-
         const overlapX = Math.min(ax2, bx2) - Math.max(ax1, bx1);
-
         const overlapY = Math.min(ay2, by2) - Math.max(ay1, by1);
 
         if (overlapX > 0 && overlapY > 0) {
-    
-          if (overlapX < overlapY) {
-            if (zombieA.position.x < zombieB.position.x) {
-              zombieA.position.x -= overlapX / 2;
-              zombieB.position.x += overlapX / 2;
+          if (zombieA instanceof FlyingZombie && zombieB instanceof FlyingZombie) {
+            // Reverse direction for both flying zombies
+            zombieA.velocity.x = -zombieA.velocity.x;
+            zombieB.velocity.x = -zombieB.velocity.x;
+          }  else {
+            if (overlapX < overlapY) {
+              if (zombieA.position.x < zombieB.position.x) {
+                zombieA.position.x -= overlapX / 2;
+                zombieB.position.x += overlapX / 2;
+              } else {
+                zombieA.position.x += overlapX / 2;
+                zombieB.position.x -= overlapX / 2;
+              }
             } else {
-              zombieA.position.x += overlapX / 2;
-              zombieB.position.x -= overlapX / 2;
-            }
-          } else {
-            if (zombieA.position.y < zombieB.position.y) {
-              zombieA.position.y -= overlapY / 2;
-              zombieB.position.y += overlapY / 2;
-            } else {
-              zombieA.position.y += overlapY / 2;
-              zombieB.position.y -= overlapY / 2;
+              if (zombieA.position.y < zombieB.position.y) {
+                zombieA.position.y -= overlapY / 2;
+                zombieB.position.y += overlapY / 2;
+              } else {
+                zombieA.position.y += overlapY / 2;
+                zombieB.position.y -= overlapY / 2;
+              }
             }
           }
         }
@@ -186,6 +185,7 @@ export function preventZombieOverlap() {
     }
   }
 }
+
 export class Survivor {
   constructor({ position, velocity }) {
     this.position = position;
@@ -196,27 +196,48 @@ export class Survivor {
     this.life = 1000;
     this.totalLife = 1000;
     this.velocity = velocity;
-    this.isAlive = true
+    this.isAlive = true;
     this.originalVelocity = { ...velocity };
-    this.height = 120;
-    this.width = 30;
+    this.height = 130;
+    this.width = 20;
     this.isJumping = false;
+    this.dimensions = {
+      height : this.height,
+      width : this.width
+    }
     this.isOnGround = true;
     this.isStandingOnTheWall = false;
     this.weapons = [];
     this.originalPosition = position;
     this.score = 0;
+    this.direction = "right";
+    this.once = false;
+    this.sprite = new Sprite({
+      position: this.position,
+      imageSrc: "./spriteAnimations/character/Idle.png",
+      scale: { x: 2, y: 2 },
+      offset: {
+        x: 100,
+        y: 255,
+      },
+      dimensions: {
+        height: this.height,
+        width: this.width,
+      },
+      frames: 7,
+      framesHold: 3,
+    });
   }
-
-  draw(ctx) {
-    ctx.fillStyle = this.color;
-    ctx.fillRect(
-      this.position.x,
-      this.position.y - this.height,
-      this.width,
-      this.height
-    );
-    ctx.fill();
+  updateSprite(sprite, frames, framesHold) {
+    this.sprite.image.src = `./spriteAnimations/character/${sprite}.png`;
+    (this.sprite.frames = frames), (this.framesHold = framesHold);
+  }
+  draw() {
+    if (!this.once) {
+      this.sprite.position.y -= this.sprite.dimensions.height;
+      this.once = true;
+    }
+    this.sprite.draw();
   }
 
   move(keys) {
@@ -224,11 +245,25 @@ export class Survivor {
       alert("GAME OVER !!!!");
       return;
     }
+    if (this.velocity.x != 0) {
+      if (this.velocity.x < 0) {
+        this.updateSprite("RunLeft", 8, 13);
+      } else {
+        this.updateSprite("Run", 8, 13);
+      }
+    } else {
+      if (this.direction == "right") {
+        this.updateSprite("Idle", 7, 13);
+      } else {
+        this.updateSprite("IdleLeft", 7, 13);
+      }
+    }
+    this.sprite.update();
     anyPowerUpTaken();
     drawHealthBar({ object: this });
     this.velocity.x = 0;
     if (this.position.y >= groundLevel) {
-      this.position.y = groundLevelForSurvivor;
+      this.position.y = groundLevel;
       this.velocity.y = 0;
       this.isJumping = false;
       this.isOnGround = true;
@@ -238,12 +273,13 @@ export class Survivor {
     }
 
     if (keys["KeyA"].pressed && keys.LastPressed == "KeyA") {
-      this.velocity.x -= 4;
-
+      this.velocity.x -= 5;
       updateWeaponDirection("left");
+      this.direction = "left";
     }
     if (keys["KeyD"].pressed && keys.LastPressed == "KeyD") {
-      this.velocity.x += 4;
+      this.velocity.x += 5;
+      this.direction = "right";
 
       updateWeaponDirection("right");
     }
@@ -253,59 +289,7 @@ export class Survivor {
       this.isOnGround = false;
     }
 
-    if (
-      this.position.x + this.width >= base.wallCoordinates.right.x &&
-      this.position.x + this.width <=
-        base.wallCoordinates.right.x + base.wallDimensions.right.width &&
-      keys.LastPressed == "KeyD" &&
-      this.position.y >= base.wallCoordinates.right.y
-    ) {
-      this.velocity.x = 0;
-    }
-    if (
-      this.position.x >= base.wallCoordinates.left.x &&
-      this.position.x <=
-        base.wallCoordinates.left.x + base.wallDimensions.left.width &&
-      keys.LastPressed == "KeyA" &&
-      this.position.y >= base.wallCoordinates.left.y
-    ) {
-      this.velocity.x = 0;
-    }
-    // for right wall
-    if (
-      ((this.position.x >= base.wallCoordinates.right.x &&
-        this.position.x <=
-          base.wallCoordinates.right.x + base.wallDimensions.right.width) ||
-        (this.position.x + this.width >= base.wallCoordinates.right.x &&
-          this.position.x + this.width <=
-            base.wallCoordinates.right.x + base.wallDimensions.right.width)) &&
-      this.position.y >
-        base.wallCoordinates.right.y - base.wallDimensions.right.height &&
-      this.position.y < groundLevel
-    ) {
-      this.velocity.y = 0;
-      this.position.y =
-        base.wallCoordinates.right.y - base.wallDimensions.right.height;
-      this.isStandingOnTheWall = true;
-    }
-
-    // For the left wall
-    if (
-      ((this.position.x >= base.wallCoordinates.left.x &&
-        this.position.x <=
-          base.wallCoordinates.left.x + base.wallDimensions.left.width) ||
-        (this.position.x + this.width >= base.wallCoordinates.left.x &&
-          this.position.x + this.width <=
-            base.wallCoordinates.left.x + base.wallDimensions.left.width)) &&
-      this.position.y >
-        base.wallCoordinates.left.y - base.wallDimensions.left.height &&
-      this.position.y < groundLevel
-    ) {
-      this.velocity.y = 0;
-      this.position.y =
-        base.wallCoordinates.left.y - base.wallDimensions.left.height;
-      this.isStandingOnTheWall = true;
-    }
+   
 
     this.position.x += this.velocity.x;
     this.position.y += this.velocity.y;
@@ -314,7 +298,6 @@ export class Survivor {
 export class Zombie {
   constructor({
     position,
-    survivor,
     velocity,
     zombieDimensions,
     index,
@@ -327,7 +310,6 @@ export class Zombie {
     this.velocity = velocity;
     this.originalVelocity = { ...velocity };
     this.zombieDimensions = zombieDimensions;
-    this.survivorToFollow = survivor;
     this.isAlive = true;
     this.zombieName = zombieName;
     this.life = life;
@@ -335,21 +317,42 @@ export class Zombie {
     this.isOnGround = true;
     this.isOnTheWall = false;
     this.isOverWall = false;
+    this.once = false;
     this.color = "green";
+    this.isAttacking = false;
     this.touchingTheWall = false;
+    this.offsetOriginal = {
+      x: 20,
+      y: 106,
+    }
+    this.sprite = new Sprite({
+      position: this.position,
+      imageSrc: "./spriteAnimations/character/ZIdle.png",
+      scale: { x: 2.75, y: 3.3 },
+      offset: {
+        x: 20,
+        y: 106,
+      },
+      dimensions: {
+        height: this.height,
+        width: this.width,
+      },
+      frames: 11,
+      framesHold: 5,
+    });
   }
-
+  
   kill() {
     this.isAlive = false;
     manupulateZombieArray(false, this);
-    this.survivorToFollow.score += 5;
-    updateTheScoreBoard({ survivor: this.survivorToFollow });
+    survivor.score += 5;
+    updateTheScoreBoard({ survivor: survivor });
     if (this instanceof FlyingZombie) {
       this.weapon.alive = false;
     }
   }
 
-  run(ctx, base) {
+  run(ctx) {
     drawHealthBar({ object: this });
     if (!this.isAlive) return;
 
@@ -361,102 +364,54 @@ export class Zombie {
         return;
       }
     }
+    
     if (zombieTouchSurvivor({ zombie: this })) {
-      if (!this.survivorToFollow.isImmune) {
-        this.survivorToFollow.life -= 0.25;
+      if (this.direction == "right") {
+        this.updateSprite("Attack", 18, 3);
+      }else{
+        this.updateSprite("Attack2",18,3)
+      }
+      this.isAttacking = true
+      this.velocity.x = 0
+      if (!survivor.isImmune) {
+        survivor.life -= 0.25;
+        
       }
 
-      if (this.survivorToFollow.noOfZAfterImmunity > 4) {
-        this.survivorToFollow.isImmune = false;
+      if (survivor.noOfZAfterImmunity > 4) {
+        survivor.isImmune = false;
       }
+      this.sprite.update()
+      
+    }else{
+      this.isAttacking = false
     }
-
-    // zombie sides
     const leftSide = this.position.x;
     const rightSide = this.position.x + this.zombieDimensions.width;
-    const topPart = groundLevel - this.zombieDimensions.height;
-    const bottom = this.position.y;
 
-    // wallSides
-    //left
-    const leftSideLeftWall = base.wallCoordinates.left.x;
-    const rightSideLeftWall =
-      base.wallCoordinates.left.x + base.wallDimensions.left.width;
-    const topsideLeftWall = groundLevel - base.wallDimensions.left.height;
-    const bottomLeftWall = base.wallCoordinates.left.y;
-
-    // wallSide
-    //Right
-    const leftSideRightWall = base.wallCoordinates.right.x;
-    const rightSideRightWall =
-      base.wallCoordinates.right.x + base.wallDimensions.right.width;
-    const topsideRightWall = groundLevel - base.wallDimensions.right.height;
-    const bottomRightWall = base.wallCoordinates.right.y;
-
-    // Check if the zombie should jump onto the wall
-
-    if (
-      isInBetween(rightSide, leftSideLeftWall, rightSideLeftWall) ||
-      isInBetween(leftSide, leftSideLeftWall, rightSideLeftWall) ||
-      isInBetween(rightSide, leftSideRightWall, rightSideRightWall) ||
-      isInBetween(leftSide, leftSideRightWall, rightSideRightWall)
-    ) {
-      if (
-        (isInBetween(bottom, topsideLeftWall, bottomLeftWall) ||
-          isInBetween(bottom, topsideRightWall, bottomRightWall)) &&
-        !this.isOnTheWall
-      ) {
-        if (this instanceof PowerZombie) {
-          this.velocity.y = 0;
-          this.position.y = isInBetween(bottom, topsideLeftWall, bottomLeftWall)
-            ? topsideLeftWall
-            : topsideRightWall;
-          this.isOnTheWall = true;
-          this.isOnGround = false;
-        } else if (!(this instanceof FlyingZombie)) {
-          this.velocity.x = 0;
-          this.touchingTheWall = true;
-        }
-      }
-    } else {
-      this.isOnTheWall = false;
-
-      // Apply gravity if the zombie is not on the ground or on the wall
-      if (bottom < groundLevel && !this.isOnTheWall && !this.isOnGround) {
-        this.velocity.y += gravity;
-      }
-      if (bottom > groundLevel && !this.isOnGround) {
-        this.velocity.y = 0;
-        this.position.y = groundLevel;
-        this.isOnGround = true;
-        this.isOnTheWall = false;
-      }
-    }
 
     // Follow the survivor
-    if (this.survivorToFollow.position.x - this.position.x < 0 ) {
-      this.velocity.x = -1 * Math.abs(this.originalVelocity.x);
-    } else {
-      this.velocity.x = Math.abs(this.originalVelocity.x);
+    if (!(this instanceof FlyingZombie)) {
+      if (survivor.position.x - this.position.x < 0) {
+        this.velocity.x = -1 * Math.abs(this.originalVelocity.x);
+      } else {
+        this.velocity.x = Math.abs(this.originalVelocity.x);
+      }
+  
+    }else{
+      if (leftSide < 0 || rightSide >= canvasWidth) {
+        this.velocity.x*=-1;
+      }
     }
-
-    if (!(this instanceof PowerZombie) && !(this instanceof FlyingZombie) ) {
-      if (this.velocity.x >0 && isInBetween(rightSide , leftSideLeftWall,rightSideLeftWall)) {
-        this.velocity.x = 0 
-        this.position.x-=1;
-      }
-      else if (this.velocity.x < 0 && isInBetween(leftSide,leftSideRightWall,rightSideRightWall)) {
-        this.velocity.x = 0;
-        this.position.x+=1;
-      }
-      else if (this.velocity.x > 0 && isInBetween(rightSide , leftSideRightWall , rightSideRightWall)) {
-        this.velocity.x = 0;
-        this.position.x -=1
-      }
-      else if (this.velocity.x <0 && isInBetween(leftSide, leftSideLeftWall, rightSideLeftWall)) {
-        this.velocity.x = 0;
-        this.position.x += 1
-      }
+    
+    if (this.isAttacking) {
+      this.velocity.x = 0
+    }
+    if (this.position.y < groundLevel && !(this instanceof FlyingZombie)) {
+      this.velocity.y += gravity
+    }
+    if (this.position.y >= groundLevel) {
+      this.velocity.y = 0;
     }
 
     // Move the zombie
@@ -465,20 +420,25 @@ export class Zombie {
     if (this.type == "flying") {
       this.weapon.moveWithTheZombie();
     }
-
-    // Check if the zombie has reached the end of the wall
-    if (this.isOnTheWall && this.type !== "flying") {
-      if (
-        (this.position.x + this.zombieDimensions.width < leftSideLeftWall ||
-          this.position.x > rightSideLeftWall) &&
-        (this.position.x + this.zombieDimensions.width < leftSideRightWall ||
-          this.position.x > rightSideRightWall)
-      ) {
-        this.isOnTheWall = false;
+    if (!this.isAttacking) {
+      if (this.velocity.x == 0) {
+        if (this.direction == "right") {
+          this.updateSprite("ZIdle", 11, 3);
+        }else{
+          this.updateSprite("ZIdleLeft",11,3)
+        }
+        this.sprite.update();
+      } else if (this.velocity.x > 0) {
+        this.updateSprite("Walk", 13, 3);
+        this.sprite.update();
+        this.direction = "right";
+      } else {
+        this.updateSprite("WalkRight", 13, 3);
+        this.sprite.update();
+        this.direction = "left";
       }
-    }
 
-    // Draw the zombie
+    }
     ctx.fillStyle = this.color;
     ctx.fillRect(
       this.position.x,
@@ -486,6 +446,17 @@ export class Zombie {
       this.zombieDimensions.width,
       this.zombieDimensions.height
     );
+  }
+  updateSprite(sprite, frames, framesHold) {
+    this.sprite.image.src = `./spriteAnimations/skeletonZombie/${sprite}.png`;
+    (this.sprite.frames = frames), (this.framesHold = framesHold);
+  }
+  draw() {
+    if (!this.once) {
+      this.sprite.position.y -= this.sprite.dimensions.height;
+      this.once = true;
+    }
+    this.sprite.draw();
   }
 }
 export class PowerZombie extends Zombie {
@@ -513,6 +484,7 @@ export class PowerZombie extends Zombie {
     this.color = "grey";
     this.totalLife = 5;
     this.originalVelocity = { ...velocity };
+    this.inAir = false
   }
 }
 export class FlyingZombie extends Zombie {
