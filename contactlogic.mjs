@@ -80,9 +80,6 @@ export function checkCollisionWithZombie(zombieToCheck) {
       zombieToCheck.position.y > zombie.position.y - zombie.dimensions.height
     ) {
       if (zombieToCheck instanceof PowerZombie ) {
-        zombieToCheck.velocity.y -= 6
-        zombieToCheck.velocity.x = 0
-        // zombie.velocity.x = 0
         toReturn = true
       }else if(zombieToCheck instanceof Survivor){
         survivor.life --;
@@ -104,7 +101,11 @@ export function checkBulletWallContact(bullet) {
       bullet.position.x <= wall.position.x + wall.dimensions.width &&
       bullet.position.y >= wall.position.y
     ) {
+
+      wall.life--;
+      console.log(wall);
       return true
+
     }
 
   }

@@ -67,8 +67,6 @@ export function populateWithZombies() {
   if (zombies.length >= 8) {
     return
   }
-  console.log("Index blbglreul;iuealulyewrkluyvwrkuyewkuyvkluyv   " + count);
-  console.log("zombie created");
   console.log(zombies);
   if (count % 2 == 0) {
     zombiesInfo["normalZombies"].index = zombieIndex;

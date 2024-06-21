@@ -26,12 +26,20 @@ export function objectsCollideAlongY({ obj1, obj2 }) {
 export class Wall {
   constructor({position, dimensions}) {
     (this.position = position), (this.dimensions = dimensions);
-    this.totalLife = 100;
-    this.life = 100;
+    this.totalLife = 4;
+    this.life = 4;
     this.velocity = {x : 0 , y : 0 }
     walls.push(this);
   }
   draw() {
+    if (this.life <= 0
+    ) {
+      const index = walls.indexOf(this)
+      walls.splice(index,1)
+      return
+    }
+    this.position.x += this.velocity.x;
+    this.position.y += this.velocity.y;
     ctx.save();
     ctx.fillStyle = "black"
     ctx.fillRect(

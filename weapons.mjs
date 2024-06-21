@@ -2,7 +2,7 @@ import { ctx, groundLevel, survivor } from "./script.js";
 import {
   updateNumberOfBullets,
   canonBullets,
-  normalGunBullets
+  normalGunBullets,
 } from "./scoreDomElement.mjs";
 import { checkBulletWallContact } from "./contactlogic.mjs";
 import { checkGraniteTime } from "./weaponControl.mjs";
@@ -78,15 +78,14 @@ export class Bullet {
     this.velocity.y += gravity;
     this.position.x += this.velocity.x;
     this.position.y += this.velocity.y;
-   const isBulletHit =  checkBulletWallContact(this);
-   if (isBulletHit && !(this.weapon instanceof Granite)) {
-    const j = bullets.indexOf(this)
-    bullets.splice(j,1
-    )
-   }
-   if (isBulletHit && this.weapon instanceof Granite) {
-    this.velocity.x*=-1
-   }
+    const isBulletHit = checkBulletWallContact(this);
+    if (isBulletHit && !(this.weapon instanceof Granite)) {
+      const j = bullets.indexOf(this);
+      bullets.splice(j, 1);
+    }
+    if (isBulletHit && this.weapon instanceof Granite) {
+      this.velocity.x *= -1;
+    }
     if (this.weapon instanceof Granite) {
       let goFurther = checkGraniteTime(this, indexOfBullet);
       if (goFurther) {
@@ -97,7 +96,7 @@ export class Bullet {
       this.velocity.y *= -0.9;
       this.position.y = groundLevel - this.dimensions.radius;
     }
-    this.draw()
+    this.draw();
   }
 }
 
@@ -216,16 +215,16 @@ export class Canon {
     this.center.x = survivor.position.x + 10;
     this.center.y = survivor.position.y - survivor.dimensions.height + 40;
   }
-  updateBulletInfo(){
+  updateBulletInfo() {
     this.bulletInfo.velocity = {
       x: 15 * Math.cos(this.angle),
-      y: 15 * Math.sin(this.angle)
-    }
+      y: 15 * Math.sin(this.angle),
+    };
     if (this instanceof Granite) {
-      this.bulletInfo.velocity={
+      this.bulletInfo.velocity = {
         x: 2 * Math.cos(this.angle),
-      y: 2 * Math.sin(this.angle)
-      }
+        y: 2 * Math.sin(this.angle),
+      };
     }
     this.bulletInfo.direction = {
       x: this.center.x + this.dimensions.length * Math.cos(this.angle),
@@ -233,14 +232,14 @@ export class Canon {
         groundLevel -
         survivor.height +
         this.dimensions.length * Math.sin(this.angle),
-    }
+    };
   }
   followTheMouse({ mouseCoordinates, ctx }) {
     let mouseX = mouseCoordinates.x - this.center.x;
     let mouseY = mouseCoordinates.y - this.center.y;
     this.angle = Math.atan2(mouseY, mouseX);
     this.draw(ctx, this.angle);
-    this.updateBulletInfo()
+    this.updateBulletInfo();
   }
 
   shootTheBullet() {
@@ -288,7 +287,7 @@ export class MachineGun extends Canon {
   }
 
   shootTheBullet() {
-    if (this.remainingBullets < 10) return; 
+    if (this.remainingBullets < 10) return;
     this.remainingBullets -= 10;
     updateNumberOfBullets({ object: this, domElement: canonBullets });
 

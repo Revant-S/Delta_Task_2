@@ -1,12 +1,12 @@
 import { bullets, changeTheValue, gravity, Granite } from "./weapons.mjs";
 import { canvasWidth, survivor, groundLevel } from "./script.js";
 import { ctx } from "./script.js";
-import {  updateTheScoreBoard } from "./scoreDomElement.mjs";
+import { updateTheScoreBoard } from "./scoreDomElement.mjs";
 import {
   zombieTouchSurvivor,
   checkCollisionWithZombie,
   checkCollisionWithWall,
-  ckeckIfLandOnWAll
+  ckeckIfLandOnWAll,
 } from "./contactlogic.mjs";
 import { Sprite } from "./sprit.mjs";
 import { Survivor } from "./Survivor.mjs";
@@ -190,14 +190,7 @@ export function preventZombieOverlap() {
 }
 
 export class Zombie {
-  constructor({
-    position,
-    velocity,
-    dimensions,
-    index,
-    zombieName,
-    life,
-  }) {
+  constructor({ position, velocity, dimensions, index, zombieName, life }) {
     this.index = index;
     this.name = zombieName;
     this.position = position;
@@ -260,10 +253,18 @@ export class Zombie {
     }
 
     if (zombieTouchSurvivor({ zombie: this })) {
+      let frames = 18
+      if (this instanceof PowerZombie) {
+        frames = 8
+      }
       if (this.direction == "right") {
-        this.updateSprite("Attack", 18, 3);
+        this.updateSprite("Attack", frames, 3, { x: 30, y: 120 }, true);
       } else {
-        this.updateSprite("Attack2", 18, 3);
+        let frames = 18
+      if (this instanceof PowerZombie) {
+        frames = 8
+      }
+        this.updateSprite("Attack2", frames, 3, { x: 30, y: 120 }, true);
       }
       this.isAttacking = true;
       this.velocity.x = 0;
@@ -300,33 +301,29 @@ export class Zombie {
     if (this.position.y < groundLevel && !(this instanceof FlyingZombie)) {
       this.velocity.y += gravity;
     }
-    if (this.position.y >= groundLevel) {
-      this.velocity.y = 0;
-    }
-    const s = checkCollisionWithZombie(this)
-    if (s && (this instanceof PowerZombie)) {
-      console.log("LJGFLUEIGLUEIGFYUKG");
-      this.velocity.y -= 4;
-      // this.inAir = true
-    }
-
-
-
-    const p = checkCollisionWithWall(this)
-    console.log(s && (this instanceof PowerZombie));
-    if ( p && (this instanceof PowerZombie)) {
-      this.velocity.y -= 4
-      console.log("hello");
-      // this.inAir = true
-    }
-
-    // if (this.inAir) {
-    //   this.velocity.y+= gravity
-    // }
     if (this.position.y > groundLevel) {
-      this.velocity.y = 0
-      this.inAir = false
+      this.velocity.y = 0;
+      this.inAir = false;
     }
+    const s = checkCollisionWithZombie(this);
+    if (s && this instanceof PowerZombie) {
+      this.velocity.y -= 4;
+      this.inAir = true;
+    }
+
+    const p = checkCollisionWithWall(this);
+    if (p && this instanceof PowerZombie) {
+      this.velocity.y -= 2;
+      this.inAir = true;
+    }
+    const t = ckeckIfLandOnWAll(this);
+    if (t) {
+      this.inAir = false;
+    }
+    if (this.inAir) {
+      this.velocity.y += gravity;
+    }
+
     // Move the zombie
     this.position.x += this.velocity.x;
     this.position.y += this.velocity.y;
@@ -342,11 +339,19 @@ export class Zombie {
         }
         this.sprite.update();
       } else if (this.velocity.x > 0) {
-        this.updateSprite("Walk", 13, 3);
+        let frames = 13
+        if (this instanceof PowerZombie) {
+          frames = 10
+        }
+        this.updateSprite("Walk", frames, 3);
         this.sprite.update();
         this.direction = "right";
       } else {
-        this.updateSprite("WalkRight", 13, 3);
+        let frames = 13
+        if (this instanceof PowerZombie) {
+          frames = 10
+        }
+        this.updateSprite("WalkRight", frames, 3);
         this.sprite.update();
         this.direction = "left";
       }
@@ -359,9 +364,31 @@ export class Zombie {
       this.dimensions.height
     );
   }
-  updateSprite(sprite, frames, framesHold) {
-    this.sprite.image.src = `./spriteAnimations/skeletonZombie/${sprite}.png`;
+  updateSprite(
+    sprite,
+    frames,
+    framesHold,
+    newOffeset = { x: 20, y: 106 },
+    changeOffset = false
+  ) {
     (this.sprite.frames = frames), (this.framesHold = framesHold);
+    if (!(this instanceof PowerZombie)) {
+      this.sprite.image.src = `./spriteAnimations/skeletonZombie/${sprite}.png`;
+     
+      if (changeOffset) {
+        this.sprite.offset = newOffeset;
+      } else {
+        this.sprite.offset = { x: 20, y: 106 };
+      }
+    }
+    else if (this instanceof PowerZombie) {
+      this.sprite.image.src = `./spriteAnimations/powerZombie/${sprite}.png`;
+      if (changeOffset) {
+        this.sprite.offset = newOffeset;
+      } else {
+        this.sprite.offset = { x: 50, y: 100 };
+      }
+    }
   }
   draw() {
     if (!this.once) {
@@ -397,6 +424,21 @@ export class PowerZombie extends Zombie {
     this.totalLife = 5;
     this.originalVelocity = { ...velocity };
     this.inAir = false;
+    this.sprite = new Sprite({
+      position: this.position,
+      imageSrc: "./spriteAnimations/powerZombie/idleLeft.png",
+      scale: { x: 0.20, y: 0.20 },
+      offset: {
+        x: 1,
+        y: 1,
+      },
+      dimensions: {
+        height: this.height,
+        width: this.width,
+      },
+      frames: 15,
+      framesHold: 5,
+    });
   }
 }
 export class FlyingZombie extends Zombie {
