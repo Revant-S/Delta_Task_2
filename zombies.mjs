@@ -231,7 +231,6 @@ export class Zombie {
         this.updateSprite("Attack2", frames, 3, offset, true);
       }
       this.isAttacking = true;
-      // this.velocity.x = 0;
       if (!survivor.isImmune) {
         survivor.life -= 0.25;
       }
@@ -324,13 +323,6 @@ export class Zombie {
         this.direction = "left";
       }
     }
-    ctx.fillStyle = this.color;
-    ctx.fillRect(
-      this.position.x,
-      this.position.y - this.dimensions.height,
-      this.dimensions.width,
-      this.dimensions.height
-    );
   }
   updateSprite(
     sprite,
@@ -405,7 +397,7 @@ export class PowerZombie extends Zombie {
         width: this.width,
       },
       frames: 15,
-      framesHold: 5,
+      framesHold: 3,
     });
   }
 }

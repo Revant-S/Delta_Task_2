@@ -105,7 +105,7 @@ export function startAnimation() {
     wall.draw();
   });
   if (numberOfFrames % holdFrames == 0) {
-    // populateWithZombies();
+    populateWithZombies();
   }
   renderPowerUps();
   clearAnimationId();

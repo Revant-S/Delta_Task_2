@@ -3,12 +3,12 @@ import { groundLevel } from "./script.js";
 import {
   checkCollisionWithWall,
   checkCollisionWithZombie,
-  ckeckIfLandOnWAll
+  ckeckIfLandOnWAll,
 } from "./contactlogic.mjs";
 import { anyPowerUpTaken } from "./powerUpControls.mjs";
 import { Sprite } from "./sprit.mjs";
 import { drawHealthBar, updateWeaponDirection } from "./zombies.mjs";
-
+import { backgroundScroll, stopScrolling } from "./backgroundScroll.mjs";
 
 export class Survivor {
   constructor({ position, velocity }) {
@@ -69,6 +69,7 @@ export class Survivor {
       alert("GAME OVER !!!!");
       return;
     }
+
     if (this.velocity.x != 0) {
       if (this.velocity.x < 0) {
         this.updateSprite("RunLeft", 8, 13);
@@ -77,9 +78,17 @@ export class Survivor {
       }
     } else {
       if (this.direction == "right") {
-        this.updateSprite("Idle", 7, 13);
+        if (this.position.x >= 1000 && keys.KeyD.pressed) {
+          this.updateSprite("Run", 8, 13);
+        } else {
+          this.updateSprite("Idle", 7, 13);
+        }
       } else {
-        this.updateSprite("IdleLeft", 7, 13);
+        if (this.position.x <= 100 && keys.KeyA.pressed) {
+          this.updateSprite("RunLeft", 8, 13);
+        } else {
+          this.updateSprite("IdleLeft", 7, 13);
+        }
       }
     }
     this.sprite.update();
@@ -98,11 +107,20 @@ export class Survivor {
 
     if (keys["KeyA"].pressed && keys.LastPressed == "KeyA") {
       this.velocity.x -= 5;
+      if (this.position.x <= 100) {
+        backgroundScroll(this.position);
+        this.velocity.x = 0;
+      }
+
       updateWeaponDirection("left");
       this.direction = "left";
     }
     if (keys["KeyD"].pressed && keys.LastPressed == "KeyD") {
       this.velocity.x += 5;
+      if (this.position.x >= 1000) {
+        backgroundScroll(this.position);
+        this.velocity.x = 0;
+      }
       this.direction = "right";
 
       updateWeaponDirection("right");
@@ -112,12 +130,15 @@ export class Survivor {
       this.isJumping = true;
       this.isOnGround = false;
     }
-    checkCollisionWithZombie(this)
-    checkCollisionWithWall(this);
+    if (checkCollisionWithWall(this)) {
+      stopScrolling();
+      this.velocity.x = 0
+    }
+    checkCollisionWithZombie(this);
+    
     ckeckIfLandOnWAll(this);
 
     this.position.x += this.velocity.x;
     this.position.y += this.velocity.y;
-
   }
 }

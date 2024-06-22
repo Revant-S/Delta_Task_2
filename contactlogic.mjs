@@ -43,7 +43,14 @@ export function checkCollisionWithWall(obj) {
       objectsCollideAlongX({ obj1: obj, obj2: wall }) &&
       obj.position.y > wall.position.y
     ) {
+      if (obj.velocity.x >0) {
+        obj.position.x = wall.position.x - obj.dimensions.width
+      }else{
+        obj.position.x = wall.position.x + wall.dimensions.width
+
+      }
       obj.velocity.x = 0;
+      
       toReturn = true
     }
   });
