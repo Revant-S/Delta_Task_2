@@ -135,63 +135,21 @@ function hasTheBulletHit(movingObject) {
   }
   return false;
 }
-
-export function preventZombieOverlap() {
+function getTheZombie(zombie) {
+  const index = zombie.Zombieindex
   for (let i = 0; i < zombies.length; i++) {
-    for (let j = i + 1; j < zombies.length; j++) {
-      const zombieA = zombies[i];
-      const zombieB = zombies[j];
-
-      const ax1 = zombieA.position.x;
-      const ay1 = zombieA.position.y - zombieA.dimensions.height;
-      const ax2 = ax1 + zombieA.dimensions.width;
-      const ay2 = zombieA.position.y;
-
-      const bx1 = zombieB.position.x;
-      const by1 = zombieB.position.y - zombieB.dimensions.height;
-      const bx2 = bx1 + zombieB.dimensions.width;
-      const by2 = zombieB.position.y;
-
-      if (ax1 < bx2 && ax2 > bx1 && ay1 < by2 && ay2 > by1) {
-        const overlapX = Math.min(ax2, bx2) - Math.max(ax1, bx1);
-        const overlapY = Math.min(ay2, by2) - Math.max(ay1, by1);
-
-        if (overlapX > 0 && overlapY > 0) {
-          if (
-            zombieA instanceof FlyingZombie &&
-            zombieB instanceof FlyingZombie
-          ) {
-            // Reverse direction for both flying zombies
-            zombieA.velocity.x = -zombieA.velocity.x;
-            zombieB.velocity.x = -zombieB.velocity.x;
-          } else {
-            if (overlapX < overlapY) {
-              if (zombieA.position.x < zombieB.position.x) {
-                zombieA.position.x -= overlapX / 2;
-                zombieB.position.x += overlapX / 2;
-              } else {
-                zombieA.position.x += overlapX / 2;
-                zombieB.position.x -= overlapX / 2;
-              }
-            } else {
-              if (zombieA.position.y < zombieB.position.y) {
-                zombieA.position.y -= overlapY / 2;
-                zombieB.position.y += overlapY / 2;
-              } else {
-                zombieA.position.y += overlapY / 2;
-                zombieB.position.y -= overlapY / 2;
-              }
-            }
-          }
-        }
-      }
+    const element = zombies[i];
+    if (element.Zombieindex === index) {
+      return i
     }
   }
+  return -1;
 }
 
 export class Zombie {
-  constructor({ position, velocity, dimensions, index, zombieName, life }) {
-    this.index = index;
+  static zombieIndex = 0;
+  constructor({ position, velocity, dimensions, zombieName, life }) {
+    this.Zombieindex = Zombie.zombieIndex++
     this.name = zombieName;
     this.position = position;
     this.velocity = velocity;
@@ -231,12 +189,15 @@ export class Zombie {
 
   kill() {
     this.isAlive = false;
-    manupulateZombieArray(false, this);
     survivor.score += 5;
+    const index = getTheZombie(this)
+    console.log(index);
+    zombies.splice(index,1)
     updateTheScoreBoard({ survivor: survivor });
     if (this instanceof FlyingZombie) {
       this.weapon.alive = false;
     }
+    console.log(zombies);
   }
 
   run(ctx) {
@@ -254,20 +215,23 @@ export class Zombie {
 
     if (zombieTouchSurvivor({ zombie: this })) {
       let frames = 18
+      let offset = {x:30 , y : 120}
       if (this instanceof PowerZombie) {
         frames = 8
+        offset = {x:20 , y : 100}
+
       }
       if (this.direction == "right") {
-        this.updateSprite("Attack", frames, 3, { x: 30, y: 120 }, true);
+        this.updateSprite("Attack", frames, 3, offset, true);
       } else {
         let frames = 18
       if (this instanceof PowerZombie) {
         frames = 8
       }
-        this.updateSprite("Attack2", frames, 3, { x: 30, y: 120 }, true);
+        this.updateSprite("Attack2", frames, 3, offset, true);
       }
       this.isAttacking = true;
-      this.velocity.x = 0;
+      // this.velocity.x = 0;
       if (!survivor.isImmune) {
         survivor.life -= 0.25;
       }
@@ -322,6 +286,10 @@ export class Zombie {
     }
     if (this.inAir) {
       this.velocity.y += gravity;
+    }
+
+    if (this.position.x < 0 || this.position.x > window.innerWidth) {
+      this.velocity.x*=-1;
     }
 
     // Move the zombie

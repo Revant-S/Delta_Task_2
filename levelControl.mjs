@@ -2,25 +2,24 @@ import { Zombie, FlyingZombie, PowerZombie } from "./zombies.mjs";
 import { zombies } from "./zombies.mjs";
 import { groundLevel } from "./script.js";
 import { manupulateZombieArray } from "./zombies.mjs";
-import { ZombieWeapon } from "./zombieWeapon.mjs";
+
 import { StopWatch } from "./timer.mjs";
 let xPosition = 0;
-let zombieIndex = 0;
 let count = 0;
-let skyZombies = [];
-const zombieTimer = new StopWatch();
+
+
 const zombiesInfo = {
   normalZombies: {
-    position: { x: 4, y: 0 },
+    position: { x: 80, y: 300 },
     velocity: {
       x: 1,
       y: 0,
     },
     dimensions: {
       height: 70,
-      width: 15,
+      width: 25,
     },
-    index: zombieIndex,
+
     zombieName: "normalZombie",
     life: 3,
   },
@@ -34,7 +33,7 @@ const zombiesInfo = {
       height: 15,
       width: 100,
     },
-    index: zombieIndex,
+    index: Zombie.zombieIndex++,
     zombieName: "flyingZombie",
     life: 5,
   },
@@ -45,10 +44,9 @@ const zombiesInfo = {
       y: 0,
     },
     dimensions: {
-      height: 70,
-      width: 15,
+      height: 90,
+      width: 40,
     },
-    index: zombieIndex,
     zombieName: "powerZombie",
     life: 5,
   },
@@ -67,37 +65,33 @@ export function populateWithZombies() {
   if (zombies.length >= 8) {
     return
   }
-  console.log(zombies);
   if (count % 2 == 0) {
-    zombiesInfo["normalZombies"].index = zombieIndex;
     zombiesInfo["normalZombies"].position = {
       x: xPosition,
       y: groundLevel - zombiesInfo["normalZombies"].dimensions.height,
     };
+
     const zombie = new Zombie(zombiesInfo["normalZombies"]);
+    zombie.velocity = {
+      x : 1,
+      y: 0
+    }
+    console.log(zombie);
     manupulateZombieArray(true, zombie);
-    zombieIndex++;
     count++;
     switchxPosition()
-  } else if (count % 3 == 0) {
-    if (skyZombies.length > 2) {
-      return;
-    }
-    zombiesInfo["flyingZombie"].index = zombieIndex;
-    const zombie = new FlyingZombie(zombiesInfo["flyingZombie"]);
-    const zombieWeapon = new ZombieWeapon({ zombie });
-    zombie.weapon = zombieWeapon;
-    manupulateZombieArray(true, zombie);
-    count++;
-    skyZombies.push(zombie);
-    zombieIndex++;
-  } else if (count % 5 == 0) {
+  } 
+  else if (count % 5 == 0) {
     zombiesInfo["powerzombie"].position.x = xPosition
-    zombiesInfo["powerzombie"].index = zombieIndex;
+    
     const zombie = new PowerZombie(zombiesInfo["powerzombie"]);
+    zombie.velocity = {
+      x : 2,
+      y : 0
+    }
+    console.log(zombie);
     count++;
     manupulateZombieArray(true, zombie);
-    zombieIndex++;
     switchxPosition()
   } else {
     count++;

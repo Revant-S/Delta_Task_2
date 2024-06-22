@@ -46,8 +46,8 @@ function zombiesInRange(granite) {
   const graniteCenter = granite.position;
   let zombiesToKill = [];
   zombies.forEach((zombie) => {
-    let midPointX = zombie.position.x + zombie.zombieDimensions.width / 2;
-    let midPointY = zombie.position.y - zombie.zombieDimensions.height / 2;
+    let midPointX = zombie.position.x + zombie.dimensions.width / 2;
+    let midPointY = zombie.position.y - zombie.dimensions.height / 2;
     let distance = distanceBetween({
       x1: graniteCenter.x,
       x2: midPointX,

@@ -1,5 +1,6 @@
 
 import { ctx, survivor,groundLevel } from "./script.js";
+import { Sprite } from "./sprit.mjs";
 export let walls = [];
 
 export function objectsCollideAlongX({ obj1, obj2 }) {
@@ -30,6 +31,21 @@ export class Wall {
     this.life = 4;
     this.velocity = {x : 0 , y : 0 }
     walls.push(this);
+    this.sprite = new Sprite({
+      position: this.position,
+      imageSrc: "./spriteAnimations/enviromnent/box.png",
+      scale: { x: 0.2, y: 0.2 },
+      offset: {
+        x: -1.5,
+        y: 0,
+      },
+      dimensions: {
+        height: this.height,
+        width: this.width,
+      },
+      frames: 1,
+      framesHold: 1,
+    });
   }
   draw() {
     if (this.life <= 0
@@ -38,17 +54,10 @@ export class Wall {
       walls.splice(index,1)
       return
     }
+    this.sprite.draw()
     this.position.x += this.velocity.x;
     this.position.y += this.velocity.y;
-    ctx.save();
-    ctx.fillStyle = "black"
-    ctx.fillRect(
-      this.position.x,
-      this.position.y,
-      this.dimensions.width,
-      this.dimensions.height
-    );
-    ctx.restore()
+   
   }
   survivorCollide() {
     if (objectsCollideAlongX({ obj1: survivor, obj2: this })) {

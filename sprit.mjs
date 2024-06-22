@@ -8,7 +8,6 @@ export class Sprite {
     dimensions,
     frames = 1,
     spriteSheetAvailabe = true,
-    signifyBase = true,
     offset = { x: 0, y: 0 },
     framesHold = 1,
     sprites
@@ -20,7 +19,6 @@ export class Sprite {
     this.dimensions = dimensions;
     this.frames = frames;
     this.currentFrames = 0;
-    this.signifyBase = signifyBase;
     this.spriteSheetAvailabe = spriteSheetAvailabe;
     this.offset = offset;
     this.framesHold = framesHold;

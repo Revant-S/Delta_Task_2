@@ -1,7 +1,6 @@
 import { survivor, groundLevel } from "./script.js";
 import { FlyingZombie, PowerZombie, zombies } from "./zombies.mjs";
 import { objectsCollideAlongX, objectsCollideAlongY, walls } from "./walls.mjs";
-import { bullets } from "./weapons.mjs";
 import { Survivor } from "./Survivor.mjs";
 
 export function isInBetween(compare, coordinate1, coordinate2) {
@@ -86,7 +85,7 @@ export function checkCollisionWithZombie(zombieToCheck) {
       }
        else {
         zombieToCheck.velocity.x = 0;
-        zombie.velocity.x = 0
+        zombie.velocity.x = 0;
       }
     }
   });

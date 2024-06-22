@@ -1,17 +1,18 @@
-import {
-  zombies,
-  FlyingZombie,
-  preventZombieOverlap,
-} from "./zombies.mjs";
+import { zombies, FlyingZombie} from "./zombies.mjs";
 import { Survivor } from "./Survivor.mjs";
-import {  populateWithZombies } from "./levelControl.mjs";
+import { populateWithZombies } from "./levelControl.mjs";
 import { generateGround, createTheBase } from "./gameEvnironment.mjs";
 import { bullets, Canon } from "./weapons.mjs";
 import { showPauseMenu, gameIsPaused } from "./scoreDomElement.mjs";
 import { renderPowerUps } from "./powerUpControls.mjs";
 import { background } from "./sprit.mjs";
 
-import { equipSurvivor, shoot, drawTheWeapon, switchTheWeapon } from "./weaponControl.mjs";
+import {
+  equipSurvivor,
+  shoot,
+  drawTheWeapon,
+  switchTheWeapon,
+} from "./weaponControl.mjs";
 import { generateWalls, walls } from "./walls.mjs";
 
 export const groundLevel = 550;
@@ -27,14 +28,14 @@ export const canvasWidth = window.innerWidth;
 const pauseBtn = document.getElementById("pauseBtn");
 gameCanvas.height = canvasHeight;
 gameCanvas.width = canvasWidth;
-generateWalls([400, 800])
+generateWalls([400, 800]);
 export const ctx = gameCanvas.getContext("2d");
 export const mousePosition = {
   x: undefined,
   y: undefined,
 };
 
- generateGround(ctx, canvasWidth);
+generateGround(ctx, canvasWidth);
 
 const keys = {
   KeyA: { pressed: false },
@@ -61,9 +62,10 @@ export const survivor = new Survivor({
 export function randomInRange(min, max) {
   return Math.random() * (max - min) + min;
 }
-
+export function chageBase(newBase) {
+  base = newBase;
+}
 export const base = new createTheBase({ groundLevel, ctx });
-
 
 equipSurvivor();
 base.draw();
@@ -85,10 +87,9 @@ export function startAnimation() {
     zombie.run(ctx, base);
     if (zombie instanceof FlyingZombie && !zombie.weapon.shot) {
       zombie.weapon.startShootingInterval();
-      zombie.weapon.shot = true
+      zombie.weapon.shot = true;
     }
   });
-
 
   bullets.forEach((bullet, index) => {
     bullet.update(index);
@@ -97,14 +98,14 @@ export function startAnimation() {
       bullets.splice(index, 1);
     }
   });
-  canonGun.moveWithPlayer()
+  canonGun.moveWithPlayer();
   numberOfFrames++;
-  
-  walls.forEach(wall=>{
+
+  walls.forEach((wall) => {
     wall.draw();
-  })
+  });
   if (numberOfFrames % holdFrames == 0) {
-    populateWithZombies()
+    // populateWithZombies();
   }
   renderPowerUps();
   clearAnimationId();
@@ -118,7 +119,6 @@ window.addEventListener("keydown", (e) => {
     keys[e.code].pressed = true;
     keys.LastPressed = e.code;
     if (e.code === "Space") {
-     
       shoot();
     }
   }
@@ -136,7 +136,7 @@ window.addEventListener("mousemove", (e) => {
 });
 
 window.addEventListener("click", () => {
-  shoot()
+  shoot();
   console.log(bullets);
 });
 
@@ -162,10 +162,10 @@ window.addEventListener("keydown", (e) => {
 });
 window.addEventListener("keydown", (e) => {
   if (e.code == "Enter") {
-    switchTheWeapon(currentlySelectedWeapon , currentlyShowingWeapon)
+    switchTheWeapon(currentlySelectedWeapon, currentlyShowingWeapon);
     weaponDivList[currentlySelectedWeapon].classList.remove("selectedWeapon");
     weaponDivList[currentlyShowingWeapon].classList.remove("show");
-    currentlySelectedWeapon = currentlyShowingWeapon
+    currentlySelectedWeapon = currentlyShowingWeapon;
     weaponDivList[currentlyShowingWeapon].classList.add("selectedWeapon");
   }
 });
