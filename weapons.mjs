@@ -2,7 +2,7 @@ import { ctx, groundLevel, survivor } from "./script.js";
 import {
   updateNumberOfBullets,
   canonBullets,
-  normalGunBullets,
+  machineGunBullet,
 } from "./scoreDomElement.mjs";
 import { checkBulletWallContact } from "./contactlogic.mjs";
 import { checkGraniteTime } from "./weaponControl.mjs";
@@ -97,66 +97,6 @@ export class Bullet {
       this.position.y = groundLevel - this.dimensions.radius;
     }
     this.draw();
-  }
-}
-
-export class SurvivorNormalGun {
-  constructor({ survivor }) {
-    this.position = {
-      x: survivor.position.x,
-      y: survivor.position.y - survivor.height + 30,
-    };
-    this.dimension = {
-      width: 40,
-      height: 10,
-    };
-    this.totalBullets = 100;
-    this.remainingBullets = 100;
-    this.weaponName = "survivorNormalGun";
-    this.displayName = "Gun Bullets";
-    this.survivor = survivor;
-    this.direction = "right";
-    this.type = "gun";
-    this.selected = true;
-  }
-
-  draw(ctx) {
-    return;
-    ctx.fillStyle = "black";
-    ctx.fillRect(
-      this.position.x,
-      this.position.y,
-      this.dimension.width,
-      this.dimension.height
-    );
-  }
-
-  moveWithPlayer() {
-    this.position.x = this.survivor.position.x;
-    if (this.direction === "left") {
-      this.position.x =
-        this.position.x - this.dimension.width + this.survivor.width;
-    }
-    this.position.y = this.survivor.position.y - this.survivor.height + 20;
-  }
-
-  shootTheBullet() {
-    this.remainingBullets -= 1;
-    if (this.remainingBullets < 0) return;
-    updateNumberOfBullets({ object: this, domElement: normalGunBullets });
-    const bullet = new Bullet({
-      weapon: this,
-      dimensions: {
-        shape: "circle",
-        radius: 10,
-      },
-      velocity: {
-        x: 15,
-        y: 0,
-      },
-      direction: this.direction,
-    });
-    bullets.push(bullet);
   }
 }
 
@@ -289,7 +229,7 @@ export class MachineGun extends Canon {
   shootTheBullet() {
     if (this.remainingBullets < 10) return;
     this.remainingBullets -= 10;
-    updateNumberOfBullets({ object: this, domElement: canonBullets });
+    updateNumberOfBullets({ object: this, domElement: machineGunBullet });
 
     for (let i = 0; i < 10; i++) {
       const bulletXOffset = 40 * i * Math.cos(this.angle);
@@ -348,7 +288,7 @@ export class Granite extends Canon {
       },
     };
   }
-  shootTheBullet() {
+  shootTheBullet() {  
     if (this.remainingBullets < 0) return;
 
     this.remainingBullets -= 1;

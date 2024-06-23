@@ -1,11 +1,10 @@
-import { zombies, FlyingZombie} from "./zombies.mjs";
+import { zombies, FlyingZombie } from "./zombies.mjs";
 import { Survivor } from "./Survivor.mjs";
-import { populateWithZombies } from "./levelControl.mjs";
 import { generateGround, createTheBase } from "./gameEvnironment.mjs";
-import { bullets, Canon } from "./weapons.mjs";
+import { bullets } from "./weapons.mjs";
 import { showPauseMenu, gameIsPaused } from "./scoreDomElement.mjs";
 import { renderPowerUps } from "./powerUpControls.mjs";
-import { background } from "./sprit.mjs";
+import { drawBackground } from "./sprit.mjs";
 
 import {
   equipSurvivor,
@@ -14,6 +13,7 @@ import {
   switchTheWeapon,
 } from "./weaponControl.mjs";
 import { generateWalls, walls } from "./walls.mjs";
+import { populateWithZombies } from "./levelControl.mjs";
 
 export const groundLevel = 550;
 let animationId;
@@ -28,7 +28,26 @@ export const canvasWidth = window.innerWidth;
 const pauseBtn = document.getElementById("pauseBtn");
 gameCanvas.height = canvasHeight;
 gameCanvas.width = canvasWidth;
-generateWalls([400, 800]);
+generateWalls([{
+  x : 400,
+  y : groundLevel-100
+}, {
+  x : 800 ,
+  y : groundLevel-100
+},
+{
+  x : 450,
+  y : groundLevel-200
+},
+{
+  x : 850,
+  y : groundLevel -200
+},
+{
+  x : 900,
+  y : groundLevel-100
+}
+]);
 export const ctx = gameCanvas.getContext("2d");
 export const mousePosition = {
   x: undefined,
@@ -77,7 +96,7 @@ export function startAnimation() {
     return;
   }
   ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-  background.draw();
+  drawBackground();
   base.draw();
   survivor.move(keys);
   survivor.draw(ctx);
@@ -102,7 +121,7 @@ export function startAnimation() {
   numberOfFrames++;
 
   walls.forEach((wall) => {
-    wall.draw();
+    wall.draw(); 
   });
   if (numberOfFrames % holdFrames == 0) {
     populateWithZombies();
@@ -135,9 +154,8 @@ window.addEventListener("mousemove", (e) => {
   mousePosition.y = e.y - 60.3;
 });
 
-window.addEventListener("click", () => {
+window.addEventListener("click", (e) => {
   shoot();
-  console.log(bullets);
 });
 
 window.addEventListener("load", () => {

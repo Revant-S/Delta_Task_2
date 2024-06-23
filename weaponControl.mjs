@@ -2,12 +2,19 @@ import { ctx, survivor, mousePosition, groundLevel } from "./script.js";
 import { Canon, bullets, MachineGun, Granite } from "./weapons.mjs";
 
 import { zombies } from "./zombies.mjs";
-import { updateNumberOfBullets, canonBullets } from "./scoreDomElement.mjs";
+import { updateNumberOfBullets, canonBullets, machineGunBullet, graniteGunBullet } from "./scoreDomElement.mjs";
 
-let selectedWeapon;
+export let selectedWeapon;
 export function shoot() {
   selectedWeapon.shootTheBullet();
-  updateNumberOfBullets({ object: selectedWeapon, domElement: canonBullets });
+  let domElement = canonBullets;
+  if (selectedWeapon instanceof MachineGun) {
+    domElement = machineGunBullet
+  }
+  else if (selectedWeapon instanceof Granite) {
+    domElement = graniteGunBullet
+  }
+  updateNumberOfBullets({ object: selectedWeapon, domElement: domElement });
 }
 
 // Called only once
@@ -27,7 +34,6 @@ export function switchTheWeapon(from, to) {
   prevWeapon.selected = false;
   selectedWeaponNow.selected = true;
   selectedWeapon = selectedWeaponNow;
-  updateNumberOfBullets({ object: selectedWeapon, domElement: canonBullets });
 }
 
 export function drawTheWeapon() {

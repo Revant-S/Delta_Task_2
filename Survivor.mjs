@@ -9,6 +9,7 @@ import { anyPowerUpTaken } from "./powerUpControls.mjs";
 import { Sprite } from "./sprit.mjs";
 import { drawHealthBar, updateWeaponDirection } from "./zombies.mjs";
 import { backgroundScroll, stopScrolling } from "./backgroundScroll.mjs";
+import { gameOver } from "./scoreDomElement.mjs";
 
 export class Survivor {
   constructor({ position, velocity }) {
@@ -65,8 +66,8 @@ export class Survivor {
   }
 
   move(keys) {
-    if (this.life < 0) {
-      alert("GAME OVER !!!!");
+    if (this.life <= 0) {
+      gameOver();
       return;
     }
 

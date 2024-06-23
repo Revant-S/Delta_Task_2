@@ -1,7 +1,13 @@
-import { zombies } from "./zombies.mjs";
-import { ctx,groundLevel } from "./script.js";
+import { groundLevel } from "./script.js";
 import { walls } from "./walls.mjs";
-import { objectsCollideAlongX , objectsCollideAlongY } from "./walls.mjs";
+export let leftEnd = 350
+export let RightEnd = 950;
+
+export function changeLeftRIght(shift) {
+  leftEnd+= shift;
+  RightEnd+= shift
+}
+
 export function generateGround(ctx, canvasWidth) {
   // return
   ctx.beginPath();
@@ -16,9 +22,7 @@ export function generateGround(ctx, canvasWidth) {
 export function createTheBase({ groundLevel, ctx }) {
   this.weaponsAvailabe = [];
   this.name = "base";
-  this.totalLife = 400;
-  this.leftEnd = 400;
-  this.rigntEnd = 900;
+
 
   this.draw = function () {
     walls.forEach(wall =>{
@@ -28,4 +32,5 @@ export function createTheBase({ groundLevel, ctx }) {
     })
   };
 }
+
 

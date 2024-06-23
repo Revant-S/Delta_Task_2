@@ -1,5 +1,5 @@
 
-import { ctx, survivor,groundLevel } from "./script.js";
+import {  survivor,groundLevel } from "./script.js";
 import { Sprite } from "./sprit.mjs";
 export let walls = [];
 
@@ -77,11 +77,9 @@ export class Wall {
 
 export function generateWalls(locations) {
   locations.forEach(location => {
+    console.log(location);
     const wall =  new Wall({
-      position : {
-        x : location,
-        y : groundLevel - 100
-      },
+      position : location,
       dimensions : {
         height : 100,
         width : 100

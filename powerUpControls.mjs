@@ -1,27 +1,25 @@
+import { RightEnd, leftEnd } from "./gameEvnironment.mjs";
 import {
-  ExtraGunBullets,
   HealthBoost,
   powerUps,
   ExtraCanonBullets,
   TemporaryImmunity,
+  ExtraMachineGunBullets,
 } from "./powerUps.mjs";
-import { canonGun, canvasWidth, survivor } from "./script.js";
-import { randomInRange,groundLevel } from "./script.js";
-import { walls } from "./walls.mjs";
+import {  canvasWidth, survivor } from "./script.js";
+import { randomInRange, groundLevel } from "./script.js";
 
 function getALocation() {
-
-  let possibleLocations = []
-  walls.forEach(wall =>{
-    possibleLocations.push(wall.position.x - 60)
-    possibleLocations.push(wall.position.x + wall.dimensions.width +60)
-  })
-  return possibleLocations[Math.floor(Math.random()*(possibleLocations.length))]
+  const region = Math.floor(Math.random()*2);
+  if (!region) {
+    return randomInRange(0, leftEnd)
+  }
+  return randomInRange(RightEnd , canvasWidth)
 }
 
 function placeThePowerUps() {
-  if (survivor.life < 400 && !HealthBoost.instanceExists) {
-    const location = getALocation()
+  if (survivor.life < 700 && !HealthBoost.instanceExists) {
+    const location = getALocation();
     const lifeBooster = new HealthBoost({
       x: location,
       y: groundLevel,
@@ -29,17 +27,9 @@ function placeThePowerUps() {
     HealthBoost.instanceExists = true;
     powerUps.push(lifeBooster);
   }
-  if (canonGun.remainingBullets < 80 && !ExtraGunBullets.instanceExists) {
-    const location = getALocation()
-    const bulletBooster = new ExtraGunBullets({
-      x: location,
-      y: groundLevel,
-    });
-    ExtraGunBullets.instanceExists = true;
-    powerUps.push(bulletBooster);
-  }
-  if (canonGun.remainingBullets < 500 && !ExtraCanonBullets.instanceExists) {
-    const location = getALocation()
+
+  if (survivor.weapons[0].remainingBullets < 800 && !ExtraCanonBullets.instanceExists) {
+    const location = getALocation();
     const bulletBoosterCanon = new ExtraCanonBullets({
       x: location,
       y: groundLevel,
@@ -47,14 +37,26 @@ function placeThePowerUps() {
     ExtraCanonBullets.instanceExists = true;
     powerUps.push(bulletBoosterCanon);
   }
-  if (survivor.life < 600 && !TemporaryImmunity.instanceExists && TemporaryImmunity.framesPassed % 200== 0) {
-    const location = getALocation()
+
+  if (survivor.weapons[1].remainingBullets < 2000 && !ExtraMachineGunBullets.instanceExists) {
+    const location = getALocation();
+    const bulletBoosterMachineGun = new ExtraMachineGunBullets({
+      x: location,
+      y: groundLevel,
+    });
+    ExtraMachineGunBullets.instanceExists = true;
+    powerUps.push(bulletBoosterMachineGun);
+  }
+  if (
+    survivor.life < 600 &&
+    !TemporaryImmunity.Taken
+  ) {
+    const location = getALocation();
     const immuity = new TemporaryImmunity({
       x: location,
       y: groundLevel,
     });
-    TemporaryImmunity.instanceExists = true;
-    TemporaryImmunity.framesPassed =0;
+    TemporaryImmunity.Taken = true;
     powerUps.push(immuity);
   }
 }

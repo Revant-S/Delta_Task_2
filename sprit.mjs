@@ -63,3 +63,60 @@ export const background = new Sprite({
   },
   offset: { x: 0, y: 0 },
 });
+
+export const background2 = new Sprite({
+  position: {
+    x: window.innerWidth,
+    y: -76.3,
+  },
+  imageSrc: "./spriteAnimations/background/file.png",
+  scale : {
+    x : 2,
+    y : 1
+  },
+  offset: { x: -background.offset.x, y: 0 },
+})
+export const background3 = new Sprite({
+  position: {
+    x: -window.innerWidth,
+    y: -76.3,
+  },
+  imageSrc: "./spriteAnimations/background/file.png",
+  scale : {
+    x : 2,
+    y : 1
+  },
+  offset: { x: background.offset.x, y: 0 },
+})
+export const background4 = new Sprite({
+  position: {
+    x: -2*window.innerWidth,
+    y: -76.3,
+  },
+  imageSrc: "./spriteAnimations/background/file.png",
+  scale : {
+    x : 2,
+    y : 1
+  },
+  offset: { x: background.offset.x, y: 0 },
+})
+export const background5 = new Sprite({
+  position: {
+    x: 2*window.innerWidth,
+    y: -76.3,
+  },
+  imageSrc: "./spriteAnimations/background/file.png",
+  scale : {
+    x : 2,
+    y : 1
+  },
+  offset: { x: -background.offset.x, y: 0 },
+})
+export function drawBackground() {
+  if (Math.abs(background.offset.x) == window.innerWidth) {
+    background.offset.x = 0
+  }
+  background.draw();
+  background2.draw();
+  background3.draw();
+}
