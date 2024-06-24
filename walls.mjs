@@ -1,11 +1,12 @@
-
-import {  survivor,groundLevel } from "./script.js";
+import {  groundLevel } from "./script.js";
 import { Sprite } from "./sprit.mjs";
+import { gravity } from "./weapons.mjs";
 export let walls = [];
 
 export function objectsCollideAlongX({ obj1, obj2 }) {
   if (
-    obj1.position.x + obj1.dimensions.width+obj1.velocity.x > obj2.position.x &&
+    obj1.position.x + obj1.dimensions.width + obj1.velocity.x >
+      obj2.position.x &&
     obj1.position.x + obj1.velocity.x < obj2.position.x + obj2.dimensions.width
   ) {
     console.log("Collision ");
@@ -16,20 +17,37 @@ export function objectsCollideAlongX({ obj1, obj2 }) {
 
 export function objectsCollideAlongY({ obj1, obj2 }) {
   if (
-    obj1.position.y + obj1.velocity.y> obj2.position.y  &&
+    obj1.position.y + obj1.velocity.y > obj2.position.y &&
     obj1.position.y - obj1.dimensions.height + obj1.velocity.y < obj2.position.y
   ) {
     return true;
   }
   return false;
 }
-
+export function checkWallCollision(wallToCheck) {
+  for (let index = 0; index < walls.length; index++) {
+    const wall = walls[index];
+    if (wall == wallToCheck) {
+      continue;
+    }
+    if (
+      wallToCheck.position.y + wallToCheck.dimensions.height + 2>
+        wall.position.y &&
+      (wallToCheck.position.x + wallToCheck.dimensions.width >
+        wall.position.x &&
+      wallToCheck.position.x < wall.position.x + wall.dimensions.width )
+    ) {
+      return true;
+    }
+  }
+  return false;
+}
 export class Wall {
-  constructor({position, dimensions}) {
+  constructor({ position, dimensions }) {
     (this.position = position), (this.dimensions = dimensions);
     this.totalLife = 4;
     this.life = 4;
-    this.velocity = {x : 0 , y : 0 }
+    this.velocity = { x: 0, y: -4 };
     walls.push(this);
     this.sprite = new Sprite({
       position: this.position,
@@ -48,43 +66,34 @@ export class Wall {
     });
   }
   draw() {
-    if (this.life <= 0
-    ) {
-      const index = walls.indexOf(this)
-      walls.splice(index,1)
-      return
+    if (this.life <= 0) {
+      const index = walls.indexOf(this);
+      walls.splice(index, 1);
+      return;
     }
-    this.sprite.draw()
+    if (this.position.y + this.dimensions.height < groundLevel) {
+      if (!checkWallCollision(this)) {
+        this.position.y += this.velocity.y;
+        this.velocity.y += gravity;
+      }
+    }
+    this.sprite.draw();
     this.position.x += this.velocity.x;
-    this.position.y += this.velocity.y;
-   
   }
-  survivorCollide() {
-    if (objectsCollideAlongX({ obj1: survivor, obj2: this })) {
-      survivor.velocity.x = 0;
-    }
-    if (
-      objectsCollideAlongY({ obj1: survivor, obj2: this }) &&
-      (survivor.position.x  < this.position.x+ this.dimensions.width ||
-        survivor.position.x + survivor.dimensions.width >
-          this.position.x )
-    ) {
-      survivor.velocity.y = 0;
-    }
-  }
+  update() {}
 }
 
-
 export function generateWalls(locations) {
-  locations.forEach(location => {
+  console.log("Called");
+  locations.forEach((location) => {
     console.log(location);
-    const wall =  new Wall({
-      position : location,
-      dimensions : {
-        height : 100,
-        width : 100
-      }
-    })
-    walls.push(wall)
+    const wall = new Wall({
+      position: location,
+      dimensions: {
+        height: 100,
+        width: 100,
+      },
+    });
+    walls.push(wall);
   });
 }

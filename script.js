@@ -5,7 +5,6 @@ import { bullets } from "./weapons.mjs";
 import { showPauseMenu, gameIsPaused } from "./scoreDomElement.mjs";
 import { renderPowerUps } from "./powerUpControls.mjs";
 import { drawBackground } from "./sprit.mjs";
-
 import {
   equipSurvivor,
   shoot,
@@ -14,9 +13,13 @@ import {
 } from "./weaponControl.mjs";
 import { generateWalls, walls } from "./walls.mjs";
 import { populateWithZombies } from "./levelControl.mjs";
+import { customSetupStart, putTheWall, setUpTimer } from "./customSetup.mjs";
+
+let animationId;
+const gameMode = localStorage.getItem("gameMode");
+export let isUnderSetup = parseInt(gameMode);
 
 export const groundLevel = 550;
-let animationId;
 let numberOfFrames = 0;
 let holdFrames = 120;
 let currentlySelectedWeapon = 0;
@@ -28,26 +31,48 @@ export const canvasWidth = window.innerWidth;
 const pauseBtn = document.getElementById("pauseBtn");
 gameCanvas.height = canvasHeight;
 gameCanvas.width = canvasWidth;
-generateWalls([{
-  x : 400,
-  y : groundLevel-100
-}, {
-  x : 800 ,
-  y : groundLevel-100
-},
-{
-  x : 450,
-  y : groundLevel-200
-},
-{
-  x : 850,
-  y : groundLevel -200
-},
-{
-  x : 900,
-  y : groundLevel-100
+function customset() {
+  if (!isUnderSetup) {
+
+    generateWalls([
+      {
+        x: 400,
+        y: groundLevel - 100,
+      },
+      {
+        x: 800,
+        y: groundLevel - 100,
+      },
+      {
+        x: 450,
+        y: groundLevel - 200,
+      },
+      {
+        x: 850,
+        y: groundLevel - 200,
+      },
+      {
+        x: 900,
+        y: groundLevel - 100,
+      },
+    ]);
+  }
+  else{
+    const startBtn = document.createElement("button");
+    startBtn.classList.add("start");
+    const startDiv = document.createElement("div");
+    startDiv.classList.add("timer");
+    startBtn.innerText = "Start"
+    startDiv.appendChild(startBtn)
+    startBtn.addEventListener("click", ()=>{
+      document.querySelector("body").removeChild(document.querySelector(".timer"))
+      isUnderSetup = false
+    })
+    document.querySelector("body").appendChild(startDiv)
+  }
 }
-]);
+
+customset();
 export const ctx = gameCanvas.getContext("2d");
 export const mousePosition = {
   x: undefined,
@@ -95,6 +120,7 @@ export function startAnimation() {
   if (gameIsPaused) {
     return;
   }
+
   ctx.clearRect(0, 0, canvasWidth, canvasHeight);
   drawBackground();
   base.draw();
@@ -121,12 +147,16 @@ export function startAnimation() {
   numberOfFrames++;
 
   walls.forEach((wall) => {
-    wall.draw(); 
+    wall.draw();
   });
-  if (numberOfFrames % holdFrames == 0) {
+
+  if (numberOfFrames % holdFrames == 0 && !isUnderSetup) {
     populateWithZombies();
   }
   renderPowerUps();
+  if (isUnderSetup) {
+    customSetupStart();
+  }
   clearAnimationId();
   animationId = requestAnimationFrame(startAnimation);
 }
@@ -155,7 +185,18 @@ window.addEventListener("mousemove", (e) => {
 });
 
 window.addEventListener("click", (e) => {
-  shoot();
+  if (!isUnderSetup) {
+    shoot();
+    return;
+  }
+  if (putTheWall && isUnderSetup) {
+    generateWalls([
+      {
+        x: mousePosition.x,
+        y: mousePosition.y,
+      },
+    ]);
+  }
 });
 
 window.addEventListener("load", () => {

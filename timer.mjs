@@ -1,3 +1,5 @@
+const Timer = document.getElementById("timer")
+
 export class StopWatch {
     constructor() {
         this.id = null;
@@ -27,4 +29,8 @@ export class StopWatch {
         clearInterval(this.id);
         this.secondsSpend = 0;
     }
+}
+
+export function showTimer(timer) {
+    Timer.innerText = `${timer.secondsSpend/60} : ${timer.secondsSpend%60}`
 }

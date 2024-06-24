@@ -298,7 +298,7 @@ export class Zombie {
       this.weapon.moveWithTheZombie();
     }
     if (!this.isAttacking) {
-      if (this.velocity.x == 0) {
+      if (this.velocity.x == 0 && !(this instanceof PowerZombie)) {
         if (this.direction == "right") {
           this.updateSprite("ZIdle", 11, 3);
         } else {

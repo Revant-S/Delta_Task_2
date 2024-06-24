@@ -10,7 +10,9 @@ export const resetBtn = document.getElementById("resetBtn");
 export let gameIsPaused = false;
 const gameOverMenu = document.getElementById("gameOverMenu")
 
-
+function clearGameMode() {
+  localStorage.removeItem('gameMode');
+}
 
 export function updateTheScoreBoard({ survivor }) {
   scoreDomElement.innerText = `Survivor Score : ${survivor.score}`;
@@ -27,6 +29,7 @@ function pauseTheGame() {
   pauseMenuDialog.showModal();
 }
 function resetTheGame() {
+  clearGameMode()
   gameIsPaused = false;
   // survivor.life += 100
   console.log("ibf;jblbflbfkajhkhvbb oybn  mn mnpiu gggglj");
@@ -38,6 +41,7 @@ function playTheGame() {
   startAnimation();
 }
 export function gameOver() {
+  clearGameMode()
   gameIsPaused = true;
   clearAnimationId();
   const resetB = document.createElement("button");

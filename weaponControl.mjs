@@ -1,4 +1,4 @@
-import { ctx, survivor, mousePosition, groundLevel } from "./script.js";
+import { ctx, survivor, mousePosition } from "./script.js";
 import { Canon, bullets, MachineGun, Granite } from "./weapons.mjs";
 
 import { zombies } from "./zombies.mjs";

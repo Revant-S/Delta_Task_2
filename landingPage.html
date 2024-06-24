@@ -1,10 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>landingPage</title>
+    <link rel="stylesheet" href="landingPage.css">
 </head>
+
 <body>
+    <div class="heading">
+        <h1>Last Stand</h1>
+    </div>
+    <dialog id="startMenu">
+
+        <div class="card" id="Default">
+            <div class="card-inner">
+                <div class="front">
+                    <h1>Default Setup</h1>
+                    <h5>Base Contains some boxes and one automatic shooting tower</h5>
+                </div>
+                <div class="back">
+                    <p>Additional details or options for Default Setup.</p>
+                    <div class="startButton" id="defaultBtn">
+                        <h4><a href="index.html?param=false">Click Here To Start</a></h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" id="Custom">
+            <div class="card-inner">
+                <div class="front">
+                    <h1>Custom Setup</h1>
+                    <h5>Place Your Canon and walls as you want in a limited Time</h5>
+                </div>
+                <div class="back">
+                    <p>Additional details or options for Custom Setup.</p>
+                    <div class="startButton" id="customBtn">
+                        <h4><a href="index.html?param=true">Click Here To Start</a></h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </dialog>
+    <script>
+        document.getElementById("defaultBtn").addEventListener("click", function () {
+            localStorage.setItem('gameMode', "0");
+        });
+
+        document.getElementById("customBtn").addEventListener("click", function () {
+            localStorage.setItem('gameMode', '1');
+        });
+    </script>
 </body>
+
 </html>
