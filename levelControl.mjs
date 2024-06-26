@@ -62,9 +62,7 @@ function switchxPosition() {
 
 
 export function populateWithZombies() {
-  if (zombies.length >= 8) {
-    return
-  }
+
   if (count % 2 == 0) {
     zombiesInfo["normalZombies"].position = {
       x: xPosition,

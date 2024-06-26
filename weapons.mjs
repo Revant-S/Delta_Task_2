@@ -37,11 +37,20 @@ export class Bullet {
         x: direction === "right" ? velocity.x : -velocity.x,
         y: velocity.y,
       };
+    } else if (this.weapon instanceof AuroMaticCanon) {
+      this.position = {
+        x: weapon.position.x,
+        y: weapon.position.y - weapon.dimension.height,
+      };
+      this.velocity = {
+        x: this.weapon.angle< Math.PI/2 ? velocity.x : -velocity.x,
+        y: velocity.y,
+      };
     } else {
       this.velocity = velocity;
       this.position = direction;
       if (this.position.y + this.dimensions.radius >= groundLevel) {
-        this.velocity.y *= -0.9;
+        console.log("jhbflsuigfluiyg");
         this.position.y = groundLevel - this.dimensions.radius;
       }
     }
@@ -71,7 +80,6 @@ export class Bullet {
     if (this.position.y === groundLevel) {
       this.velocity.y *= -1;
     }
-
     this.position.x += this.velocity.x;
     this.position.y += this.velocity.y;
 
@@ -92,6 +100,7 @@ export class Bullet {
         return;
       }
     }
+    console.log(this.position);
     if (this.position.y + this.dimensions.radius >= groundLevel) {
       this.velocity.y *= -0.9;
       this.position.y = groundLevel - this.dimensions.radius;
@@ -113,7 +122,7 @@ export class Canon {
     };
     this.center = {
       x: survivor.position.x,
-      y: survivor.position.y - survivor.dimensions.height + 50,
+      y: survivor.position.y - survivor.dimensions.height,
     };
     this.weaponName = "Normal Gun";
     this.type = "canon";
@@ -261,6 +270,7 @@ export class Granite extends Canon {
   constructor() {
     super();
     this.selected = false;
+    this.StopWatch = new StopWatch()
     this.totalBullets = 20;
     this.remainingBullets = 20;
     this.displayName = "Granite Gun";
@@ -288,7 +298,7 @@ export class Granite extends Canon {
       },
     };
   }
-  shootTheBullet() {  
+  shootTheBullet() {
     if (this.remainingBullets < 0) return;
 
     this.remainingBullets -= 1;
@@ -297,6 +307,70 @@ export class Granite extends Canon {
     const timer = new StopWatch();
     timer.start();
     bullet.timer = timer;
+    bullets.push(bullet);
+  }
+}
+
+export class AuroMaticCanon extends Canon {
+  constructor(angle, position) {
+    super();
+    this.stopWatch = new StopWatch()
+    this.angle = angle;
+    this.gunDimensions = {
+      length: 80,
+      width: 30,
+    };
+    this.position = position;
+    this.dimension = {
+      height: 300,
+      width: 30,
+    };
+    this.shot = false
+    this.position = position;
+    this.center = {
+      x: this.position.x + this.dimensions.width / 2,
+      y: this.position.y - this.dimension.height,
+    };
+    this.holdFrames = 210;
+    this.bulletInfo = {
+      weapon: this,
+      dimensions: {
+        shape: "circle",
+        radius: 10,
+      },
+      velocity: {
+        x: 10 * Math.cos(this.angle),
+        y: 10 * Math.sin(this.angle),
+      },
+      direction: {
+        x: this.center.x + this.gunDimensions.length * Math.cos(this.angle),
+        y: this.center.y + this.gunDimensions.width * Math.sin(this.angle),
+      },
+    };
+  }
+  draw() {
+    //tower
+    ctx.save();
+    ctx.fillStyle = "grey";
+    ctx.fillRect(
+      this.position.x,
+      this.position.y - this.dimension.height,
+      this.dimension.width,
+      this.dimension.height
+    );
+    ctx.restore();
+    // gun
+    ctx.save();
+    ctx.translate(this.center.x, this.center.y);
+    ctx.rotate(this.angle);
+    ctx.fillStyle = "black";
+    ctx.fillRect(0, 0, this.gunDimensions.length, this.dimension.width);
+    ctx.restore();
+  }
+
+  shoot() {
+    this.shot = false;
+    const bullet = new Bullet(this.bulletInfo);
     bullets.push(bullet);
   }
 }

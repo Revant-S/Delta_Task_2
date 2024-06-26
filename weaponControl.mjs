@@ -1,10 +1,16 @@
+
 import { ctx, survivor, mousePosition } from "./script.js";
 import { Canon, bullets, MachineGun, Granite } from "./weapons.mjs";
 
 import { zombies } from "./zombies.mjs";
 import { updateNumberOfBullets, canonBullets, machineGunBullet, graniteGunBullet } from "./scoreDomElement.mjs";
-
+import { AuroMaticCanon } from "./weapons.mjs";
+export let baseGun ;
+import { groundLevel } from "./script.js";
 export let selectedWeapon;
+export let baseGun2 
+export let baseGun3
+export let baseGun4
 export function shoot() {
   selectedWeapon.shootTheBullet();
   let domElement = canonBullets;
@@ -22,6 +28,9 @@ export function equipSurvivor() {
   const canonGun = new Canon();
   const graniteGun = new Granite();
   const machineGun = new MachineGun();
+  baseGun = new AuroMaticCanon(0 , {x : 700 , y : groundLevel})
+  baseGun2 = new AuroMaticCanon(-Math.PI , {x : 700 , y : groundLevel })
+
   selectedWeapon = canonGun;
   survivor.weapons.push(canonGun);
   survivor.weapons.push(machineGun);

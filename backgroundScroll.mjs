@@ -3,6 +3,7 @@ import { powerUps } from "./powerUps.mjs";
 import { survivor } from "./script.js";
 import { background, background2, background3, background4, background5 } from "./sprit.mjs";
 import { walls } from "./walls.mjs";
+import { baseGun2,baseGun } from "./weaponControl.mjs";
 import { zombies } from "./zombies.mjs";
 let backgroundIsScrolling = false
 let backgroundVelocity = 3
@@ -28,6 +29,10 @@ export function backgroundScroll(position) {
     background.offset.x -= backgroundVelocity
     background2.offset.x-=backgroundVelocity
     background3.offset.x -= backgroundVelocity
+    baseGun2.position.x+= backgroundVelocity
+    baseGun.position.x+= backgroundVelocity
+    baseGun.center.x+= backgroundVelocity
+    baseGun2.center.x+= backgroundVelocity
     // changeLeftRIght(backgroundVelocity)
     
 }

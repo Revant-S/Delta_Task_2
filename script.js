@@ -1,7 +1,7 @@
 import { zombies, FlyingZombie } from "./zombies.mjs";
 import { Survivor } from "./Survivor.mjs";
 import { generateGround, createTheBase } from "./gameEvnironment.mjs";
-import { bullets } from "./weapons.mjs";
+import { AuroMaticCanon, bullets } from "./weapons.mjs";
 import { showPauseMenu, gameIsPaused } from "./scoreDomElement.mjs";
 import { renderPowerUps } from "./powerUpControls.mjs";
 import { drawBackground } from "./sprit.mjs";
@@ -10,11 +10,14 @@ import {
   shoot,
   drawTheWeapon,
   switchTheWeapon,
+  baseGun,
+  baseGun2,
+  baseGun4,
+  baseGun3,
 } from "./weaponControl.mjs";
 import { generateWalls, walls } from "./walls.mjs";
 import { populateWithZombies } from "./levelControl.mjs";
 import { customSetupStart, putTheWall, setUpTimer } from "./customSetup.mjs";
-
 let animationId;
 const gameMode = localStorage.getItem("gameMode");
 export let isUnderSetup = parseInt(gameMode);
@@ -33,7 +36,6 @@ gameCanvas.height = canvasHeight;
 gameCanvas.width = canvasWidth;
 function customset() {
   if (!isUnderSetup) {
-
     generateWalls([
       {
         x: 400,
@@ -56,19 +58,20 @@ function customset() {
         y: groundLevel - 100,
       },
     ]);
-  }
-  else{
+  } else {
     const startBtn = document.createElement("button");
     startBtn.classList.add("start");
     const startDiv = document.createElement("div");
     startDiv.classList.add("timer");
-    startBtn.innerText = "Start"
-    startDiv.appendChild(startBtn)
-    startBtn.addEventListener("click", ()=>{
-      document.querySelector("body").removeChild(document.querySelector(".timer"))
-      isUnderSetup = false
-    })
-    document.querySelector("body").appendChild(startDiv)
+    startBtn.innerText = "Start";
+    startDiv.appendChild(startBtn);
+    startBtn.addEventListener("click", () => {
+      document
+        .querySelector("body")
+        .removeChild(document.querySelector(".timer"));
+      isUnderSetup = false;
+    });
+    document.querySelector("body").appendChild(startDiv);
   }
 }
 
@@ -123,6 +126,19 @@ export function startAnimation() {
 
   ctx.clearRect(0, 0, canvasWidth, canvasHeight);
   drawBackground();
+  baseGun.draw();
+  baseGun2.draw();
+  // baseGun3.draw();
+  // baseGun4.draw();
+  console.log(numberOfFrames % baseGun.holdFrames === 0);
+  if (numberOfFrames % baseGun.holdFrames === 0 && !isUnderSetup) {
+    console.log("shooting");
+    baseGun.shoot();
+    baseGun2.shoot()
+    // baseGun3.shoot()
+    // baseGun4.shoot()
+  }
+
   base.draw();
   survivor.move(keys);
   survivor.draw(ctx);
@@ -144,7 +160,8 @@ export function startAnimation() {
     }
   });
   canonGun.moveWithPlayer();
-  numberOfFrames++;
+  // numberOfFrames++;
+  console.log(numberOfFrames);
 
   walls.forEach((wall) => {
     wall.draw();
@@ -157,6 +174,7 @@ export function startAnimation() {
   if (isUnderSetup) {
     customSetupStart();
   }
+  numberOfFrames++;
   clearAnimationId();
   animationId = requestAnimationFrame(startAnimation);
 }
