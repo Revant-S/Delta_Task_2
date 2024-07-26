@@ -9,7 +9,6 @@ export function objectsCollideAlongX({ obj1, obj2 }) {
       obj2.position.x &&
     obj1.position.x + obj1.velocity.x < obj2.position.x + obj2.dimensions.width
   ) {
-    console.log("Collision ");
     return true;
   }
   return false;
@@ -84,9 +83,7 @@ export class Wall {
 }
 
 export function generateWalls(locations) {
-  console.log("Called");
   locations.forEach((location) => {
-    console.log(location);
     const wall = new Wall({
       position: location,
       dimensions: {

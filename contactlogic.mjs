@@ -1,4 +1,4 @@
-import { survivor, groundLevel } from "./script.js";
+import { survivor } from "./script.js";
 import { FlyingZombie, PowerZombie, zombies } from "./zombies.mjs";
 import { objectsCollideAlongX, objectsCollideAlongY, walls } from "./walls.mjs";
 import { Survivor } from "./Survivor.mjs";
@@ -109,7 +109,6 @@ export function checkBulletWallContact(bullet) {
     ) {
 
       wall.life--;
-      console.log(wall);
       return true
 
     }

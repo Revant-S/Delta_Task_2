@@ -94,17 +94,9 @@ function bulletHitSurvivor(bullet) {
 }
 function hasTheBulletHit(movingObject) {
   if (!bullets || !bullets.length) return false;
-
+  
   for (const bullet of bullets) {
     if (bullet.weapon instanceof Granite) {
-      continue;
-    }
-    if (bullet.owner == "zombie") {
-      if (bulletHitSurvivor(bullet)) {
-        changeTheValue(false, bullet);
-        survivor.life -= 2;
-      }
-
       continue;
     }
     const bulletPosition = bullet.position;
@@ -191,19 +183,19 @@ export class Zombie {
     this.isAlive = false;
     survivor.score += 5;
     const index = getTheZombie(this)
-    console.log(index);
+   
     zombies.splice(index,1)
     updateTheScoreBoard({ survivor: survivor });
     if (this instanceof FlyingZombie) {
       this.weapon.alive = false;
     }
-    console.log(zombies);
+
   }
 
   run(ctx) {
     drawHealthBar({ object: this });
     if (!this.isAlive) return;
-
+    console.log(hasTheBulletHit(this));
     if (hasTheBulletHit(this)) {
       this.life -= 1;
       if (!this.life) {

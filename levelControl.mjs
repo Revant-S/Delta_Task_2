@@ -72,7 +72,7 @@ export function populateWithZombies() {
       x : 1,
       y: 0
     }
-    console.log(zombie);
+    
     manupulateZombieArray(true, zombie);
     count++;
     switchxPosition()
@@ -85,7 +85,7 @@ export function populateWithZombies() {
       x : 2,
       y : 0
     }
-    console.log(zombie);
+
     count++;
     manupulateZombieArray(true, zombie);
     switchxPosition()

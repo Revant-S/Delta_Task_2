@@ -3,7 +3,7 @@ import { ctx, survivor, mousePosition } from "./script.js";
 import { Canon, bullets, MachineGun, Granite } from "./weapons.mjs";
 
 import { zombies } from "./zombies.mjs";
-import { updateNumberOfBullets, canonBullets, machineGunBullet, graniteGunBullet } from "./scoreDomElement.mjs";
+import { updateNumberOfBullets, canonBullets, machineGunBullet, graniteGunBullet, gameIsPaused } from "./scoreDomElement.mjs";
 import { AuroMaticCanon } from "./weapons.mjs";
 export let baseGun ;
 import { groundLevel } from "./script.js";
@@ -69,22 +69,26 @@ function zombiesInRange(granite) {
       y1: graniteCenter.y,
       y2: midPointY,
     });
-
-    if (distance < 200) {
+    console.log(distance);
+    if (distance < 800) {
       zombiesToKill.push(zombie);
     }
   });
+  console.log(zombiesToKill);
   return zombiesToKill;
 }
 export function checkGraniteTime(granite, index) {
-  if (granite.timer.secondsSpend <= 3) {
+  if (granite.timer.secondsSpend <= 5) {
     return false;
   }
+
   let zombiesInRangeArray = zombiesInRange(granite);
   zombiesInRangeArray.forEach((zombie) => {
     zombie.life = 0;
     zombie.kill();
   });
+  console.log(zombies);
+  console.log(zombiesInRangeArray);
   bullets.splice(index, 1);
   return true;
 }

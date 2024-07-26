@@ -12,7 +12,7 @@ export function getAllUsers() {
 export function storeTheHighScore(score) {
     const user = getCurrentUser();
     const highScoreStored = user.HighScore;
-    console.log(highScoreStored);
+
     if (highScoreStored>score) return;
     const allUsers = getAllUsers();
     const currentUser = allUsers.filter(u=>{

@@ -32,8 +32,6 @@ function pauseTheGame() {
 function resetTheGame() {
   clearGameMode()
   gameIsPaused = false;
-  // survivor.life += 100
-  console.log("ibf;jblbflbfkajhkhvbb oybn  mn mnpiu gggglj");
   window.location.reload();
 }
 function playTheGame() {

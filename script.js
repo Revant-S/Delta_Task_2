@@ -133,9 +133,9 @@ export function startAnimation() {
   drawBackground();
   baseGun.draw();
   baseGun2.draw();
-  console.log(numberOfFrames % baseGun.holdFrames === 0);
+
   if (numberOfFrames % baseGun.holdFrames === 0 && !isUnderSetup) {
-    console.log("shooting");
+
     baseGun.shoot();
     baseGun2.shoot();
   }
@@ -161,7 +161,7 @@ export function startAnimation() {
     }
   });
   canonGun.moveWithPlayer();
-  console.log(numberOfFrames);
+
 
   walls.forEach((wall) => {
     wall.draw();

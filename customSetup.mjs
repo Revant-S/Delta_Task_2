@@ -56,7 +56,6 @@ function showOutLine() {
   }
   ctx.strokeStyle = "white";
   ctx.setLineDash(dashArray);
-  console.log(mousePosition);
   ctx.strokeRect(x, y, width, height);
   ctx.restore();
 }

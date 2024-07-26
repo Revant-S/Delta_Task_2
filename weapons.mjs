@@ -43,14 +43,13 @@ export class Bullet {
         y: weapon.position.y - weapon.dimension.height,
       };
       this.velocity = {
-        x: this.weapon.angle< Math.PI/2 ? velocity.x : -velocity.x,
+        x: this.weapon.angle < Math.PI / 2 ? velocity.x : -velocity.x,
         y: velocity.y,
       };
     } else {
       this.velocity = velocity;
       this.position = direction;
       if (this.position.y + this.dimensions.radius >= groundLevel) {
-        console.log("jhbflsuigfluiyg");
         this.position.y = groundLevel - this.dimensions.radius;
       }
     }
@@ -87,20 +86,21 @@ export class Bullet {
     this.position.x += this.velocity.x;
     this.position.y += this.velocity.y;
     const isBulletHit = checkBulletWallContact(this);
+    // to ensure that granite doesnot destroy the wall
     if (isBulletHit && !(this.weapon instanceof Granite)) {
       const j = bullets.indexOf(this);
       bullets.splice(j, 1);
     }
+    // to deflect
     if (isBulletHit && this.weapon instanceof Granite) {
       this.velocity.x *= -1;
     }
+
     if (this.weapon instanceof Granite) {
-      let goFurther = checkGraniteTime(this, indexOfBullet);
-      if (goFurther) {
-        return;
-      }
+      let detonated = checkGraniteTime(this, indexOfBullet);
+      console.log(detonated);
+      if (detonated) return;
     }
-    console.log(this.position);
     if (this.position.y + this.dimensions.radius >= groundLevel) {
       this.velocity.y *= -0.9;
       this.position.y = groundLevel - this.dimensions.radius;
@@ -195,9 +195,9 @@ export class Canon {
     this.remainingBullets--;
     if (this.remainingBullets < 0) return;
     updateNumberOfBullets({ object: this, domElement: canonBullets });
-    console.log(this.bulletInfo);
+
     const bullet = new Bullet(this.bulletInfo);
-    console.log(bullet);
+
     bullets.push(bullet);
   }
 }
@@ -270,7 +270,7 @@ export class Granite extends Canon {
   constructor() {
     super();
     this.selected = false;
-    this.StopWatch = new StopWatch()
+    this.StopWatch = new StopWatch();
     this.totalBullets = 20;
     this.remainingBullets = 20;
     this.displayName = "Granite Gun";
@@ -300,13 +300,11 @@ export class Granite extends Canon {
   }
   shootTheBullet() {
     if (this.remainingBullets < 0) return;
-
     this.remainingBullets -= 1;
-
     const bullet = new Bullet(this.bulletInfo);
     const timer = new StopWatch();
-    timer.start();
     bullet.timer = timer;
+    bullet.timer.start();
     bullets.push(bullet);
   }
 }
@@ -314,7 +312,7 @@ export class Granite extends Canon {
 export class AuroMaticCanon extends Canon {
   constructor(angle, position) {
     super();
-    this.stopWatch = new StopWatch()
+    this.stopWatch = new StopWatch();
     this.angle = angle;
     this.gunDimensions = {
       length: 80,
@@ -325,7 +323,7 @@ export class AuroMaticCanon extends Canon {
       height: 300,
       width: 30,
     };
-    this.shot = false
+    this.shot = false;
     this.position = position;
     this.center = {
       x: this.position.x + this.dimensions.width / 2,
