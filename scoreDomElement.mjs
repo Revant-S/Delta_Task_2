@@ -1,3 +1,4 @@
+import { getTheLeaderBoard, storeTheHighScore } from "./localStorage.mjs";
 import { clearAnimationId, startAnimation, survivor } from "./script.js";
 export const scoreDomElement = document.getElementById("scoreBoard");
 export const canonBullets = document.getElementById("canonBullets");
@@ -55,8 +56,11 @@ export function gameOver() {
   resetB.addEventListener("click", ()=>{
     resetTheGame()
   })
+  storeTheHighScore(survivor.score);
   resetB.appendChild(image);
   gameOverMenu.appendChild(resetB)
+  const leaderBoardMenu = getTheLeaderBoard()
+  gameOverMenu.appendChild(leaderBoardMenu);
   gameOverMenu.showModal();
 }
 

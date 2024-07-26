@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,8 +10,13 @@
     <div class="heading">
         <h1>Last Stand</h1>
     </div>
+    <div id="overlay"></div>
+    <dialog id="userName">
+        <h2>Enter Your Name</h2>
+        <input type="text" id="nameInput" placeholder="Your name">
+        <button id="submitName">Submit</button>
+    </dialog>
     <dialog id="startMenu">
-
         <div class="card" id="Default">
             <div class="card-inner">
                 <div class="front">
@@ -20,38 +24,88 @@
                     <h5>Base Contains some boxes </h5>
                 </div>
                 <div class="back">
-                    <p>it has a default setting of the boxes.</p>
+                    <p>It has a default setting of the boxes.</p>
                     <div class="startButton" id="defaultBtn">
-                        <h4><a href="index.html?param=false">Click Here To Start</a></h4>
+                        <h4><a href="index.html?param=false" id="defaultMode">Click Here To Start</a></h4>
                     </div>
                 </div>
             </div>
         </div>
-
         <div class="card" id="Custom">
             <div class="card-inner">
                 <div class="front">
                     <h1>Custom Setup</h1>
-                    <h5>Place  walls as you want</h5>
+                    <h5>Place walls as you want</h5>
                 </div>
                 <div class="back">
                     <p>Dotted Rectangle will show if you can place the box to the location.</p>
                     <div class="startButton" id="customBtn">
-                        <h4><a href="index.html?param=true">Click Here To Start</a></h4>
+                        <h4><a href="index.html?param=true" id="customiseMode">Click Here To Start</a></h4>
                     </div>
                 </div>
             </div>
         </div>
     </dialog>
     <script>
-        document.getElementById("defaultBtn").addEventListener("click", function () {
+        function openUserNameDialog() {
+            document.getElementById("userName").showModal();
+        }
+        document.getElementById("defaultMode").addEventListener("click", function (e) {
+            e.preventDefault();
             localStorage.setItem('gameMode', "0");
+            openUserNameDialog()
+
+            
+        })
+        document.getElementById("customiseMode").addEventListener("click", function (e) {
+            e.preventDefault();
+            localStorage.setItem('gameMode', '1');
+            openUserNameDialog()
+        })
+        function redirect(gameMode) {
+            if (!gameMode) {
+                window.location.href = "index.html?param=false"
+                return
+            }
+            window.location.href = "index.html?param=true"
+
+        }
+        document.getElementById('submitName').addEventListener('click', function() {
+            const name = document.getElementById('nameInput').value;
+            const users = localStorage.getItem("userInfos");
+            const gameMode = JSON.parse(localStorage.getItem("gameMode"));
+            if (!users) {
+             const users = [];
+             const currentUserInfo ={userName :name  , HighScore : 0}
+             users.push(currentUserInfo)
+             const UserPlaying = {userName : name , HighScore : 0}
+             localStorage.setItem("userInfos" ,JSON.stringify(users) )
+             localStorage.setItem("CurrentPlayer" , JSON.stringify(UserPlaying))
+             //  redirect(gameMode)
+             return
+            }
+            const userArray = JSON.parse(users)
+            const currentUserObj = userArray.filter(userObj => userObj.userName === name);
+            console.log(currentUserObj);
+            if (currentUserObj.length == 0) {
+                const currentUser = {userName : name , HighScore : 0}
+                userArray.push(currentUser)
+                console.log(userArray);
+                localStorage.setItem("userInfos", JSON.stringify(userArray));
+                localStorage.setItem("CurrentPlayer" , JSON.stringify(currentUser))
+                redirect(gameMode)
+                return
+            }
+            localStorage.setItem("CurrentPlayer", JSON.stringify(currentUserObj[0]))
+            redirect(gameMode)
+           
         });
 
-        document.getElementById("customBtn").addEventListener("click", function () {
-            localStorage.setItem('gameMode', '1');
+        document.getElementById('userName').addEventListener('click', function(event) {
+            if (event.target === this) {
+                event.preventDefault();
+            }
         });
     </script>
 </body>
-
 </html>

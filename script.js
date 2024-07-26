@@ -1,7 +1,7 @@
 import { zombies, FlyingZombie } from "./zombies.mjs";
 import { Survivor } from "./Survivor.mjs";
 import { generateGround, createTheBase } from "./gameEvnironment.mjs";
-import { AuroMaticCanon, bullets } from "./weapons.mjs";
+import { bullets } from "./weapons.mjs";
 import { showPauseMenu, gameIsPaused } from "./scoreDomElement.mjs";
 import { renderPowerUps } from "./powerUpControls.mjs";
 import { drawBackground } from "./sprit.mjs";
@@ -12,12 +12,17 @@ import {
   switchTheWeapon,
   baseGun,
   baseGun2,
-  baseGun4,
-  baseGun3,
 } from "./weaponControl.mjs";
 import { generateWalls, walls } from "./walls.mjs";
 import { populateWithZombies } from "./levelControl.mjs";
-import { customSetupStart, putTheWall, setUpTimer } from "./customSetup.mjs";
+import { customSetupStart, putTheWall } from "./customSetup.mjs";
+import { getCurrentUser } from "./localStorage.mjs";
+const currentUser = getCurrentUser();
+if (!currentUser) {
+  alert("Please Enter a User Name to Play");
+  window.location.href = "landingPage.html";
+  // return;
+}
 let animationId;
 const gameMode = localStorage.getItem("gameMode");
 export let isUnderSetup = parseInt(gameMode);
@@ -128,15 +133,11 @@ export function startAnimation() {
   drawBackground();
   baseGun.draw();
   baseGun2.draw();
-  // baseGun3.draw();
-  // baseGun4.draw();
   console.log(numberOfFrames % baseGun.holdFrames === 0);
   if (numberOfFrames % baseGun.holdFrames === 0 && !isUnderSetup) {
     console.log("shooting");
     baseGun.shoot();
-    baseGun2.shoot()
-    // baseGun3.shoot()
-    // baseGun4.shoot()
+    baseGun2.shoot();
   }
 
   base.draw();
@@ -160,7 +161,6 @@ export function startAnimation() {
     }
   });
   canonGun.moveWithPlayer();
-  // numberOfFrames++;
   console.log(numberOfFrames);
 
   walls.forEach((wall) => {

@@ -50,8 +50,6 @@ function showOutLine() {
   const dotRadius = 1;
   const numDots = 100;
   const dotGap = (perimeter - numDots * 2 * dotRadius) / numDots;
-
-  console.log("Hello");
   const dashArray = [];
   for (let i = 0; i < numDots; i++) {
     dashArray.push(dotRadius, dotGap);

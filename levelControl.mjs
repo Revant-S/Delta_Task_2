@@ -1,9 +1,7 @@
-import { Zombie, FlyingZombie, PowerZombie } from "./zombies.mjs";
-import { zombies } from "./zombies.mjs";
+import { Zombie,  PowerZombie } from "./zombies.mjs";
 import { groundLevel } from "./script.js";
 import { manupulateZombieArray } from "./zombies.mjs";
 
-import { StopWatch } from "./timer.mjs";
 let xPosition = 0;
 let count = 0;
 

@@ -1,42 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        .gameInfo {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+        }
+
+        #info {
+            flex-grow: 1;
+        }
+
+        .scoreLabels {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .playerInfo {
+            font-size: 14px;
+            white-space: nowrap;
+        }
+
+        #weaponOptions {
+            display: flex;
+            justify-content: flex-start;
+            gap: 10px;
+        }
+    </style>
 </head>
+
 <body>
     <dialog id="pauseMenuDiaglog">
-        <button class="pauseMenuBtn" id="playBtn"><img class="svgs" src="assets/resumeBtnSvg.svg" alt="" id="resumeBtnSvg"></button>
-        <button class="pauseMenuBtn" id="resetBtn"><img class = "svgs" src="assets/reset-svgrepo-com.svg" alt="reset" id="resetImg"> </button>
+        <button class="pauseMenuBtn" id="playBtn"><img class="svgs" src="assets/resumeBtnSvg.svg" alt=""
+                id="resumeBtnSvg"></button>
+        <button class="pauseMenuBtn" id="resetBtn"><img class="svgs" src="assets/reset-svgrepo-com.svg" alt="reset"
+                id="resetImg"></button>
     </dialog>
-
     <dialog id="gameOverMenu">
     </dialog>
-    
     <div class="gameInfo">
-       <div id="info">
-     
-        <div id="scoreBoard" class="playerInfo">Survivor Score : 00 </div>
-        <div id="canonBullets" class="playerInfo"> GunBullets : 1000/1000</div>
-        <div id="machineGunBullets" class="playerInfo">MachineGunBullets : 3000/3000</div>
-        <div id="granite" class="playerInfo">Granite 20/20</div>
-        <div id="weaponOptions">
-            <div class="weaponOptionElement selectedWeapon" id="weapon1"><img src="assets/rifle-gun-svgrepo-com.svg"></div>
-            <div class="weaponOptionElement" id="weapon2"><img src="assets/machine-gun-gun-svgrepo-com.svg" ></div>
-            <div class="weaponOptionElement" id="weapon3"><img src="assets/grenade-svgrepo-com.svg" alt=""></div>
-
+        <div id="info">
+            <div class="scoreLabels">
+                <div id="scoreBoard" class="playerInfo">Survivor Score : 00</div>
+                <div id="canonBullets" class="playerInfo">GunBullets : 1000/1000</div>
+                <div id="machineGunBullets" class="playerInfo">MachineGunBullets : 3000/3000</div>
+                <div id="granite" class="playerInfo">Granite 20/20</div>
+            </div>
+            <div id="weaponOptions">
+                <div class="weaponOptionElement selectedWeapon" id="weapon1"><img
+                        src="assets/rifle-gun-svgrepo-com.svg"></div>
+                <div class="weaponOptionElement" id="weapon2"><img src="assets/machine-gun-gun-svgrepo-com.svg"></div>
+                <div class="weaponOptionElement" id="weapon3"><img src="assets/grenade-svgrepo-com.svg" alt=""></div>
+            </div>
         </div>
-       </div>
-       <div id="pauseMenu">
-        <button id="pauseBtn"><img id="pauseBtnimg" src="assets/pauseButton.svg" alt=""></button>
-       </div>
+        <div id="pauseMenu">
+            <button id="pauseBtn"><img id="pauseBtnimg" src="assets/pauseButton.svg" alt=""></button>
+        </div>
     </div>
     <div class="container">
         <canvas id="gameCanvas"></canvas>
     </div>
-    <script src="script.js" type="module"></script>     
+    <script src="script.js" type="module"></script>
 </body>
-</html>
 
+</html>
